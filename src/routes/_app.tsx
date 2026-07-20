@@ -1,4 +1,3 @@
-import Toaster from "@/islands/Toaster.tsx";
 import { define } from "@/server/define.ts";
 import { Partial } from "fresh/runtime";
 
@@ -9,7 +8,6 @@ function PageName({ route }: PageNameProps) {
   if (route === "/articles") return "Articles";
   if (route === "/blogs") return "Blogs";
   if (route === "/import") return "Import";
-  if (route === "/login") return "Login";
   if (route === "/nav") return "Navigation";
 }
 export default define.page(function App({ Component, route }) {
@@ -42,7 +40,6 @@ export default define.page(function App({ Component, route }) {
               <Component />
             </Partial>
           </div>
-          <Toaster />
         </div>
       </body>
     </html>
