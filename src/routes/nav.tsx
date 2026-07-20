@@ -5,10 +5,10 @@ export default define.page(function () {
     <nav>
       <ul class="flex flex-col gap-2">
         <li>
-          <a href="/lists">Lists</a>
+          <a href="/list">Lists</a>
         </li>
         <li>
-          <a href="/trips">Trips</a>
+          <a href="/trip">Trips</a>
         </li>
       </ul>
     </nav>

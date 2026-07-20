@@ -46,6 +46,7 @@
     "npm:esbuild@0.25.7": "0.25.7",
     "npm:esbuild@~0.25.5": "0.25.12",
     "npm:events@^3.3.0": "3.3.0",
+    "npm:neondatabase@^0.0.1-security": "0.0.1-security",
     "npm:preact-render-to-string@^6.6.3": "6.7.0_preact@10.29.7",
     "npm:preact@^10.28.2": "10.29.7_preact-render-to-string@6.7.0",
     "npm:preact@^10.29.1": "10.29.7_preact-render-to-string@6.7.0",
@@ -1386,6 +1387,9 @@
       "integrity": "sha512-N8SpfPUnUp1bK+PMYW8qSWdl9U+wwNWI4QKxOYDy9JAro3WMX7p2OeVRF9v+347pnakNevPmiHhNmZ2HbFA76w==",
       "bin": true
     },
+    "neondatabase@0.0.1-security": {
+      "integrity": "sha512-MXrTyyZTjmZy6c3MsLxmsL0G15O4yCyzUks+uPavt8Kch94DZE+RnI28VekwHLqCjk5TYZHVEtGfu5v6097XvA=="
+    },
     "node-releases@2.0.51": {
       "integrity": "sha512-wRNIrw4DmVLKQlbgOMdkMx27Wrpzes2hh5Jtbi2bjPd+4wJstWIqP5A+lscnqbm0xxmT5Bpg8Lec5ItEBwx6BQ=="
     },
@@ -1562,6 +1566,7 @@
       "npm:@preact/signals@^2.9.0",
       "npm:@tailwindcss/vite@^4.2.1",
       "npm:daisyui@^5.5.19",
+      "npm:neondatabase@^0.0.1-security",
       "npm:preact@^10.29.1",
       "npm:react-hook-form@^7.71.2",
       "npm:tailwindcss@^4.2.1",

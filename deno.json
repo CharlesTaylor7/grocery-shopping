@@ -29,6 +29,7 @@
     "@neon/serverless": "jsr:@neon/serverless@^1.0.1",
     "daisyui": "npm:daisyui@^5.5.19",
     "fresh": "jsr:@fresh/core@^2.3.3",
+    "neondatabase": "npm:neondatabase@^0.0.1-security",
     "preact": "npm:preact@^10.29.1",
     "@preact/signals": "npm:@preact/signals@^2.9.0",
     "@fresh/plugin-vite": "jsr:@fresh/plugin-vite@^1.0.8",

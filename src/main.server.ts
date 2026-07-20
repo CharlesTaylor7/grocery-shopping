@@ -23,7 +23,7 @@ const debugSql: QueryFunc = (t, ...args) => {
 };
 
 export const app = new App<State>();
-app.get("/", () => redirect("/articles"));
+app.get("/", () => redirect("/lists"));
 app.use(staticFiles());
 // all middlewares inline
 app.use(async (ctx) => {
