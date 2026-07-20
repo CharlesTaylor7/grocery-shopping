@@ -27,11 +27,8 @@
   "imports": {
     "@/": "./src/",
     "@neon/serverless": "jsr:@neon/serverless@^1.0.1",
-    "@std/xml": "jsr:@std/xml@^0.1.0",
-    "@takker/md5": "jsr:@takker/md5@^0.1.0",
     "daisyui": "npm:daisyui@^5.5.19",
     "fresh": "jsr:@fresh/core@^2.3.3",
-    "linkedom": "npm:linkedom@^0.18.12",
     "preact": "npm:preact@^10.29.1",
     "@preact/signals": "npm:@preact/signals@^2.9.0",
     "@fresh/plugin-vite": "jsr:@fresh/plugin-vite@^1.0.8",
