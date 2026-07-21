@@ -1,6 +1,7 @@
 import { define } from "@/server/define.ts";
 import { Partial } from "fresh/runtime";
 import Toaster from "@/islands/Toaster.tsx";
+import LastVisitSave from "@/islands/LastVisitSave.tsx";
 
 interface PageNameProps {
   route: string | null;
@@ -12,9 +13,7 @@ function PageName({ route }: PageNameProps) {
   if (route === "/nav") return "Navigation";
   if (route === "/login") return "Login";
 }
-export default define.page(function App({ Component, route }) {
-  console.log(route);
-
+export default define.page(function App({ Component, route, req }) {
   return (
     <html>
       <head>
@@ -43,6 +42,7 @@ export default define.page(function App({ Component, route }) {
             </Partial>
           </div>
           <Toaster />
+          <LastVisitSave url={req.url} />
         </div>
       </body>
     </html>
