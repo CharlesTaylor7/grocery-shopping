@@ -1,74 +1,79 @@
-import { useEffect, useState } from "preact/hooks";
 import { authClient } from "@/client/auth.ts";
+import { SubmitEventHandler } from "preact";
+import { toast } from "@/client/toast.ts";
+import { useRef } from "preact/hooks";
 
 export default function Login() {
-  const [session, setSession] = useState<any>(null);
-  const [user, setUser] = useState<any>(null);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    authClient.getSession().then((result) => {
-      if (result.data?.session && result.data?.user) {
-        setSession(result.data.session);
-        setUser(result.data.user);
-      }
-      setLoading(false);
-    });
-  }, []);
-
-  const handleSubmit = async (e: Event) => {
+  const formRef = useRef<HTMLFormElement>(null);
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (
+    e,
+  ) => {
     e.preventDefault();
-    const result = await authClient.signIn.email({ email, password });
 
-    if (result.error) {
-      console.error(result.error.message);
-      return;
-    }
+    const data = new FormData(e.currentTarget as HTMLFormElement);
 
-    const sessionResult = await authClient.getSession();
-    if (sessionResult.data?.session && sessionResult.data?.user) {
-      setSession(sessionResult.data.session);
-      setUser(sessionResult.data.user);
+    const payload = {
+      email: data.get("username")?.toString()!,
+      password: data.get("password")?.toString()!,
+      rememberMe: true,
+      callbackUrl: "",
+    };
+    try {
+      const result = await authClient.signIn.email(payload);
+
+      if (result.error) {
+        toast(() => "wrong password");
+        return;
+      }
+    } catch {
+      toast(() => "wrong password");
     }
   };
+  async function resetPassword() {
+    const data = new FormData(formRef.current!);
 
-  const handleSignOut = async () => {
-    await authClient.signOut();
-    setSession(null);
-    setUser(null);
-  };
-
-  if (loading) return <div>Loading...</div>;
-
-  if (session && user) {
-    return (
-      <div>
-        <h1>Logged in as {user.email}</h1>
-        <button type="button" onClick={handleSignOut}>Sign Out</button>
-      </div>
-    );
+    const email = data.get("email")?.toString()!;
+    await authClient.requestPasswordReset({
+      email,
+      redirectTo: "/password-reset",
+    });
+    toast(() => {
+      return (
+        <>
+          Password reset sent to <span class="underline">{email}</span>
+        </>
+      );
+    });
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h1>Login</h1>
+    <form
+      ref={formRef}
+      class="flex flex-col gap-2 items-start p-2"
+      onSubmit={handleSubmit}
+    >
       <input
         type="email"
         placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.currentTarget.value)}
+        name="email"
         required
       />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.currentTarget.value)}
-        required
-      />
-      <button type="submit">Login</button>
+      <div>
+        <input
+          type="password"
+          placeholder="Password"
+          name="password"
+          required
+        />
+        <button
+          type="button"
+          class="btn btn-ghost btn-sm"
+          onClick={resetPassword}
+        >
+          💀 I forgor (reset password)
+        </button>
+      </div>
+      <button type="submit" class="btn btn-primary">Login</button>
     </form>
   );
 }

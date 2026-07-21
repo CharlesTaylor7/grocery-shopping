@@ -1,67 +1,29 @@
-import { useEffect, useState } from "preact/hooks";
 import { authClient } from "@/client/auth.ts";
 import { SubmitEventHandler } from "preact";
 
-export default function Login() {
-  const [session, setSession] = useState<any>(null);
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    authClient.getSession().then((result) => {
-      if (result.data?.session && result.data?.user) {
-        setSession(result.data.session);
-        setUser(result.data.user);
-      }
-      setLoading(false);
-    });
-  }, []);
-
+export default function Signup() {
   const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (
     e,
   ) => {
     e.preventDefault();
 
     const data = new FormData(e.currentTarget as HTMLFormElement);
-    const result = await authClient.signUp.email({
-      name: data.get("name")?.toString()!,
+
+    const payload = {
+      name: data.get("username")?.toString()!,
       email: data.get("email")?.toString()!,
       password: data.get("password")?.toString()!,
-    });
+    };
+    const result = await authClient.signUp.email(payload);
 
     if (result.error) {
       console.error(result.error.message);
       return;
     }
-
-    const sessionResult = await authClient.getSession();
-    if (sessionResult.data?.session && sessionResult.data?.user) {
-      setSession(sessionResult.data.session);
-      setUser(sessionResult.data.user);
-    }
   };
-
-  const handleSignOut = async () => {
-    await authClient.signOut();
-    setSession(null);
-    setUser(null);
-  };
-
-  if (loading) return <div>Loading...</div>;
-
-  if (session && user) {
-    return (
-      <div>
-        <h1>Logged in as {user.email}</h1>
-        <button type="button" onClick={handleSignOut}>Sign Out</button>
-      </div>
-    );
-  }
 
   return (
-    <form class="flex flex-col gap-2" onSubmit={handleSubmit}>
-      <h1>Login</h1>
-
+    <form class="flex flex-col gap-2 items-start p-2" onSubmit={handleSubmit}>
       <input
         type="text"
         placeholder="Username"
@@ -78,10 +40,10 @@ export default function Login() {
       <input
         type="password"
         placeholder="Password"
-        name="email"
+        name="password"
         required
       />
-      <button type="submit">Login</button>
+      <button type="submit" class="btn btn-primary">Sign up</button>
     </form>
   );
 }

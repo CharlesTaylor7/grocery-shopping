@@ -1,13 +1,10 @@
 import { useEffect } from "preact/hooks";
 
-interface Props {
-  url: string;
-}
-export default function LastVisitSave(props: Props) {
+export default function LastVisitSave() {
   useEffect(() => {
-    if (props.url.endsWith("/") || props.url.endsWith("/login")) return;
+    if (location.pathname.endsWith("/")) return;
 
-    localStorage.setItem("last_visited_url", props.url);
-  }, []);
+    localStorage.setItem("last_visited_url", location.toString());
+  });
   return null;
 }
