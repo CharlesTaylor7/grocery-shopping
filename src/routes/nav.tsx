@@ -10,6 +10,10 @@ export default define.page(function () {
         <li>
           <a href="/trip">Trips</a>
         </li>
+
+        <li>
+          <a href="/login">Login</a>
+        </li>
       </ul>
     </nav>
   );

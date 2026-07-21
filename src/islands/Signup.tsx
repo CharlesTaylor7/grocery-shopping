@@ -1,11 +1,10 @@
 import { useEffect, useState } from "preact/hooks";
 import { authClient } from "@/client/auth.ts";
+import { SubmitEventHandler } from "preact";
 
 export default function Login() {
   const [session, setSession] = useState<any>(null);
   const [user, setUser] = useState<any>(null);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,9 +17,17 @@ export default function Login() {
     });
   }, []);
 
-  const handleSubmit = async (e: Event) => {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (
+    e,
+  ) => {
     e.preventDefault();
-    const result = await authClient.signIn.email({ email, password });
+
+    const data = new FormData(e.currentTarget as HTMLFormElement);
+    const result = await authClient.signUp.email({
+      name: data.get("name")?.toString()!,
+      email: data.get("email")?.toString()!,
+      password: data.get("password")?.toString()!,
+    });
 
     if (result.error) {
       console.error(result.error.message);
@@ -52,20 +59,26 @@ export default function Login() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form class="flex flex-col gap-2" onSubmit={handleSubmit}>
       <h1>Login</h1>
+
       <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.currentTarget.value)}
+        type="text"
+        placeholder="Username"
+        name="username"
         required
       />
       <input
+        type="email"
+        placeholder="Email"
+        name="email"
+        required
+      />
+
+      <input
         type="password"
         placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.currentTarget.value)}
+        name="email"
         required
       />
       <button type="submit">Login</button>
