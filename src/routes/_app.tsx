@@ -3,6 +3,7 @@ import { Partial } from "fresh/runtime";
 import Toaster from "@/islands/Toaster.tsx";
 import LastVisitSave from "@/islands/LastVisitSave.tsx";
 import LoginPrompt from "@/islands/LoginPrompt.tsx";
+import { ThemeProvider } from "@/islands/shadcn/components/theme-provider.tsx";
 
 export default define.page(function App({ Component, route, req }) {
   return (
@@ -30,7 +31,9 @@ export default define.page(function App({ Component, route, req }) {
 
           <div class="flex-1 overflow-y-scroll overflow-x-hidden">
             <Partial name="body">
-              <Component />
+              <ThemeProvider>
+                <Component />
+              </ThemeProvider>
               <LastVisitSave />
               <Toaster />
             </Partial>
