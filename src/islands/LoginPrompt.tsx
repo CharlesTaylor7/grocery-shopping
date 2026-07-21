@@ -2,8 +2,6 @@
 // allows signout
 // prompts for signup or login
 
-import { useSignal, useSignalEffect } from "@preact/signals";
-import { useEffect } from "preact/hooks";
 import { authClient } from "@/client/auth.ts";
 
 interface Props {
@@ -14,6 +12,7 @@ export default function LoginPrompt(props: Props) {
   const session = authClient.useSession();
   function logout() {
     authClient.signOut();
+    location.assign("/auth/login");
   }
 
   if (session.data) {
@@ -33,9 +32,9 @@ export default function LoginPrompt(props: Props) {
   } else {
     return (
       <div class="flex gap-2">
-        <a href="/login" class="underline">Log in</a>
+        <a href="/auth/login" class="underline">Log in</a>
         <span>or</span>
-        <a href="/signup" class="underline">Sign up</a>
+        <a href="/auth/signup" class="underline">Sign up</a>
       </div>
     );
   }

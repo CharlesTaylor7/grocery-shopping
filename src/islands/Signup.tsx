@@ -1,12 +1,13 @@
 import { authClient } from "@/client/auth.ts";
 import { SubmitEventHandler } from "preact";
+import { toast } from "@/client/toast.ts";
+import { AuthApiError } from "@neondatabase/neon-js/auth";
 
 export default function Signup() {
   const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (
     e,
   ) => {
     e.preventDefault();
-
     const data = new FormData(e.currentTarget as HTMLFormElement);
 
     const payload = {
@@ -14,11 +15,19 @@ export default function Signup() {
       email: data.get("email")?.toString()!,
       password: data.get("password")?.toString()!,
     };
-    const result = await authClient.signUp.email(payload);
+    try {
+      const result = await authClient.signUp.email(payload);
 
-    if (result.error) {
-      console.error(result.error.message);
-      return;
+      if (result.error) {
+        toast(() => "wrong password");
+        return;
+      } else {
+        location.assign("/");
+      }
+    } catch (e) {
+      const error = e as AuthApiError;
+      console.error(error);
+      toast(() => error.message);
     }
   };
 

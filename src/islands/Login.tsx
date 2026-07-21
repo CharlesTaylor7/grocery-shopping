@@ -2,6 +2,7 @@ import { authClient } from "@/client/auth.ts";
 import { SubmitEventHandler } from "preact";
 import { toast } from "@/client/toast.ts";
 import { useRef } from "preact/hooks";
+import { AuthApiError } from "@neondatabase/neon-js/auth";
 
 export default function Login() {
   const formRef = useRef<HTMLFormElement>(null);
@@ -13,10 +14,9 @@ export default function Login() {
     const data = new FormData(e.currentTarget as HTMLFormElement);
 
     const payload = {
-      email: data.get("username")?.toString()!,
+      email: data.get("email")?.toString()!,
       password: data.get("password")?.toString()!,
       rememberMe: true,
-      callbackUrl: "",
     };
     try {
       const result = await authClient.signIn.email(payload);
@@ -25,8 +25,12 @@ export default function Login() {
         toast(() => "wrong password");
         return;
       }
-    } catch {
-      toast(() => "wrong password");
+
+      location.assign("/");
+    } catch (e) {
+      const error = e as AuthApiError;
+      console.error(error);
+      toast(() => error.message);
     }
   };
   async function resetPassword() {
@@ -35,7 +39,7 @@ export default function Login() {
     const email = data.get("email")?.toString()!;
     await authClient.requestPasswordReset({
       email,
-      redirectTo: "/password-reset",
+      redirectTo: "/auth/password-reset",
     });
     toast(() => {
       return (

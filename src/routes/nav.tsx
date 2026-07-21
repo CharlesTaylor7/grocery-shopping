@@ -12,7 +12,7 @@ export default define.page(function () {
         </li>
 
         <li>
-          <a href="/login">Login</a>
+          <a href="/auth/login">Login</a>
         </li>
       </ul>
     </nav>
