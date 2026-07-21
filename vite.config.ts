@@ -7,7 +7,7 @@ export default defineConfig(({ mode }) => ({
     fresh({
       // This skips crons in dev mode
       serverEntry: mode == "serve" ? "./src/main.server.ts" : "./src/main.ts",
-      clientEntry: "./src/client.ts",
+      clientEntry: "./src/client/index.ts",
       islandsDir: "./src/islands/",
       routeDir: "./src/routes/",
     }),

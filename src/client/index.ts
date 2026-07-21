@@ -1,4 +1,4 @@
-import "../assets/styles.css";
+import "@/client/styles.css";
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("/service-worker.js").then(() => {

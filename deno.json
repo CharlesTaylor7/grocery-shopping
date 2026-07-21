@@ -27,13 +27,17 @@
   "imports": {
     "@/": "./src/",
     "@neon/serverless": "jsr:@neon/serverless@^1.0.1",
+    "@neondatabase/neon-js": "npm:@neondatabase/neon-js@^0.6.2-beta",
     "daisyui": "npm:daisyui@^5.5.19",
     "fresh": "jsr:@fresh/core@^2.3.3",
+    "install": "npm:install@^0.13.0",
     "neondatabase": "npm:neondatabase@^0.0.1-security",
+    "npm": "npm:npm@^12.0.1",
     "preact": "npm:preact@^10.29.1",
     "@preact/signals": "npm:@preact/signals@^2.9.0",
     "@fresh/plugin-vite": "jsr:@fresh/plugin-vite@^1.0.8",
     "react-hook-form": "npm:react-hook-form@^7.71.2",
+    "sonner": "npm:sonner@^2.0.7",
     "vite": "npm:vite@^7.3.1",
     "tailwindcss": "npm:tailwindcss@^4.2.1",
     "@tailwindcss/vite": "npm:@tailwindcss/vite@^4.2.1"
