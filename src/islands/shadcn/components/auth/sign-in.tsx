@@ -1,31 +1,42 @@
-"use client"
+"use client";
 
-import { authMutationKeys } from "@better-auth-ui/core"
-import { useAuth, useFetchOptions, useSignInEmail } from "@better-auth-ui/react"
-import { useIsMutating } from "@tanstack/react-query"
-import { type SyntheticEvent, useState } from "react"
+import { authMutationKeys } from "@better-auth-ui/core";
+import {
+  useAuth,
+  useFetchOptions,
+  useSignInEmail,
+} from "@better-auth-ui/react";
+import { useIsMutating } from "@tanstack/react-query";
+import { useState } from "preact/compat";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Button } from "@/islands/shadcn/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/islands/shadcn/components/ui/card";
+import { Checkbox } from "@/islands/shadcn/components/ui/checkbox";
 import {
   Field,
   FieldDescription,
   FieldError,
   FieldGroup,
-  FieldSeparator
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Spinner } from "@/components/ui/spinner"
-import { cn } from "@/lib/utils"
-import { ProviderButtons, type SocialLayout } from "./provider-buttons"
+  FieldSeparator,
+} from "@/islands/shadcn/components/ui/field";
+import { Input } from "@/islands/shadcn/components/ui/input";
+import { Label } from "@/islands/shadcn/components/ui/label";
+import { Spinner } from "@/islands/shadcn/components/ui/spinner";
+import { cn } from "@/islands/shadcn/lib/utils.ts";
+import { ProviderButtons, type SocialLayout } from "./provider-buttons";
+// @ts-types="preact"
+import { GenericEventHandler } from "preact";
 
 export type SignInProps = {
-  className?: string
-  socialLayout?: SocialLayout
-  socialPosition?: "top" | "bottom"
-}
+  className?: string;
+  socialLayout?: SocialLayout;
+  socialPosition?: "top" | "bottom";
+};
 
 /**
  * Render the sign-in form UI with email/password, magic link, and social provider options.
@@ -38,7 +49,7 @@ export type SignInProps = {
 export function SignIn({
   className,
   socialLayout,
-  socialPosition = "bottom"
+  socialPosition = "bottom",
 }: SignInProps) {
   const {
     authClient,
@@ -50,66 +61,66 @@ export function SignIn({
     socialProviders,
     viewPaths,
     navigate,
-    Link
-  } = useAuth()
+    Link,
+  } = useAuth();
 
-  const { fetchOptions, resetFetchOptions } = useFetchOptions()
+  const { fetchOptions, resetFetchOptions } = useFetchOptions();
 
-  const [password, setPassword] = useState("")
+  const [password, setPassword] = useState("");
 
   const { mutate: signInEmail, isPending: signInEmailPending } = useSignInEmail(
     authClient,
     {
       onError: (error, { email }) => {
-        setPassword("")
+        setPassword("");
 
         if (error.error?.code === "EMAIL_NOT_VERIFIED") {
-          sessionStorage.setItem("better-auth-ui.verify-email", email)
+          sessionStorage.setItem("better-auth-ui.verify-email", email);
           navigate({
-            to: `${basePaths.auth}/${viewPaths.auth.verifyEmail}`
-          })
+            to: `${basePaths.auth}/${viewPaths.auth.verifyEmail}`,
+          });
         }
 
-        resetFetchOptions()
+        resetFetchOptions();
       },
-      onSuccess: () => navigate({ to: redirectTo })
-    }
-  )
+      onSuccess: () => navigate({ to: redirectTo }),
+    },
+  );
 
   const signInMutating = useIsMutating({
-    mutationKey: authMutationKeys.signIn.all
-  })
+    mutationKey: authMutationKeys.signIn.all,
+  });
   const signUpMutating = useIsMutating({
-    mutationKey: authMutationKeys.signUp.all
-  })
-  const isPending = signInMutating + signUpMutating > 0
+    mutationKey: authMutationKeys.signUp.all,
+  });
+  const isPending = signInMutating + signUpMutating > 0;
 
   const Captcha = plugins.find(
-    (plugin) => plugin.captchaComponent
-  )?.captchaComponent
+    (plugin) => plugin.captchaComponent,
+  )?.captchaComponent;
 
   const [fieldErrors, setFieldErrors] = useState<{
-    email?: string
-    password?: string
-  }>({})
+    email?: string;
+    password?: string;
+  }>({});
 
-  const handleSubmit = (e: SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  const handleSubmit: GenericEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
 
-    const formData = new FormData(e.currentTarget)
-    const email = formData.get("email") as string
-    const rememberMe = formData.get("rememberMe") === "on"
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const rememberMe = formData.get("rememberMe") === "on";
 
     signInEmail({
       email,
       password,
       ...(emailAndPassword?.rememberMe ? { rememberMe } : {}),
-      fetchOptions
-    })
-  }
+      fetchOptions,
+    });
+  };
 
-  const showSeparator =
-    emailAndPassword?.enabled && socialProviders && socialProviders.length > 0
+  const showSeparator = emailAndPassword?.enabled && socialProviders &&
+    socialProviders.length > 0;
 
   return (
     <Card className={cn("w-full max-w-sm", className)}>
@@ -152,20 +163,20 @@ export function SignIn({
                     onChange={() => {
                       setFieldErrors((prev) => ({
                         ...prev,
-                        email: undefined
-                      }))
+                        email: undefined,
+                      }));
                     }}
                     onInvalid={(e) => {
-                      e.preventDefault()
-                      const el = e.target as HTMLInputElement
+                      e.preventDefault();
+                      const el = e.target as HTMLInputElement;
                       const msg = el.validity.valueMissing
                         ? localization.auth.fieldRequired
-                        : localization.auth.invalidEmail
+                        : localization.auth.invalidEmail;
 
                       setFieldErrors((prev) => ({
                         ...prev,
-                        email: msg
-                      }))
+                        email: msg,
+                      }));
                     }}
                     aria-invalid={!!fieldErrors.email}
                   />
@@ -183,12 +194,12 @@ export function SignIn({
                     autoComplete="current-password"
                     value={password}
                     onChange={(e) => {
-                      setPassword(e.target.value)
+                      setPassword(e.target.value);
 
                       setFieldErrors((prev) => ({
                         ...prev,
-                        password: undefined
-                      }))
+                        password: undefined,
+                      }));
                     }}
                     placeholder={localization.auth.passwordPlaceholder}
                     required
@@ -196,26 +207,26 @@ export function SignIn({
                     maxLength={emailAndPassword?.maxPasswordLength}
                     disabled={isPending}
                     onInvalid={(e) => {
-                      e.preventDefault()
-                      const el = e.target as HTMLInputElement
-                      const min = emailAndPassword?.minPasswordLength
-                      const max = emailAndPassword?.maxPasswordLength
+                      e.preventDefault();
+                      const el = e.target as HTMLInputElement;
+                      const min = emailAndPassword?.minPasswordLength;
+                      const max = emailAndPassword?.maxPasswordLength;
                       const msg = el.validity.valueMissing
                         ? localization.auth.fieldRequired
                         : el.validity.tooShort
-                          ? localization.auth.tooShort.replace(
-                              "{{min}}",
-                              String(min)
-                            )
-                          : localization.auth.tooLong.replace(
-                              "{{max}}",
-                              String(max)
-                            )
+                        ? localization.auth.tooShort.replace(
+                          "{{min}}",
+                          String(min),
+                        )
+                        : localization.auth.tooLong.replace(
+                          "{{max}}",
+                          String(max),
+                        );
 
                       setFieldErrors((prev) => ({
                         ...prev,
-                        password: msg
-                      }))
+                        password: msg,
+                      }));
                     }}
                     aria-invalid={!!fieldErrors.password}
                   />
@@ -305,5 +316,5 @@ export function SignIn({
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

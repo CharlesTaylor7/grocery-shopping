@@ -1,27 +1,32 @@
 import {
   useAuth,
   useFetchOptions,
-  useRequestPasswordReset
-} from "@better-auth-ui/react"
-import { type SyntheticEvent, useState } from "react"
-import { toast } from "sonner"
+  useRequestPasswordReset,
+} from "@better-auth-ui/react";
+import { useState } from "preact/compat";
+import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/islands/shadcn/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/islands/shadcn/components/ui/card";
 import {
   Field,
   FieldDescription,
   FieldError,
-  FieldGroup
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Spinner } from "@/components/ui/spinner"
-import { cn } from "@/lib/utils"
+  FieldGroup,
+} from "@/islands/shadcn/components/ui/field";
+import { Input } from "@/islands/shadcn/components/ui/input";
+import { Label } from "@/islands/shadcn/components/ui/label";
+import { Spinner } from "@/islands/shadcn/components/ui/spinner";
+import { cn } from "@/islands/shadcn/lib/utils.ts";
 
 export type ForgotPasswordProps = {
-  className?: string
-}
+  className?: string;
+};
 
 /**
  * Render a card-based "Forgot Password" form that sends a password-reset email.
@@ -40,38 +45,38 @@ export function ForgotPassword({ className }: ForgotPasswordProps) {
     localization,
     plugins,
     viewPaths,
-    Link
-  } = useAuth()
+    Link,
+  } = useAuth();
 
-  const { fetchOptions, resetFetchOptions } = useFetchOptions()
+  const { fetchOptions, resetFetchOptions } = useFetchOptions();
 
   const { mutate: requestPasswordReset, isPending } = useRequestPasswordReset(
     authClient,
     {
       onError: () => {
-        resetFetchOptions()
+        resetFetchOptions();
       },
-      onSuccess: () => toast.success(localization.auth.passwordResetEmailSent)
-    }
-  )
+      onSuccess: () => toast.success(localization.auth.passwordResetEmailSent),
+    },
+  );
 
-  function handleSubmit(e: SyntheticEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const formData = new FormData(e.currentTarget)
+  function handleSubmit(e: Event) {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
     requestPasswordReset({
       email: formData.get("email") as string,
       redirectTo: `${baseURL}${basePaths.auth}/${viewPaths.auth.resetPassword}`,
-      fetchOptions
-    })
+      fetchOptions,
+    });
   }
 
   const Captcha = plugins.find(
-    (plugin) => plugin.captchaComponent
-  )?.captchaComponent
+    (plugin) => plugin.captchaComponent,
+  )?.captchaComponent;
 
   const [fieldErrors, setFieldErrors] = useState<{
-    email?: string
-  }>({})
+    email?: string;
+  }>({});
 
   return (
     <Card className={cn("w-full max-w-sm", className)}>
@@ -98,20 +103,20 @@ export function ForgotPassword({ className }: ForgotPasswordProps) {
                 onChange={() => {
                   setFieldErrors((prev) => ({
                     ...prev,
-                    email: undefined
-                  }))
+                    email: undefined,
+                  }));
                 }}
                 onInvalid={(e) => {
-                  e.preventDefault()
-                  const el = e.target as HTMLInputElement
+                  e.preventDefault();
+                  const el = e.target as HTMLInputElement;
                   const msg = el.validity.valueMissing
                     ? localization.auth.fieldRequired
-                    : localization.auth.invalidEmail
+                    : localization.auth.invalidEmail;
 
                   setFieldErrors((prev) => ({
                     ...prev,
-                    email: msg
-                  }))
+                    email: msg,
+                  }));
                 }}
                 aria-invalid={!!fieldErrors.email}
               />
@@ -144,5 +149,5 @@ export function ForgotPassword({ className }: ForgotPasswordProps) {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

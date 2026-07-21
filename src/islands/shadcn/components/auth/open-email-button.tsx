@@ -1,15 +1,15 @@
-import { getEmailProviderLink } from "@better-auth-ui/core"
-import { useAuth } from "@better-auth-ui/react"
-import { SquareArrowOutUpRight } from "lucide-react"
+import { getEmailProviderLink } from "@better-auth-ui/core";
+import { useAuth } from "@better-auth-ui/react";
+import { SquareArrowOutUpRight } from "lucide-react";
 
-import { buttonVariants } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/islands/shadcn/components/ui/button";
+import { cn } from "@/islands/shadcn/lib/utils.ts";
 
 export type OpenEmailButtonProps = {
   /** Email address used to detect the provider, e.g. from the verify-email flow. */
-  email: string
-  className?: string
-}
+  email: string;
+  className?: string;
+};
 
 /**
  * Render a link styled as a button that opens the user's email provider login
@@ -24,10 +24,10 @@ export type OpenEmailButtonProps = {
  * @returns The open-email link element, or `null` when no provider matches.
  */
 export function OpenEmailButton({ email, className }: OpenEmailButtonProps) {
-  const { localization } = useAuth()
+  const { localization } = useAuth();
 
-  const provider = getEmailProviderLink(email)
-  if (!provider) return null
+  const provider = getEmailProviderLink(email);
+  if (!provider) return null;
 
   return (
     <a
@@ -38,10 +38,10 @@ export function OpenEmailButton({ email, className }: OpenEmailButtonProps) {
     >
       {localization.auth.openEmailProvider.replace(
         "{{provider}}",
-        provider.companyProvider
+        provider.companyProvider,
       )}
 
       <SquareArrowOutUpRight />
     </a>
-  )
+  );
 }
