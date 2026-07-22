@@ -4,6 +4,7 @@ import Toaster from "@/islands/Toaster.tsx";
 import LastVisitSave from "@/islands/LastVisitSave.tsx";
 import LoginPrompt from "@/islands/LoginPrompt.tsx";
 import { SyncModel, SyncModelProvider } from "@/client/model.ts";
+import LoginSpinner from "@/islands/LoginSpinner.tsx";
 
 export default define.page(function App({ Component, route, req }) {
   return (

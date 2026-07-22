@@ -24,10 +24,14 @@ export interface TripItem {
   store_id: string;
 }
 
+export interface HasId {
+  id: string;
+}
+
 export type Op = "new" | "edit" | "delete";
 export type TableName = "stores" | "trips" | "trip_items" | "store_items";
 
-export type Action<TEntity = unknown> =
+export type Action<TEntity extends HasId = HasId> =
   | ({ op: "new"; entity: TableName } & Partial<TEntity>)
   | ({ op: "edit"; entity: TableName; id: string } & Partial<TEntity>)
   | ({ op: "delete"; entity: TableName; id: string });

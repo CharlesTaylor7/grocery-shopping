@@ -16,3 +16,7 @@
 ## UX
 - [ ] nav hamburger, smart actions in page header(s)
 - [ ] breadcrumbs
+
+
+## Defects
+a "loading" state is consider the same as not being logged in.  p
