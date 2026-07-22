@@ -1,4 +1,4 @@
-import { authClient } from "@/client/auth.ts";
+import { authClient } from "@/client/neon.ts";
 import { SubmitEventHandler } from "preact";
 import { toast } from "@/client/toast.ts";
 import { useEffect, useRef } from "preact/hooks";

@@ -1,4 +1,4 @@
-import { authClient } from "@/client/auth.ts";
+import { authClient } from "@/client/neon.ts";
 import { SubmitEventHandler } from "preact";
 import { toast } from "@/client/toast.ts";
 import { AuthApiError } from "@neondatabase/neon-js/auth";

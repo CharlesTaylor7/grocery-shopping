@@ -1,8 +1,9 @@
-import { authClient } from "@/client/auth.ts";
+import { authClient } from "@/client/neon.ts";
 import { SubmitEventHandler } from "preact";
 import { toast } from "@/client/toast.ts";
 import { useRef } from "preact/hooks";
 import { AuthApiError } from "@neondatabase/neon-js/auth";
+import { redirectToLast } from "@/client/redirect.ts";
 
 export default function Login() {
   const formRef = useRef<HTMLFormElement>(null);
@@ -26,7 +27,7 @@ export default function Login() {
         return;
       }
 
-      location.assign("/");
+      redirectToLast();
     } catch (e) {
       const error = e as AuthApiError;
       console.error(error);

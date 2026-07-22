@@ -2,13 +2,14 @@
 // allows signout
 // prompts for signup or login
 
-import { authClient } from "@/client/auth.ts";
+import { authClient } from "@/client/neon.ts";
 
 interface Props {
   url: string;
 }
 
 export default function LoginPrompt(props: Props) {
+  const path = location ? location.pathname : new URL(props.url).pathname;
   const session = authClient.useSession();
   function logout() {
     authClient.signOut();
@@ -27,7 +28,10 @@ export default function LoginPrompt(props: Props) {
         </button>
       </div>
     );
-  } else if (props.url.endsWith("signup")) {
+  } else if (
+    session.isPending ||
+    path.startsWith("/auth") || path.endsWith("/")
+  ) {
     return null;
   } else {
     return (
