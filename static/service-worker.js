@@ -1,5 +1,5 @@
 const APP_VERSION = "1";
-const ASSETS = ["/manifest.json", "/pwa-icon.webp"];
+const ASSETS = ["/manifest.json", "/pwa-icon.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
