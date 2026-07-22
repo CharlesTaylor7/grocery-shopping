@@ -25,9 +25,9 @@ export interface TripItem {
 }
 
 export type Op = "new" | "edit" | "delete";
-export type EntityType = "store" | "trip" | "trip_item" | "store_item";
+export type TableName = "stores" | "trips" | "trip_items" | "store_items";
 
 export type Action<TEntity = unknown> =
-  | ({ op: "new"; entity: EntityType } & Partial<TEntity>)
-  | ({ op: "edit"; entity: EntityType; id: string } & Partial<TEntity>)
-  | ({ op: "delete"; entity: EntityType; id: string });
+  | ({ op: "new"; entity: TableName } & Partial<TEntity>)
+  | ({ op: "edit"; entity: TableName; id: string } & Partial<TEntity>)
+  | ({ op: "delete"; entity: TableName; id: string });

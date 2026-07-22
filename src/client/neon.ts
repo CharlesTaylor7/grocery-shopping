@@ -15,3 +15,4 @@ const neonClient = createClient(
 
 export const authClient = neonClient.auth;
 export const dataClient = neonClient;
+export type NeonClient = typeof neonClient;

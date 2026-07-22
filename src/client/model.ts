@@ -6,11 +6,12 @@ import {
   signal,
   useModel,
 } from "@preact/signals";
-// @ts-types="preact"
 import { createContext } from "preact";
 
 import { useContext } from "preact/hooks";
 import { Action } from "@/shared/types.ts";
+import { dataClient } from "@/client/neon.ts";
+import type { NeonClient } from "@/client/neon.ts";
 
 interface SyncApi {
   // send an action
@@ -28,20 +29,16 @@ interface SyncOptions {
 }
 // debug means it just does an immediate fetch
 export const SyncModel = createModel<SyncApi, [SyncOptions]>(function (opts) {
-  const stores = signal([]);
-  const storeItems = signal([]);
-  const dataClient = effect(() => {
-  });
-  return {
-    send() {
+  return ({
+    send(action: Action) {
       if (opts.immediate) {
-        // fetch({ method: "POST", url: "/api/event" });
+        postAction(dataClient, action);
       }
     },
     // todo:
     subscribe() { //
     },
-  };
+  });
 });
 
 const SyncContext = createContext(new SyncModel({ immediate: true }));
@@ -50,4 +47,26 @@ export const SyncModelProvider = SyncContext.Provider;
 export function useSyncModel() {
   const model = useContext(SyncContext);
   return model;
+}
+
+function postAction(client: NeonClient, action: Action) {
+  switch (action.op) {
+    case "new": {
+      const { op: _, entity, ...data } = action;
+      client.from(entity).insert(data);
+      break;
+    }
+
+    case "edit": {
+      const { op: _, entity, id, ...data } = action;
+      client.from(entity).update(data).eq("id", id);
+      break;
+    }
+
+    case "delete": {
+      const { entity, id } = action;
+      client.from(entity).delete().eq("id", id);
+      break;
+    }
+  }
 }
