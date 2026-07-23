@@ -2,7 +2,7 @@ import { createModel, signal } from "@preact/signals";
 import { createContext } from "preact";
 
 import { useContext } from "preact/hooks";
-import { Action, HasId } from "@/shared/types.ts";
+import { Action, Op, TableName } from "@/shared/types.ts";
 import { dataClient } from "@/client/neon.ts";
 import type { NeonDataClient } from "@/client/neon.ts";
 import * as UUID from "uuid";
@@ -12,7 +12,9 @@ export interface SyncApi {
   // send an action
   // it writes the item to indexed db
   // a background worker checks when we are online and sends pending events to the server
-  send<T extends HasId>(action: Action<T>): void;
+  send<TOp extends Op, TName extends TableName>(
+    action: Action<TOp, TName>,
+  ): void;
 }
 
 interface SyncOptions {
@@ -28,10 +30,10 @@ export const SyncModel = createModel<SyncApi, [SyncOptions]>(function (opts) {
   }
 
   return ({
-    send<T extends HasId>(action: Action<T>) {
+    send(action) {
       if (action.op === "new") {
         // do this immediately and only once so any replays of this action are idempotent
-        action.id = UUID.v4();
+        action.entity.id = UUID.v4();
       }
 
       if (dbSignal.value) {
@@ -63,23 +65,21 @@ export function pushToPostgrest(
   action: Action,
 ): Promise<unknown> {
   let query: Promise<unknown>;
-  delete action.idb_key;
-  delete action.uuid;
   switch (action.op) {
     case "new": {
-      const { op: _, table, ...data } = action;
-      query = client.from(table).insert(data) as any;
+      const { table, entity } = action;
+      query = client.from(table).insert(entity) as any;
       break;
     }
 
     case "edit": {
-      const { op: _, table, id, ...data } = action;
+      const { table, entity: { id, ...data } } = action;
       query = client.from(table).update(data).eq("id", id) as any;
       break;
     }
 
     case "delete": {
-      const { table, id } = action;
+      const { table, entity: { id } } = action;
       query = client.from(table).delete().eq("id", id) as any;
       break;
     }

@@ -38,12 +38,20 @@ export interface ActionFields {
   entity: EntityFields<Op>;
 }
 
-export type Action<TOp extends Op = Op, TEntity extends HasId = HasId> = {
-  table: TEntity;
+export type Action<TOp extends Op = Op, TName extends TableName = TableName> = {
+  table: TName;
   op: TOp;
   idb_index?: number;
-  entity: EntityFields<TOp, TEntity>;
+  uuid?: string;
+  entity: EntityFields<TOp, Entity<TName>>;
 };
+
+export type Entity<TName extends TableName = TableName> = TName extends "stores"
+  ? Store
+  : TName extends "trips" ? Trip
+  : TName extends "store_items" ? StoreItem
+  : TName extends "trip_items" ? TripItem
+  : never;
 
 export type EntityFields<TOp extends Op = Op, TEntity extends HasId = HasId> =
   TOp extends "new" ? Partial<TEntity>
