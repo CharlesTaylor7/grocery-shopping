@@ -45,6 +45,10 @@ async function fetchWithCache(request) {
   const asset = await assets.match(request);
   if (asset) return asset;
 
+  if (new URL(request.url).hostname.includes("apirest")) {
+    console.log(request);
+  }
+
   // all online requests are put into the cache first before responding
   const dataCache = await caches.open(DATA_CACHE);
   // fetches and adds to cache any 20x status code

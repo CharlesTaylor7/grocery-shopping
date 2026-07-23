@@ -14,10 +14,8 @@ onmessage = (msg) => {
 const db = await openIndexedDB();
 
 while (true) {
-  await sleep(5000);
-  if (!client.headers.get("Authorization")) continue;
-
   processNextAction(db);
+  await sleep(5000);
 }
 
 function sleep(ms) {
@@ -29,6 +27,8 @@ function log(anything) {
 }
 
 function processNextAction() {
+  if (!client.headers.get("Authorization")) return;
+
   const tx = db.transaction("actions", "readonly");
   const request = tx.objectStore("actions").openCursor();
 
@@ -42,7 +42,9 @@ function processNextAction() {
     try {
       const result = await pushToPostgrest(client, value);
       log(result);
-    } catch {
+    } catch (e) {
+      log("failure");
+      log(Object.keys(e));
       return;
     }
     const deleteTx = db.transaction("actions", "readwrite");
