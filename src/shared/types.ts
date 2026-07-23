@@ -32,6 +32,9 @@ export type Op = "new" | "edit" | "delete";
 export type TableName = "stores" | "trips" | "trip_items" | "store_items";
 
 export type Action<TEntity extends HasId = HasId> =
-  | ({ op: "new"; table: TableName } & Partial<TEntity>)
-  | ({ op: "edit"; table: TableName; id: string } & Partial<TEntity>)
-  | ({ op: "delete"; table: TableName; id: string });
+  & { uuid?: string; idb_key?: number }
+  & (
+    | ({ op: "new"; table: TableName } & Partial<TEntity>)
+    | ({ op: "edit"; table: TableName; id: string } & Partial<TEntity>)
+    | ({ op: "delete"; table: TableName; id: string })
+  );

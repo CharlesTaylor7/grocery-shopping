@@ -1,4 +1,4 @@
-export const VERSION = 2;
+export const VERSION = 3;
 
 export function migrate(
   event: IDBVersionChangeEvent,
@@ -12,6 +12,14 @@ export function migrate(
 
   if (event.oldVersion < 2) {
     db.createObjectStore("stores", { keyPath: "id" });
+  }
+
+  if (event.oldVersion < 3) {
+    db.deleteObjectStore("actions");
+    db.createObjectStore("actions", {
+      keyPath: "idb_key",
+      autoIncrement: true,
+    });
   }
   return db;
 }

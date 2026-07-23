@@ -9,7 +9,6 @@ export default function PasswordReset() {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     tokenSignal.value = params.get("token");
-    console.log(tokenSignal.value);
     if (!tokenSignal.value) {
       location.assign("/login");
     }

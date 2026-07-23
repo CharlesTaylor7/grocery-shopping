@@ -8,7 +8,6 @@ export function openIndexedDB(): Promise<IDBDatabase> {
       reject();
     };
     request.onsuccess = (event) => {
-      console.log(event);
       resolve((event.target! as any).result);
     };
     request.onupgradeneeded = (event) => {

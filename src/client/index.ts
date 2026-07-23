@@ -1,9 +1,7 @@
 import "@/client/styles.css";
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/service-worker.js").then(() => {
-    console.log("Service worker registered");
-  });
+  navigator.serviceWorker.register("/service-worker.js");
 } else {
   console.error("Client doesn't support Service Workers!");
 }
