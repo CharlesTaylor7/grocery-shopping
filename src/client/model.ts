@@ -88,12 +88,12 @@ export function pushToPostgrest(
   }
   // query's are lazy, transform to an eager promise to begin execution.
   // This is so we can run the query in a non async context in a "fire-and-forget" fashion.
-  return query.catch((e) => {
+  return query.then((result) => {
     // unique constraint violation. just ignore it and move on
-    if (e.error.code === "23505") {
-      return e;
+    if (result.error.code === "23505") {
+      return result;
     } else {
-      return Promise.reject(e);
+      return Promise.reject(result);
     }
   });
 }

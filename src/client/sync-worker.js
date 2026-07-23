@@ -14,7 +14,7 @@ onmessage = (msg) => {
 const db = await openIndexedDB();
 
 while (true) {
-  processNextAction(db);
+  processNextAction();
   await sleep(5000);
 }
 
@@ -40,11 +40,8 @@ function processNextAction() {
     const { primaryKey, value } = cursor;
 
     try {
-      const result = await pushToPostgrest(client, value);
-      log(result);
-    } catch (e) {
-      log("failure");
-      log(Object.keys(e));
+      await pushToPostgrest(client, value);
+    } catch {
       return;
     }
     const deleteTx = db.transaction("actions", "readwrite");
