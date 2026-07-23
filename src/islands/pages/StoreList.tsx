@@ -1,23 +1,21 @@
 import { useSyncModel } from "@/client/model.ts";
 import { Store } from "@/shared/types.ts";
 import { useSignal } from "@preact/signals";
-import { useCallback } from "preact/hooks";
+import { useCallback, useEffect } from "preact/hooks";
+import { dataClient } from "@/client/neon.ts";
 
-// manipulates the StoreList by data id, and bypasses the usual react rendering flow
-// TODO: do it again the regular react way for dnd list support
-interface Props {
-  dataRoot: string;
-}
-export default function StoreList(props: Props) {
+export default function StoreList() {
+  const storesSignal = useSignal<Store[]>([]);
+  useEffect(() => {
+    dataClient.from("stores").select().then((v) =>
+      void (storesSignal.value = v.data as Store[])
+    );
+  }, []);
   const sync = useSyncModel();
   const nameSignal = useSignal("");
-  const onNewStore = useCallback(function () {
-    const domRoot = document.querySelector(`[data-root='${props.dataRoot}']`);
-    const el = document.createElement("li");
-    el.replaceChildren(nameSignal.value);
-    domRoot!.appendChild(el);
 
-    sync.send<Store>({ op: "new", entity: "stores", name: nameSignal.value });
+  const onNewStore = useCallback(function () {
+    sync.send<Store>({ table: "stores", op: "new", name: nameSignal.value });
   }, [sync]);
   return (
     <>
@@ -36,6 +34,9 @@ export default function StoreList(props: Props) {
       >
         + New Store
       </button>
+      <ul>
+        {storesSignal.value.map((s) => <li key={s.id}>{s.name}</li>)}
+      </ul>
     </>
   );
 }

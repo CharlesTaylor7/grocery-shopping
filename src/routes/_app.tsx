@@ -3,8 +3,8 @@ import { Partial } from "fresh/runtime";
 import Toaster from "@/islands/Toaster.tsx";
 import LastVisitSave from "@/islands/LastVisitSave.tsx";
 import LoginPrompt from "@/islands/LoginPrompt.tsx";
-import { SyncModel, SyncModelProvider } from "@/client/model.ts";
-import LoginSpinner from "@/islands/LoginSpinner.tsx";
+import SyncContextProvider from "@/islands/SyncContextProvider.tsx";
+import SpawnWebWorker from "@/islands/SpawnWebWorker.tsx";
 
 export default define.page(function App({ Component, route, req }) {
   return (
@@ -32,14 +32,15 @@ export default define.page(function App({ Component, route, req }) {
 
           <div class="flex-1 overflow-y-scroll overflow-x-hidden">
             <Partial name="body">
-              <SyncModelProvider value={new SyncModel({ immediate: true })}>
+              <SyncContextProvider>
                 <Component />
-              </SyncModelProvider>
+              </SyncContextProvider>
               <LastVisitSave />
               <Toaster />
             </Partial>
           </div>
         </div>
+        <SpawnWebWorker />
       </body>
     </html>
   );

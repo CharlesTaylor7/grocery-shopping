@@ -32,6 +32,6 @@ export type Op = "new" | "edit" | "delete";
 export type TableName = "stores" | "trips" | "trip_items" | "store_items";
 
 export type Action<TEntity extends HasId = HasId> =
-  | ({ op: "new"; entity: TableName } & Partial<TEntity>)
-  | ({ op: "edit"; entity: TableName; id: string } & Partial<TEntity>)
-  | ({ op: "delete"; entity: TableName; id: string });
+  | ({ op: "new"; table: TableName } & Partial<TEntity>)
+  | ({ op: "edit"; table: TableName; id: string } & Partial<TEntity>)
+  | ({ op: "delete"; table: TableName; id: string });

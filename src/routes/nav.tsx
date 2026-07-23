@@ -5,7 +5,7 @@ export default define.page(function () {
     <nav>
       <ul class="flex flex-col gap-2">
         <li>
-          <a href="/list">Lists</a>
+          <a href="/store">Stores</a>
         </li>
         <li>
           <a href="/trip">Trips</a>

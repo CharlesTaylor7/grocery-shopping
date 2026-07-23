@@ -1,20 +1,15 @@
-import {
-  createModel,
-  effect,
-  ReadonlySignal,
-  Signal,
-  signal,
-  useModel,
-} from "@preact/signals";
+import { createModel, signal } from "@preact/signals";
 import { createContext } from "preact";
 
 import { useContext } from "preact/hooks";
 import { Action, HasId } from "@/shared/types.ts";
 import { dataClient } from "@/client/neon.ts";
-import type { NeonClient } from "@/client/neon.ts";
+import type { NeonDataClient } from "@/client/neon.ts";
 import * as UUID from "uuid";
+import migrate, { VERSION } from "@/client/migrate.ts";
+import { openIndexedDB } from "@/client/indexed-db.ts";
 
-interface SyncApi {
+export interface SyncApi {
   // send an action
   // it writes the item to indexed db
   // a background worker checks when we are online and sends pending events to the server
@@ -26,17 +21,39 @@ interface SyncApi {
 
 interface SyncOptions {
   // skip indexed db, and do an api call
-  immediate: boolean;
+  useIndexedDB: boolean;
 }
+
 // debug means it just does an immediate fetch
 export const SyncModel = createModel<SyncApi, [SyncOptions]>(function (opts) {
+  const dbSignal = signal<IDBDatabase | null>(null);
+  if (opts.useIndexedDB) {
+    openIndexedDB().then((db) => void (dbSignal.value = db));
+  }
+
   return ({
     send<T extends HasId>(action: Action<T>) {
+      if (!("uuid" in action)) {
+        (action as any).uuid = UUID.v4();
+      }
       if (action.op === "new") {
         // do this immediately and only once so any replays of this action are idempotent
         action.id = UUID.v4();
       }
-      if (opts.immediate) {
+
+      if (dbSignal.value) {
+        const request = dbSignal.value.transaction("actions", "readwrite")
+          .objectStore(
+            "actions",
+          ).put(
+            action,
+          );
+
+        console.log("put");
+        request.onsuccess = (event) => {
+          console.log(event);
+        };
+      } else {
         postAction(dataClient, action).then((v) => {
           console.log(v);
         }).catch((e) => {
@@ -45,37 +62,40 @@ export const SyncModel = createModel<SyncApi, [SyncOptions]>(function (opts) {
       }
     },
     // todo:
-    subscribe() { //
+    subscribe() {
+      //
     },
   });
 });
 
-const SyncContext = createContext(new SyncModel({ immediate: true }));
-export const SyncModelProvider = SyncContext.Provider;
+export const SyncContext = createContext<SyncApi>(
+  new SyncModel({ useIndexedDB: false }),
+);
 
-export function useSyncModel() {
+export function useSyncModel(): SyncApi {
   const model = useContext(SyncContext);
+  if (!model) throw new Error("can't useSyncModel without providing context !");
   return model;
 }
 
-function postAction(
-  client: NeonClient,
+export function postAction(
+  client: NeonDataClient,
   action: Action,
 ): Promise<unknown> {
   switch (action.op) {
     case "new": {
-      const { op: _, entity, ...data } = action;
-      return client.from(entity).insert(data);
+      const { op: _, table, ...data } = action;
+      return (client.from(table).insert(data) as any);
     }
 
     case "edit": {
-      const { op: _, entity, id, ...data } = action;
-      return client.from(entity).update(data).eq("id", id);
+      const { op: _, table, id, ...data } = action;
+      return (client.from(table).update(data).eq("id", id) as any);
     }
 
     case "delete": {
-      const { entity, id } = action;
-      return client.from(entity).delete().eq("id", id);
+      const { table, id } = action;
+      return (client.from(table).delete().eq("id", id) as any);
     }
     default:
       return Promise.resolve(null);
