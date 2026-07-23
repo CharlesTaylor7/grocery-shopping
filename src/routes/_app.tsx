@@ -4,7 +4,6 @@ import Toaster from "@/islands/Toaster.tsx";
 import LastVisitSave from "@/islands/LastVisitSave.tsx";
 import LoginPrompt from "@/islands/LoginPrompt.tsx";
 import SyncContextProvider from "@/islands/SyncContextProvider.tsx";
-import SpawnWebWorker from "@/islands/SpawnWebWorker.tsx";
 import SyncActions from "@/islands/SyncActions.tsx";
 
 export default define.page(function App({ Component, route, req }) {
@@ -41,7 +40,7 @@ export default define.page(function App({ Component, route, req }) {
             </Partial>
           </div>
         </div>
-        <SpawnWebWorker />
+        <SyncActions useWebWorker />
       </body>
     </html>
   );

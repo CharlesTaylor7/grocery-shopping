@@ -10,7 +10,6 @@ export default function StoreList() {
   const storesSignal = useSignal<Store[]>([]);
 
   function applyAction(action: Action) {
-    console.log(action);
     if (action.table != "stores") return;
     switch (action.op) {
       case "new": {

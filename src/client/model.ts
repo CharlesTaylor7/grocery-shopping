@@ -4,9 +4,9 @@ import { createContext } from "preact";
 import { useContext } from "preact/hooks";
 import { Action, Op, TableName } from "@/shared/types.ts";
 import { dataClient } from "@/client/neon.ts";
-import type { NeonDataClient } from "@/client/neon.ts";
 import * as UUID from "uuid";
 import { openIndexedDB } from "@/client/indexed-db.ts";
+import { pushToPostgrest } from "@/client/sync.ts";
 
 export interface SyncApi {
   // send an action
@@ -58,42 +58,4 @@ export function useSyncModel(): SyncApi {
   const model = useContext(SyncContext);
   if (!model) throw new Error("can't useSyncModel without providing context !");
   return model;
-}
-
-export function pushToPostgrest(
-  client: NeonDataClient,
-  action: Action,
-): Promise<unknown> {
-  let query: Promise<unknown>;
-  switch (action.op) {
-    case "new": {
-      const { table, entity } = action;
-      query = client.from(table).insert(entity) as any;
-      break;
-    }
-
-    case "edit": {
-      const { table, entity: { id, ...data } } = action;
-      query = client.from(table).update(data).eq("id", id) as any;
-      break;
-    }
-
-    case "delete": {
-      const { table, entity: { id } } = action;
-      query = client.from(table).delete().eq("id", id) as any;
-      break;
-    }
-    default:
-      return Promise.resolve(null);
-  }
-  // query's are lazy, transform to an eager promise to begin execution.
-  // This is so we can run the query in a non async context in a "fire-and-forget" fashion.
-  return query.then((result) => {
-    // unique constraint violation. just ignore it and move on
-    if (result.error.code === "23505") {
-      return result;
-    } else {
-      return Promise.reject(result);
-    }
-  });
 }
