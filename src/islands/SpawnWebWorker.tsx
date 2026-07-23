@@ -1,7 +1,5 @@
 import { useEffect } from "preact/hooks";
-import { authClient, dataClient } from "@/client/neon.ts";
-import { pushToPostgrest } from "@/client/model.ts";
-import { openIndexedDB } from "@/client/indexed-db.ts";
+import { authClient } from "@/client/neon.ts";
 
 export default function SpawnWebWorker() {
   useEffect(() => {
@@ -11,8 +9,7 @@ export default function SpawnWebWorker() {
       { type: "module" },
     );
     worker.addEventListener("message", (ev) => {
-      debugError(ev.data);
-      // console.log("from worker", ev.data);
+      console.log("from worker", ev.data);
     });
     authClient.token().then((token) => {
       if (token.data) {
@@ -23,15 +20,4 @@ export default function SpawnWebWorker() {
     return () => worker.terminate();
   }, []);
   return null;
-}
-
-function debugError(key: string) {
-  openIndexedDB().then((db) =>
-    db.transaction("actions", "readwrite").objectStore("actions").get(key)
-      .onsuccess = (event: any) => {
-        const action = event.target.result;
-
-        pushToPostgrest(dataClient, action);
-      }
-  );
 }

@@ -20,6 +20,14 @@ while (true) {
   processNextAction(db);
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function log(anything) {
+  self.postMessage(JSON.stringify(anything));
+}
+
 function processNextAction() {
   const tx = db.transaction("actions", "readonly");
   const request = tx.objectStore("actions").openCursor();
@@ -32,7 +40,8 @@ function processNextAction() {
     const { primaryKey, value } = cursor;
 
     try {
-      await pushToPostgrest(client, value);
+      const result = await pushToPostgrest(client, value);
+      log(result);
     } catch {
       return;
     }
@@ -41,8 +50,4 @@ function processNextAction() {
     deleteTx.objectStore("actions").delete(primaryKey);
     deleteTx.oncomplete = processNextAction;
   };
-}
-
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }

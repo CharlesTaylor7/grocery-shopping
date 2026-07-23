@@ -10,6 +10,7 @@ export default function StoreList() {
   const storesSignal = useSignal<Store[]>([]);
 
   function applyAction(action: Action) {
+    console.log(action);
     if (action.table != "stores") return;
     switch (action.op) {
       case "new": {
@@ -29,16 +30,19 @@ export default function StoreList() {
   }
 
   useEffect(() => {
+    // IIFE to handle async
     (async function () {
+      // fetch from postgrest
       const result = await dataClient.from("stores").select();
       if (Array.isArray(result.data)) {
         storesSignal.value = result.data as Store[];
       }
 
+      // apply local changes
       const db = await openIndexedDB();
       db.transaction("actions", "readonly").objectStore("actions").getAll()
         .onsuccess = (event: any) => {
-          for (const action of event.result) {
+          for (const action of event.target.result) {
             applyAction(action);
           }
         };
