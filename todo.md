@@ -19,4 +19,6 @@
 
 
 ## Defects
-a "loading" state is consider the same as not being logged in.  p
+- a "loading" state is consider the same as not being logged in.
+- when offline I cannot navigate to a store's list of items, if it is "pending".
+  
