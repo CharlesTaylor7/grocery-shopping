@@ -23,10 +23,12 @@ export function migrate(
   }
 
   if (event.oldVersion < 4) {
-    db.transaction("actions").objectStore("actions").createIndex(
-      "actions_entity_id",
-      ["entity", "id"],
-    );
+    db.deleteObjectStore("actions");
+    db.createObjectStore("actions", { keyPath: "idb_key", autoIncrement: true })
+      .createIndex(
+        "actions_entity_id",
+        ["entity", "id"],
+      );
   }
 
   return db;

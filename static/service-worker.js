@@ -48,11 +48,13 @@ async function fetchWithCache(request) {
 
   // all online requests are put into the cache first before responding
   const dataCache = await caches.open(DATA_CACHE);
-  // fetches and adds to cache any 20x status code
-  await dataCache.add(request);
-  const result = await dataCache.match(request);
 
-  return result;
+  // cache any 20x status code
+  const response = await fetch(request);
+  if (response.ok) {
+    await dataCache.put(request, response.clone());
+  }
+  return response;
 }
 
 self.addEventListener("fetch", (event) => {
