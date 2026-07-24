@@ -2,6 +2,7 @@ import { useEffect } from "preact/hooks";
 import { useSignal } from "@preact/signals";
 import { StoreItem } from "@/shared/types.ts";
 import { dataClient } from "@/client/neon.ts";
+import { openIndexedDB } from "@/client/indexed-db.ts";
 
 interface Props {
   id: string;
@@ -14,7 +15,7 @@ interface Store {
 }
 
 export default function Store(props: Props) {
-  const storeSignal = useSignal<Partial<Store>>({ id: props.id });
+  const storeSignal = useSignal<Partial<Store>>({ id: props.id, items: [] });
   useEffect(() => {
     (async function () {
       const result = await dataClient.from("stores").select(
@@ -24,13 +25,19 @@ export default function Store(props: Props) {
           referencedTable: "items",
           ascending: true,
         });
-      console.log(result);
       if (result.data?.length) {
         const store: Partial<Store> = result.data[0];
         store.id = props.id;
         storeSignal.value = store;
       } else {
         // go to indexed db for the store
+        const db = await openIndexedDB();
+        db.transaction("actions").objectStore("actions").index(
+          "actions_entity_id",
+        ).getAll(IDBKeyRange.only(props.id))
+          .onsuccess = (event: any) => {
+            console.log(event);
+          };
       }
     })();
   }, []);
@@ -42,6 +49,11 @@ export default function Store(props: Props) {
       <h2>{storeSignal.value.name}</h2>
 
       <button type="button" class="btn btn-primary">+ New Item</button>
+      <ul>
+        {storeSignal.value.items.map((item) => (
+          <li key={item.id}>{item.description}</li>
+        ))}`
+      </ul>
     </>
   );
 }
