@@ -9,6 +9,11 @@ import { openIndexedDB } from "@/client/indexed-db.ts";
 export default function StoreList() {
   const storesSignal = useSignal<Store[]>([]);
 
+  function sortStores() {
+    storesSignal.value = storesSignal.value.toSorted((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+  }
   function applyAction(action: Action) {
     if (action.table != "stores") return;
     switch (action.op) {
@@ -45,6 +50,7 @@ export default function StoreList() {
             applyAction(action);
           }
         };
+      sortStores();
     })();
   }, []);
   const sync = useSyncModel();
@@ -58,8 +64,10 @@ export default function StoreList() {
         name: nameSignal.value,
       },
     };
+    nameSignal.value = "";
     sync.send(action);
     applyAction(action);
+    sortStores();
   }, [sync]);
   return (
     <>
