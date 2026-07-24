@@ -1,4 +1,4 @@
-export const VERSION = 3;
+export const VERSION = 4;
 
 export function migrate(
   event: IDBVersionChangeEvent,
@@ -21,5 +21,13 @@ export function migrate(
       autoIncrement: true,
     });
   }
+
+  if (event.oldVersion < 4) {
+    db.transaction("actions").objectStore("actions").createIndex(
+      "actions_entity_id",
+      ["entity", "id"],
+    );
+  }
+
   return db;
 }
