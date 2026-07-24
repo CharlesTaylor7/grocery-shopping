@@ -88,7 +88,13 @@ export default function StoreList() {
         + New Store
       </button>
       <ul>
-        {storesSignal.value.map((s) => <li key={s.id}>{s.name}</li>)}
+        {storesSignal.value.map((s) => (
+          <li key={s.id}>
+            <a href={`/store/${s.id}`} class="underline cursor-pointer">
+              {s.name}
+            </a>
+          </li>
+        ))}
       </ul>
     </>
   );
