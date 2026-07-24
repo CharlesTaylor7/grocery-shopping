@@ -14,6 +14,7 @@ export interface StoreItem {
   description: string;
   got: boolean;
   store_id: string;
+  order: number;
 }
 
 export interface TripItem {
@@ -22,6 +23,7 @@ export interface TripItem {
   got: boolean;
   trip_id: string;
   store_id: string;
+  order: number;
 }
 
 export interface HasId {

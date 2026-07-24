@@ -37,9 +37,9 @@ export default function StoreList() {
     // IIFE to handle async
     (async function () {
       // fetch from postgrest
-      const result = await dataClient.from("stores").select();
+      const result = await dataClient.from("stores").select("id,name");
       if (Array.isArray(result.data)) {
-        storesSignal.value = result.data as Store[];
+        storesSignal.value = result.data;
       }
 
       // apply local changes
