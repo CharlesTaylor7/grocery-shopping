@@ -1,4 +1,4 @@
-import { useEffect } from "preact/hooks";
+import { useEffect } from "react";
 import { authClient, dataClient } from "@/client/neon.ts";
 import { syncNextAction } from "@/client/sync.ts";
 import { openIndexedDB } from "@/client/indexed-db.ts";
@@ -20,10 +20,10 @@ export default function SyncActions(props: Props) {
 }
 
 type EffectCleanup = () => void;
-const noOp = () => {};
+const noOp = () => { };
 
 function runOnWorkerThread(): EffectCleanup {
-  const url = new URL("../client/sync-worker.js", import.meta.url);
+  const url = new URL("../client/sync-worker.ts", import.meta.url);
   const worker = new Worker(
     url,
     { type: "module" },

@@ -1,15 +1,19 @@
-FROM denoland/deno:latest
-
+# https://pnpm.io/docker#example-1-build-a-bundle-in-a-docker-container
+FROM node:24-slim AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME/bin:$PATH"
+RUN corepack enable
+COPY . /app
 WORKDIR /app
 
-# Copy manifests first so the dependency install layer caches across
-# source-only edits
-COPY deno.json deno.lock  ./
-RUN deno ci --prod --skip-types
+FROM base AS prod-deps
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
-# Then copy the rest of the source
-COPY . .
+FROM base AS build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN pnpm run build
 
-RUN deno run build
-
-CMD ["deno", "run", "start", "main.ts"]
+FROM base
+COPY --from=prod-deps /app/node_modules /app/node_modules
+COPY --from=build /app/build /app/build
+CMD [ "pnpm", "run", "start" ]

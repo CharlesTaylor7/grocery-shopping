@@ -1,3 +1,8 @@
+# TODO
+- migrate off fresh 
+  - [ ] replace deno package management files with pnpm
+  - [ ] replace signals and preact only stuff
+  - [ ] replace server routes with react-router
 # MVP 
 - [ ] create a store list
 - [ ] update a store list 

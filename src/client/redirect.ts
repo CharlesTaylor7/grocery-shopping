@@ -1,4 +1,3 @@
-export function redirectToLast() {
-  const url = localStorage.getItem("last_visited_url") ?? "/store";
-  location.assign(url);
+export function lastVisitedUrl() {
+  return localStorage.getItem("last_visited_url") ?? "/store";
 }

@@ -1,6 +1,7 @@
 import { NeonPostgrestClient } from "@neondatabase/postgrest-js";
 import { openIndexedDB } from "@/client/indexed-db.ts";
 import { syncNextAction } from "@/client/sync.ts";
+import { VITE_NEON_DATA_URL } from "@/client/config.ts";
 
 const client = new NeonPostgrestClient({
   dataApiUrl: VITE_NEON_DATA_URL,
@@ -21,7 +22,7 @@ while (true) {
   await syncNextAction({ db, client, log });
 }
 
-function sleep(ms) {
+function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 

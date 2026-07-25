@@ -1,8 +1,5 @@
-import { createModel, signal } from "@preact/signals";
-import { createContext } from "preact";
-
-import { useContext } from "preact/hooks";
-import { Action, Op, TableName } from "@/shared/types.ts";
+import { useContext, createContext } from "react";
+import type { Action, Op, TableName } from "@/shared/types.ts";
 import { dataClient } from "@/client/neon.ts";
 import * as UUID from "uuid";
 import { openIndexedDB } from "@/client/indexed-db.ts";
@@ -23,32 +20,36 @@ interface SyncOptions {
 }
 
 // debug means it just does an immediate fetch
-export const SyncModel = createModel<SyncApi, [SyncOptions]>(function (opts) {
-  const dbSignal = signal<IDBDatabase | null>(null);
-  if (opts.useIndexedDB) {
-    openIndexedDB().then((db) => void (dbSignal.value = db));
+export class SyncModel implements SyncApi {
+  private db?: IDBDatabase;
+
+  constructor(readonly opts: SyncOptions) {
+
+    if (opts.useIndexedDB) {
+      openIndexedDB().then((db) => void (this.db = db));
+    }
   }
 
-  return ({
-    send(action) {
-      if (action.op === "new") {
-        // do this immediately and only once so any replays of this action are idempotent
-        action.entity.id = UUID.v4();
-      }
+  send<TOp extends Op, TName extends TableName>(
+    action: Action<TOp, TName>,
+  ): void {
+    if (action.op === "new") {
+      // do this immediately and only once so any replays of this action are idempotent
+      action.entity.id = UUID.v4();
+    }
 
-      if (dbSignal.value) {
-        dbSignal.value.transaction("actions", "readwrite")
-          .objectStore(
-            "actions",
-          ).put(
-            action,
-          );
-      } else {
-        pushToPostgrest(dataClient, action);
-      }
-    },
-  });
-});
+    if (this.db) {
+      this.db.transaction("actions", "readwrite")
+        .objectStore(
+          "actions",
+        ).put(
+          action,
+        );
+    } else {
+      pushToPostgrest(dataClient, action);
+    }
+  }
+}
 
 export const SyncContext = createContext<SyncApi>(
   new SyncModel({ useIndexedDB: false }),

@@ -1,16 +1,10 @@
-import { defineConfig } from "vite";
-import { fresh } from "@fresh/plugin-vite";
+import { reactRouter } from "@react-router/dev/vite";
 import tailwindcss from "@tailwindcss/vite";
+import { defineConfig } from "vite";
 
-export default defineConfig(({ mode }) => ({
-  plugins: [
-    fresh({
-      // This skips crons in dev mode
-      serverEntry: mode == "serve" ? "./src/main.server.ts" : "./src/main.ts",
-      clientEntry: "./src/client/index.ts",
-      islandsDir: "./src/islands/",
-      routeDir: "./src/routes/",
-    }),
-    tailwindcss(),
-  ],
-}));
+export default defineConfig({
+  plugins: [tailwindcss(), reactRouter()],
+  resolve: {
+    tsconfigPaths: true,
+  },
+});

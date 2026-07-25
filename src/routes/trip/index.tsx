@@ -1,5 +1,4 @@
-import { define } from "@/server/define.ts";
 
-export default define.page(function (ctx) {
+export default function TripList() {
   return <div>Trips List</div>;
-});
+};

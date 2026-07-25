@@ -1,5 +1,5 @@
 import { authClient } from "@/client/neon.ts";
-import { ReactNode } from "preact/compat";
+import type { ReactNode } from "react";
 
 interface Props {
   children: ReactNode;

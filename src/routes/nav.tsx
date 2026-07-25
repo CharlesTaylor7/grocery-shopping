@@ -1,20 +1,17 @@
-import { define } from "@/server/define.ts";
+import { Link } from "react-router";
 
-export default define.page(function () {
+export default function Nav() {
   return (
     <nav>
-      <ul class="flex flex-col gap-2">
+      <ul className="flex flex-col gap-2">
         <li>
-          <a href="/store">Stores</a>
+          <Link to="/store">Stores</Link>
         </li>
         <li>
-          <a href="/trip">Trips</a>
+          <Link to="/trip">Trips</Link>
         </li>
 
-        <li>
-          <a href="/auth/login">Login</a>
-        </li>
       </ul>
     </nav>
   );
-});
+}

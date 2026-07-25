@@ -1,24 +1,25 @@
 import { useSyncModel } from "@/client/model.ts";
-import { Store } from "@/shared/types.ts";
-import { useSignal } from "@preact/signals";
-import { useCallback, useEffect } from "preact/hooks";
+import type { Store, Action } from "@/shared/types.ts";
+import { useCallback, useEffect, useState } from "react";
 import { dataClient } from "@/client/neon.ts";
-import { Action } from "@/shared/types.ts";
 import { openIndexedDB } from "@/client/indexed-db.ts";
+import { Link } from "react-router";
 
 export default function StoreList() {
-  const storesSignal = useSignal<Store[]>([]);
+  const [stores, setStores] = useState<Store[]>([]);
 
   function sortStores() {
-    storesSignal.value = storesSignal.value.toSorted((a, b) =>
-      a.name.localeCompare(b.name)
-    );
+    setStores(stores =>
+      stores.toSorted((a, b) =>
+        a.name.localeCompare(b.name)
+      ));
   }
   function applyAction(action: Action) {
     if (action.table != "stores") return;
     switch (action.op) {
       case "new": {
-        storesSignal.value = [...storesSignal.value, action.entity];
+        //@ts-ignore
+        setStores(stores => [...stores, action.entity]);
         break;
       }
       case "edit": {
@@ -35,11 +36,11 @@ export default function StoreList() {
 
   useEffect(() => {
     // IIFE to handle async
-    (async function () {
+    (async function() {
       // fetch from postgrest
       const result = await dataClient.from("stores").select("id,name");
       if (Array.isArray(result.data)) {
-        storesSignal.value = result.data;
+        setStores(result.data);
       }
 
       // apply local changes
@@ -54,21 +55,19 @@ export default function StoreList() {
     })();
   }, []);
   const sync = useSyncModel();
-  const nameSignal = useSignal("");
+  const [name, setName] = useState("");
 
-  const onNewStore = useCallback(function () {
+  const onNewStore = useCallback(function() {
     const action: Action<"new", "stores"> = {
       table: "stores",
       op: "new",
-      entity: {
-        name: nameSignal.value,
-      },
+      entity: { name },
     };
-    nameSignal.value = "";
+    setName("");
     sync.send(action);
     applyAction(action);
     sortStores();
-  }, [sync]);
+  }, [sync, name]);
   return (
     <>
       <input
@@ -76,23 +75,23 @@ export default function StoreList() {
         name="name"
         id="name"
         placeholder="Store Name"
-        value={nameSignal.value}
-        onChange={(e) => void (nameSignal.value = e.currentTarget.value)}
+        value={name}
+        onChange={(e) => void (setName(e.currentTarget.value))}
         onKeyDown={(e) => void (e.code === "Enter" ? onNewStore() : null)}
       />
       <button
         type="button"
-        class="btn btn-primary"
+        className="btn btn-primary"
         onClick={onNewStore}
       >
         + New Store
       </button>
       <ul>
-        {storesSignal.value.map((s) => (
+        {stores.map((s) => (
           <li key={s.id}>
-            <a href={`/store/${s.id}`} class="underline cursor-pointer">
+            <Link to={`/store/${s.id}`} className="underline cursor-pointer">
               {s.name}
-            </a>
+            </Link>
           </li>
         ))}
       </ul>

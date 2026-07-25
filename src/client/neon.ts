@@ -2,8 +2,8 @@ import { createClient } from "@neondatabase/neon-js";
 
 import { type NeonPostgrestClient } from "@neondatabase/postgrest-js";
 import { BetterAuthReactAdapter } from "@neondatabase/neon-js/auth/react/adapters";
-import { ReactBetterAuthClient } from "@neondatabase/neon-js/auth";
-import { VITE_NEON_AUTH_URL, VITE_NEON_DATA_URL } from "@/client/constants.ts";
+import { type ReactBetterAuthClient } from "@neondatabase/neon-js/auth";
+import { VITE_NEON_AUTH_URL, VITE_NEON_DATA_URL } from "@/client/config.ts";
 
 const neonClient = createClient(
   {

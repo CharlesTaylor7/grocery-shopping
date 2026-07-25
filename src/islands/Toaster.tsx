@@ -1,9 +1,9 @@
-import { Toaster } from "sonner";
+import { Toaster as SonnerToaster } from "sonner";
 
-export default function () {
+export default function Toaster() {
   return (
-    <div class="bottom-0 sticky">
-      <Toaster />
+    <div className="bottom-0 sticky">
+      <SonnerToaster />
     </div>
   );
 }

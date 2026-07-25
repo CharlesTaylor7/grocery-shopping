@@ -1,12 +1,14 @@
-import { useEffect } from "preact/hooks";
+import { useEffect } from "react";
 import { authClient } from "@/client/neon.ts";
-import { redirectToLast } from "@/client/redirect.ts";
+import { lastVisitedUrl } from "@/client/redirect.ts";
+import { useNavigate } from "react-router";
 
 // if authenticated redirect
 export default function LastVisitRedirect() {
   const session = authClient.useSession();
+  const navigate = useNavigate();
   useEffect(() => {
-    if (session.data) redirectToLast();
+    if (session.data) navigate(lastVisitedUrl());
   }, [session]);
   return null;
 }

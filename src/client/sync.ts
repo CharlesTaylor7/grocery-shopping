@@ -1,5 +1,5 @@
-import { NeonDataClient } from "@/client/neon.ts";
-import { Action } from "@/shared/types.ts";
+import { type NeonDataClient } from "@/client/neon.ts";
+import { type Action } from "@/shared/types.ts";
 
 type Log = (...args: unknown[]) => void;
 

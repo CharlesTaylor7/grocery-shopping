@@ -3,22 +3,22 @@
 // prompts for signup or login
 
 import { authClient } from "@/client/neon.ts";
+import { useLocation, useNavigate } from "react-router";
 
-interface Props {
-  url: string;
-}
 
-export default function LoginPrompt(props: Props) {
-  const path = location ? location.pathname : new URL(props.url).pathname;
+export default function LoginPrompt() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const path = location.pathname;
   const session = authClient.useSession();
   function logout() {
     authClient.signOut();
-    location.assign("/auth/login");
+    navigate("/auth/login");
   }
 
   if (session.data) {
     return (
-      <div class="flex gap-2">
+      <div className="flex gap-2">
         <div>
           Hello {session.data.user.name}!
         </div>
@@ -35,10 +35,10 @@ export default function LoginPrompt(props: Props) {
     return null;
   } else {
     return (
-      <div class="flex gap-2">
-        <a href="/auth/login" class="underline">Log in</a>
+      <div className="flex gap-2">
+        <a href="/auth/login" className="underline">Log in</a>
         <span>or</span>
-        <a href="/auth/signup" class="underline">Sign up</a>
+        <a href="/auth/signup" className="underline">Sign up</a>
       </div>
     );
   }

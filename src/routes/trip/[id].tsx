@@ -1,4 +1,6 @@
-import { define } from "@/server/define.ts";
-export default define.page(async function (ctx) {
-  return <div>Trip: {ctx.params.id}</div>;
-});
+import { useParams } from "react-router";
+
+export default function Trip() {
+  const params = useParams();
+  return <div>Trip: {params.id}</div>;
+};

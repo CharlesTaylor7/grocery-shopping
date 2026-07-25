@@ -1,0 +1,35 @@
+{
+  "name": "grocery-shopping",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "react-router build",
+    "dev": "react-router dev",
+    "start": "HOST=0.0.0.0 PORT=8080 react-router-serve ./build/server/index.js",
+    "typecheck": "react-router typegen && tsc"
+  },
+  "dependencies": {
+    "@react-router/node": "^8",
+    "@react-router/serve": "^8",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-router": "^8",
+    "sonner": "^2.0.7",
+    "uuid": "^14.0.1",
+    "@neondatabase/neon-js": "^0.6.2-beta",
+    "@neondatabase/postgrest-js": "^0.2.0-beta",
+    "isbot": "^5"
+  },
+  "devDependencies": {
+    "@react-router/dev": "^8",
+    "@tailwindcss/vite": "^4.2.2",
+    "@types/node": "^22",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "6.0.2",
+    "vite": "^8.0.3",
+    "daisyui": "^5.5.19",
+    "tailwindcss": "^4.3.3"
+  },
+  "packageManager": "pnpm@11.17.0+sha512.cca3cea332ad254bb84145f966d19f4879615210346fc92c79a047f23a0d7b3cca3c3792f0076ba1f1831d277efbcf0a9119b31a9a60eca7fb3d6231f331ef72"
+}
