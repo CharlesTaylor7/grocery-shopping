@@ -3,7 +3,7 @@ import { openIndexedDB } from "@/client/indexed-db.ts";
 import { syncNextAction } from "@/client/sync.ts";
 
 const client = new NeonPostgrestClient({
-  dataApiUrl: import.meta.env.VITE_NEON_DATA_URL,
+  dataApiUrl: VITE_NEON_DATA_URL,
 });
 
 onmessage = (msg) => {
