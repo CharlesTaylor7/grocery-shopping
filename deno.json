@@ -4,7 +4,7 @@
     "check": "deno fmt --check . && deno lint . && deno check",
     "dev": "vite --host localhost --port 3000",
     "build": "vite build",
-    "start": "deno serve -A _fresh/server.js",
+    "start": "deno serve --port 8080 -A _fresh/server.js",
     "update": "deno run -A -r jsr:@fresh/update ."
   },
   "unstable": [

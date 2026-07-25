@@ -1,0 +1,20 @@
+# flyctl launch added from .gitignore
+# dotenv environment variable files
+**/.env
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
+**/.env.local
+
+# npm + other dependencies
+**/_fresh
+**/node_modules
+**/vendor
+**/.vite
+
+# cache of xml docs
+**/debug
+
+# flyctl launch added from .jj/.gitignore
+.jj/*
+fly.toml
