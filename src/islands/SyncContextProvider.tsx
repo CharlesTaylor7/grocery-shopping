@@ -1,14 +1,12 @@
-import { type SyncApi, SyncContext, SyncModel } from "@/client/model.ts";
-import { useEffect, useState, type ReactNode } from "react";
+import { SyncContext, SyncModel } from "@/client/model.ts";
+import { type ReactNode } from "react";
 
 interface Props {
   children: ReactNode;
 }
+const model = new SyncModel({ useIndexedDB: true })
+
 export default function SyncContextProvider(props: Props) {
-  const [model, setModel] = useState<SyncApi>(new SyncModel({ useIndexedDB: false }));
-  useEffect(() => {
-    setModel(new SyncModel({ useIndexedDB: true }));
-  }, []);
 
   return (
     <SyncContext.Provider value={model}>

@@ -31,56 +31,57 @@ export default function Login() {
 
       navigate(lastVisitedUrl());
     } catch (e) {
-      const error = e as AuthApiError;
-      console.error(error);
-      toast(() => <>{error.message}</>);
+      console.error(e);
+      toast(() => {
+        const error = e as AuthApiError;
+        return error.message;
+      })
+    };
+    async function resetPassword() {
+      const data = new FormData(formRef.current!);
+
+      const email = data.get("email")?.toString()!;
+      await authClient.requestPasswordReset({
+        email,
+        redirectTo: "/auth/password-reset",
+      });
+      toast(() => {
+        return (
+          <>
+            Password reset sent to <span className="underline">{email}</span>
+          </>
+        );
+      });
     }
-  };
-  async function resetPassword() {
-    const data = new FormData(formRef.current!);
 
-    const email = data.get("email")?.toString()!;
-    await authClient.requestPasswordReset({
-      email,
-      redirectTo: "/auth/password-reset",
-    });
-    toast(() => {
-      return (
-        <>
-          Password reset sent to <span className="underline">{email}</span>
-        </>
-      );
-    });
-  }
-
-  return (
-    <form
-      ref={formRef}
-      className="flex flex-col gap-2 items-start p-2"
-      onSubmit={handleSubmit}
-    >
-      <input
-        type="email"
-        placeholder="Email"
-        name="email"
-        required
-      />
-      <div>
+    return (
+      <form
+        ref={formRef}
+        className="flex flex-col gap-2 items-start p-2"
+        onSubmit={handleSubmit}
+      >
         <input
-          type="password"
-          placeholder="Password"
-          name="password"
+          type="email"
+          placeholder="Email"
+          name="email"
           required
         />
-        <button
-          type="button"
-          className="btn btn-ghost btn-sm"
-          onClick={resetPassword}
-        >
-          💀 I forgor (reset password)
-        </button>
-      </div>
-      <button type="submit" className="btn btn-primary">Login</button>
-    </form>
-  );
-}
+        <div>
+          <input
+            type="password"
+            placeholder="Password"
+            name="password"
+            required
+          />
+          <button
+            type="button"
+            className="btn btn-ghost btn-sm"
+            onClick={resetPassword}
+          >
+            💀 I forgor (reset password)
+          </button>
+        </div>
+        <button type="submit" className="btn btn-primary">Login</button>
+      </form>
+    );
+  }

@@ -5,7 +5,6 @@
 import { authClient } from "@/client/neon.ts";
 import { useLocation, useNavigate } from "react-router";
 
-
 export default function LoginPrompt() {
   const location = useLocation();
   const navigate = useNavigate();

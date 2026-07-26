@@ -27,9 +27,11 @@ export default function Signup() {
         navigate("/");
       }
     } catch (e) {
-      const error = e as AuthApiError;
-      console.error(error);
-      toast(() => error.message);
+      console.error(e);
+      toast(() => {
+        const error = e as AuthApiError;
+        return error.message;
+      })
     }
   };
 

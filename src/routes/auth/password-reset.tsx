@@ -1,19 +1,17 @@
 import { authClient } from "@/client/neon.ts";
-import { type SubmitEventHandler, useState } from "react";
+import type { SubmitEventHandler } from "react";
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 
 export default function PasswordReset() {
+  const params = new URLSearchParams(location.search);
+  const token = params.get("token");
   const navigate = useNavigate();
-  const [token, setToken] = useState<string | null>(null);
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const token = params.get("token");
-    setToken(token);
     if (!token) {
       navigate("/auth/login");
     }
-  }, []);
+  });
   const formRef = useRef<HTMLFormElement>(null);
   const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (
     e,

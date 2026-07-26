@@ -9,6 +9,6 @@ export default function LastVisitRedirect() {
   const navigate = useNavigate();
   useEffect(() => {
     if (session.data) navigate(lastVisitedUrl());
-  }, [session]);
+  });
   return null;
 }

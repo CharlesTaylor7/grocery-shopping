@@ -1,6 +1,6 @@
 import { useSyncModel } from "@/client/model.ts";
 import type { Store, Action } from "@/shared/types.ts";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { dataClient } from "@/client/neon.ts";
 import { openIndexedDB } from "@/client/indexed-db.ts";
 import { Link } from "react-router";
@@ -57,7 +57,7 @@ export default function StoreList() {
   const sync = useSyncModel();
   const [name, setName] = useState("");
 
-  const onNewStore = useCallback(function() {
+  function onNewStore() {
     const action: Action<"new", "stores"> = {
       table: "stores",
       op: "new",
@@ -67,7 +67,7 @@ export default function StoreList() {
     sync.send(action);
     applyAction(action);
     sortStores();
-  }, [sync, name]);
+  };
   return (
     <>
       <input
