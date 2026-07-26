@@ -16,8 +16,7 @@
     "sonner": "^2.0.7",
     "uuid": "^14.0.1",
     "@neondatabase/neon-js": "^0.6.2-beta",
-    "@neondatabase/postgrest-js": "^0.2.0-beta",
-    "isbot": "^5"
+    "@neondatabase/postgrest-js": "^0.2.0-beta"
   },
   "devDependencies": {
     "@babel/core": "^7.29.7",

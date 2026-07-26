@@ -1,0 +1,13 @@
+# mprocs.yaml starter configuration
+procs:
+  # The first process
+  spa:
+    shell: "pnpm run dev"
+    # Optional: Automatically restart the process if it crashes
+    autostart: true
+
+  # The second process
+  neon-js:
+    shell: "watchexec -c -- pnpm i && pnpm run build"
+    cwd: vendor/neon-js/packages/auth
+    autostart: true
