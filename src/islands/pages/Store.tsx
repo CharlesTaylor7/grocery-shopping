@@ -1,4 +1,5 @@
 import { useEffect, useRef, type ReactNode } from "react";
+import { flushSync } from "react-dom";
 import type { StoreItem } from "@/shared/types.ts";
 import { dataClient } from "@/client/neon.ts";
 import { openIndexedDB } from "@/client/indexed-db.ts";
@@ -25,6 +26,8 @@ const state = proxy<State>({
 export default function Store() {
   const snap = useSnapshot(state);
   const params = useParams();
+  const gotItems = snap.items.filter(item => item.got);
+  const notGotItems = snap.items.filter(item => !item.got);
   useEffect(() => {
     (async function() {
       const result = await dataClient
@@ -139,21 +142,42 @@ export default function Store() {
           onDragEnd={handleDragEnd}
         >
           <SortableContext
-            items={snap.items.map(item => item.id)}
+            items={notGotItems.map(item => item.id)}
             strategy={verticalListSortingStrategy}>
-            {snap.items.map((item, index) => (
+            {notGotItems.map((item, index) => (
               <Sortable id={item.id} key={item.id}>
-                <div className="flex flex-row">
-                  <input tabIndex={-1} type="checkbox" className="checkbox" />
-                  <Input
+                <div id={item.id} className="flex flex-row">
+                  <input
+                    tabIndex={-1}
+                    type="checkbox"
+                    className="checkbox"
+                    checked={item.got}
+                    onChange={e => {
+                      const got = e.currentTarget.checked;
+                      document.startViewTransition(() => {
+                        flushSync(() => {
+
+                          const local = state.items.find(x => x.id === item.id);
+                          if (local)
+                            local.got = got;
+                        });
+                      });
+                    }
+                    }
+                  />
+                  < Input
                     focus={index === snap.focusIndex}
                     data-id={item.id}
                     type="text"
                     className="w-80 mx-4 outline-hidden"
                     onFocus={() => state.focusIndex = index}
                     onKeyDown={handleKeydown}
+                    value={item.description}
                     onChange={e => {
-                      state.items[index].description = e.currentTarget.value;
+
+                      const local = state.items.find(x => x.id === item.id);
+                      if (local)
+                        local.description = e.currentTarget.value;
                     }}
                   />
                   {/* grip bars */}
@@ -163,6 +187,37 @@ export default function Store() {
             ))}
           </SortableContext>
         </DndContext>
+        {gotItems.length ? <h3 className="my-3">GOT</h3> : null}
+        <div>
+          {gotItems.map(item => (
+            <div id={item.id} key={item.id} className="flex flex-row">
+              <input
+                tabIndex={-1}
+                type="checkbox"
+                className="checkbox"
+                checked={item.got}
+                onChange={e => {
+                  const got = e.currentTarget.checked;
+                  document.startViewTransition(() => {
+                    flushSync(() => {
+
+                      const local = state.items.find(x => x.id === item.id);
+                      if (local)
+                        local.got = got;
+                    });
+                  });
+                }}
+              />
+              <input
+                data-id={item.id}
+                type="text"
+                className="w-80 mx-4 outline-hidden"
+                value={item.description}
+                readOnly
+              />
+            </div>
+          ))}
+        </div>
       </div>
       <button type="button" className="btn btn-ghost w-screen" onClick={appendNewItem}>
         +
