@@ -66,7 +66,7 @@ export default function Store() {
 
   function newItem() {
     const lastItemOrder = items[items.length - 1]?.order ?? 0;
-    const item = { id: v4(), got: false, description: '', order: lastItemOrder + 1000, autoFocus: true };
+    const item = { id: v4(), got: false, description: '', order: lastItemOrder + 1000, };
     setItems([...items, item]);
     setFocusId(item.id);
   }
@@ -86,16 +86,32 @@ export default function Store() {
 
   function handleDragStart({ active }: any) {
     setDragId(active.id);
+    setFocusId(null);
   }
 
   function handleDragEnd({ active, over }: any) {
     setDragId(null);
     if (!over || active.id === over.id) return;
-    const prev = items;
-    const oldIndex = prev.findIndex((i) => i.id === active.id);
-    const newIndex = prev.findIndex((i) => i.id === over.id);
+    const oldIndex = items.findIndex((i) => i.id === active.id);
+    const newIndex = items.findIndex((i) => i.id === over.id);
 
-    setItems(arrayMove(prev, oldIndex, newIndex));
+    let newOrder;
+    if (newIndex === 0) {
+      newOrder = items[0].order - 1000;
+    }
+
+    else if (newIndex === items.length - 1) {
+      newOrder = items[newIndex].order + 1000;
+    }
+    else if (newIndex > oldIndex) {
+      newOrder = Math.floor((items[newIndex].order + items[newIndex + 1].order) / 2);
+    } else {
+      newOrder = Math.floor((items[newIndex].order + items[newIndex - 1].order) / 2);
+    }
+
+    const copy = Array.from(items);
+    copy[oldIndex].order = newOrder;
+    setItems(copy.toSorted((a, b) => a.order - b.order));
   }
 
   const ids = items.map((i) => i.id);
