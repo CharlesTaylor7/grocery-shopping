@@ -37,52 +37,52 @@ export default function Login() {
         return error.message;
       })
     };
-    async function resetPassword() {
-      const data = new FormData(formRef.current!);
+  }
+  async function resetPassword() {
+    const data = new FormData(formRef.current!);
 
-      const email = data.get("email")?.toString()!;
-      await authClient.requestPasswordReset({
-        email,
-        redirectTo: "/grocery-shopping/auth/password-reset",
-      });
-      toast(() => {
-        return (
-          <>
-            Password reset sent to <span className="underline">{email}</span>
-          </>
-        );
-      });
-    }
+    const email = data.get("email")?.toString()!;
+    await authClient.requestPasswordReset({
+      email,
+      redirectTo: "/grocery-shopping/auth/password-reset",
+    });
+    toast(() => {
+      return (
+        <>
+          Password reset sent to <span className="underline">{email}</span>
+        </>
+      );
+    });
+  }
 
-    return (
-      <form
-        ref={formRef}
-        className="flex flex-col gap-2 items-start p-2"
-        onSubmit={handleSubmit}
-      >
+  return (
+    <form
+      ref={formRef}
+      className="flex flex-col gap-2 items-start p-2"
+      onSubmit={handleSubmit}
+    >
+      <input
+        type="email"
+        placeholder="Email"
+        name="email"
+        required
+      />
+      <div>
         <input
-          type="email"
-          placeholder="Email"
-          name="email"
+          type="password"
+          placeholder="Password"
+          name="password"
           required
         />
-        <div>
-          <input
-            type="password"
-            placeholder="Password"
-            name="password"
-            required
-          />
-          <button
-            type="button"
-            className="btn btn-ghost btn-sm"
-            onClick={resetPassword}
-          >
-            💀 I forgor (reset password)
-          </button>
-        </div>
-        <button type="submit" className="btn btn-primary">Login</button>
-      </form>
-    );
-  }
+        <button
+          type="button"
+          className="btn btn-ghost btn-sm"
+          onClick={resetPassword}
+        >
+          💀 I forgor (reset password)
+        </button>
+      </div>
+      <button type="submit" className="btn btn-primary">Login</button>
+    </form>
+  );
 }

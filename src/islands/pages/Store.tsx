@@ -80,7 +80,7 @@ export default function Store() {
           </li>
         ))}
       </ul>
-      <button type="button" className="btn btn-ghost w-screen">+</button>
+      <button type="button" className="btn btn-ghost w-screen" onClick={newItem}>+</button>
     </div>
   );
 }

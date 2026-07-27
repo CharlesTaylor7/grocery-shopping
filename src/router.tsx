@@ -1,4 +1,4 @@
-import { createBrowserRouter, Outlet } from "react-router";
+import { createHashRouter, Outlet } from "react-router";
 import Index from "@/routes/index.tsx";
 import Root from "@/root.tsx";
 import Login from "@/routes/auth/login";
@@ -11,7 +11,8 @@ import TripList from "@/routes/trip/[id].tsx";
 import Nav from "@/routes/nav.tsx";
 
 
-const router = createBrowserRouter([
+// for github pages MUST be hash router
+const router = createHashRouter([
   {
     path: "/", Component: Root, children: [
       { index: true, Component: Index },
