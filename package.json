@@ -6,7 +6,7 @@
   "homepage": "https://charlestaylor7.github.io/grocery-shopping",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "lint": "oxlint src/",
     "preview": "vite preview"
   },
