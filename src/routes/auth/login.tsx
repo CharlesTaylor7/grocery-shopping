@@ -43,7 +43,7 @@ export default function Login() {
       const email = data.get("email")?.toString()!;
       await authClient.requestPasswordReset({
         email,
-        redirectTo: "/auth/password-reset",
+        redirectTo: "/grocery-shopping/auth/password-reset",
       });
       toast(() => {
         return (
