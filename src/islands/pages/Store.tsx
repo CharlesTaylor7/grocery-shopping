@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { StoreItem } from "@/shared/types.ts";
 import { dataClient } from "@/client/neon.ts";
 import { openIndexedDB } from "@/client/indexed-db.ts";
@@ -17,8 +17,7 @@ interface LocalStoreItem extends Omit<StoreItem, "store_id"> { }
 
 export default function Store() {
   const params = useParams();
-  const [focusId, setFocusId] = useState<string | null>(null);
-  const [dragId, setDragId] = useState<string | null>();
+  const [focusIndex, setFocusIndex] = useState<number | null>(null);
   const [store, setStore] = useState<Partial<Store>>({ id: params.id });
   const [items, setItems] = useState<LocalStoreItem[]>([]);
   useEffect(() => {
@@ -51,23 +50,45 @@ export default function Store() {
     })();
   }, [params.id]);
 
-  function newItem() {
+  function appendNewItem() {
     const lastItemOrder = items[items.length - 1]?.order ?? 0;
     const item = { id: v4(), got: false, description: "", order: lastItemOrder + 1000 };
+    setFocusIndex(items.length);
     setItems([...items, item]);
-    setFocusId(item.id);
   }
-  function handleKeydown(e: KeyboardEvent) {
-    console.log(e)
-    if (e.code == "Enter") newItem();
+
+  function handleKeydown(e: any) {
+    if (e.code == "Enter") {
+      if (focusIndex === null || focusIndex === items.length - 1) {
+        appendNewItem();
+      }
+      else {
+        setFocusIndex(i => i! + 1);
+        if (!items[focusIndex + 1].description) {
+          return
+        } else {
+          const prevOrder = items[focusIndex].order;
+          const nextOrder = items[focusIndex + 1].order;
+          const order = (prevOrder + nextOrder) / 2
+          const item = { id: v4(), got: false, description: "", order };
+          const copy = [...items, item];
+          copy.sort((a, b) => a.order - b.order);
+          setItems(copy);
+        }
+      }
+
+    }
     if (e.code == "Backspace") {
       const val = e.currentTarget.value;
       const id = e.currentTarget.dataset!.id;
       if (!val) {
+        e.preventDefault();
         const i = items.findIndex(x => x.id == id)
         const copy = Array.from(items);
         copy.splice(i, 1);
         setItems(copy);
+        setFocusIndex(i => i ? i - 1 : null);
+
       }
     }
   }
@@ -75,13 +96,11 @@ export default function Store() {
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
-  function handleDragStart({ active }: any) {
-    setDragId(active.id);
-    setFocusId(null);
+  function handleDragStart() {
+    setFocusIndex(null);
   }
 
   function handleDragEnd({ active, over }: any) {
-    setDragId(null);
     if (!over || active.id === over.id) return;
     const oldIndex = items.findIndex((i) => i.id === active.id);
     const newIndex = items.findIndex((i) => i.id === over.id);
@@ -108,6 +127,7 @@ export default function Store() {
   }
 
   const ids = items.map((i) => i.id);
+
   return (
     <div>
       <h2 className="text-center underline">{store.name}</h2>
@@ -120,12 +140,23 @@ export default function Store() {
           onDragEnd={handleDragEnd}
         >
           <SortableContext items={ids} strategy={verticalListSortingStrategy}>
-            {items.map((item) => (
+            {items.map((item, index) => (
               <Sortable id={item.id} key={item.id}>
                 <div className="flex flex-row">
                   <input tabIndex={-1} type="checkbox" className="checkbox" />
-                  <input data-id={item.id} type="text" className="w-80 mx-4" autoFocus={item.id == focusId} onKeyDown={handleKeydown} />
-                  {item.description}
+                  <Input
+                    focus={index === focusIndex}
+                    data-id={item.id}
+                    type="text"
+                    className="w-80 mx-4 outline-hidden"
+                    onFocus={() => setFocusIndex(index)}
+                    onKeyDown={handleKeydown}
+                    onChange={e => {
+                      const copy = Array.from(items);
+                      copy[index].description = e.currentTarget.value;
+                      setItems(copy);
+                    }}
+                  />
                   {/* grip bars */}
                   <Grip id={item.id} />
                 </div>
@@ -134,7 +165,7 @@ export default function Store() {
           </SortableContext>
         </DndContext>
       </div>
-      <button type="button" className="btn btn-ghost w-screen" onClick={newItem}>
+      <button type="button" className="btn btn-ghost w-screen" onClick={appendNewItem}>
         +
       </button>
     </div>
@@ -179,4 +210,20 @@ function Sortable(props: SortableProps) {
       {props.children}
     </div>
   );
+}
+
+type ReactInputProps =
+  React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
+
+
+interface CustomInputProps extends ReactInputProps {
+  focus: boolean
+}
+
+function Input({ focus, ...props }: CustomInputProps) {
+  const ref = useRef<HTMLInputElement | null>(null)
+  useEffect(() => {
+    if (focus && ref.current) ref.current.focus();
+  }, [focus]);
+  return <input ref={ref} {...props} />
 }
