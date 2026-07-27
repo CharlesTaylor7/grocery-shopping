@@ -140,18 +140,12 @@ interface GripProps {
 }
 
 function Grip(props: GripProps) {
-  const [visible, setVisible] = useState(false);
   const { listeners, isDragging, attributes } = useSortable({ id: props.id });
   return (
     <div
       {...listeners}
       {...attributes}
-      onPointerOver={() => setVisible(true)}
-      onPointerOut={() => setVisible(false)}
-      className="cursor-grab px-2"
-      style={{
-        opacity: isDragging ? 0.35 : visible ? 1 : 0,
-      }}
+      className={`px-2 ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
     >
       <img src="/grocery-shopping/grip-bars.svg" />
     </div>
