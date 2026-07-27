@@ -4,6 +4,10 @@ export default function Nav() {
   return (
     <nav>
       <ul className="flex flex-col gap-2">
+
+        <li>
+          <Link to="/dnd">Dnd Example</Link>
+        </li>
         <li>
           <Link to="/store">Stores</Link>
         </li>

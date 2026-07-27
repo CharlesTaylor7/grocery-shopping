@@ -9,6 +9,7 @@ import StoreList from "@/islands/pages/StoreList";
 import Trip from "@/routes/trip";
 import TripList from "@/routes/trip/[id].tsx";
 import Nav from "@/routes/nav.tsx";
+import DndList from "./DndList";
 
 
 // for github pages MUST be hash router
@@ -17,6 +18,7 @@ const router = createHashRouter([
     path: "/", Component: Root, children: [
       { index: true, Component: Index },
       { path: "nav", Component: Nav },
+      { path: "dnd", Component: DndList },
       {
         path: "store", Component: Outlet, children: [
           { index: true, Component: StoreList },

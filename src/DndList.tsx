@@ -7,9 +7,6 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { useComputed, useSignal } from "@preact/signals";
-import { For } from "@preact/signals/utils";
-import { type ReactNode } from "preact/compat";
 import {
   arrayMove,
   SortableContext,
@@ -18,6 +15,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { useState, type ReactNode } from "react";
 
 interface SortableCardProps {
   id: string;
@@ -38,6 +36,8 @@ function SortableCard({ id, children }: SortableCardProps) {
     transition,
     opacity: isDragging ? 0.35 : 1,
     cursor: "grab",
+
+    touchAction: "none",
   };
 
   return (
@@ -90,14 +90,13 @@ const INITIAL_ITEMS = [
 ];
 
 export default function DndList() {
-  const items = useSignal(INITIAL_ITEMS);
-  const activeId = useSignal<string | null>(null);
+  const [items, setItems] = useState(INITIAL_ITEMS);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
-  const activeItem = useComputed(() =>
-    items.value.find((i) => i.id === activeId.value)
-  );
+  const activeItem =
+    items.find((i) => i.id === activeId)
 
-  const ids = useComputed(() => items.value.map((i) => i.id));
+  const ids = items.map((i) => i.id);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -107,21 +106,21 @@ export default function DndList() {
   );
 
   function handleDragStart({ active }: any) {
-    activeId.value = active.id;
+    setActiveId(active.id);
   }
 
   function handleDragEnd({ active, over }: any) {
-    activeId.value = null;
+    setActiveId(null);
     if (!over || active.id === over.id) return;
-    const prev = items.value;
+    const prev = items;
     const oldIndex = prev.findIndex((i) => i.id === active.id);
     const newIndex = prev.findIndex((i) => i.id === over.id);
 
-    items.value = arrayMove(prev, oldIndex, newIndex);
+    setItems(arrayMove(prev, oldIndex, newIndex));
   }
 
   return (
-    <div class="flex flex-col w-30 bg-content-200">
+    <div className="">
       {/* Cards */}
       <DndContext
         sensors={sensors}
@@ -130,17 +129,15 @@ export default function DndList() {
         onDragEnd={handleDragEnd}
       >
         <SortableContext
-          items={ids.value}
+          items={ids}
           strategy={verticalListSortingStrategy}
         >
-          <div class="flex flex-col gap-2">
-            <For each={items}>
-              {(item: any) => (
-                <SortableCard id={item.id} key={item.id}>
-                  {item.title}
-                </SortableCard>
-              )}
-            </For>
+          <div className="">
+            {items.map(item =>
+              <SortableCard id={item.id} key={item.id}>
+                {item.title}
+              </SortableCard>
+            )}
           </div>
         </SortableContext>
 
@@ -155,12 +152,12 @@ export default function DndList() {
                   borderRadius: 10,
                 }}
               >
-                {activeItem.value?.title}
+                {activeItem?.title}
               </div>
             )
             : null}
         </DragOverlay>
       </DndContext>
-    </div>
+    </div >
   );
 }
