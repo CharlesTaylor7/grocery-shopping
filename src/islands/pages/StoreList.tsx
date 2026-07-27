@@ -9,17 +9,14 @@ export default function StoreList() {
   const [stores, setStores] = useState<Store[]>([]);
 
   function sortStores() {
-    setStores(stores =>
-      stores.toSorted((a, b) =>
-        a.name.localeCompare(b.name)
-      ));
+    setStores((stores) => stores.toSorted((a, b) => a.name.localeCompare(b.name)));
   }
   function applyAction(action: Action) {
     if (action.table != "stores") return;
     switch (action.op) {
       case "new": {
         //@ts-ignore
-        setStores(stores => [...stores, action.entity]);
+        setStores((stores) => [...stores, action.entity]);
         break;
       }
       case "edit": {
@@ -36,7 +33,7 @@ export default function StoreList() {
 
   useEffect(() => {
     // IIFE to handle async
-    (async function() {
+    (async function () {
       // fetch from postgrest
       const result = await dataClient.from("stores").select("id,name");
       if (Array.isArray(result.data)) {
@@ -45,12 +42,13 @@ export default function StoreList() {
 
       // apply local changes
       const db = await openIndexedDB();
-      db.transaction("actions", "readonly").objectStore("actions").getAll()
-        .onsuccess = (event: any) => {
-          for (const action of event.target.result) {
-            applyAction(action);
-          }
-        };
+      db.transaction("actions", "readonly").objectStore("actions").getAll().onsuccess = (
+        event: any,
+      ) => {
+        for (const action of event.target.result) {
+          applyAction(action);
+        }
+      };
       sortStores();
     })();
   }, []);
@@ -67,7 +65,7 @@ export default function StoreList() {
     sync.send(action);
     applyAction(action);
     sortStores();
-  };
+  }
   return (
     <>
       <input
@@ -76,14 +74,10 @@ export default function StoreList() {
         id="name"
         placeholder="Store Name"
         value={name}
-        onChange={(e) => void (setName(e.currentTarget.value))}
+        onChange={(e) => void setName(e.currentTarget.value)}
         onKeyDown={(e) => void (e.code === "Enter" ? onNewStore() : null)}
       />
-      <button
-        type="button"
-        className="btn btn-primary"
-        onClick={onNewStore}
-      >
+      <button type="button" className="btn btn-primary" onClick={onNewStore}>
         + New Store
       </button>
       <ul>

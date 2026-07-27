@@ -1,8 +1,4 @@
-import {
-  Link,
-  Outlet,
-  ScrollRestoration,
-} from "react-router";
+import { Link, Outlet, ScrollRestoration } from "react-router";
 import "@/client/styles.css";
 import LastVisitSave from "@/islands/LastVisitSave";
 import Toaster from "@/islands/Toaster";
@@ -19,8 +15,7 @@ export default function Root() {
             <LoginPrompt />
           </div>
 
-          <div className="text-center">
-          </div>
+          <div className="text-center"></div>
 
           <div className="text-right">
             <Link to="/nav">Nav</Link>
@@ -40,5 +35,3 @@ export default function Root() {
     </>
   );
 }
-
-

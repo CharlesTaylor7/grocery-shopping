@@ -21,7 +21,7 @@ export default function SyncActions(props: Props) {
 }
 
 type EffectCleanup = () => void;
-const noOp = () => { };
+const noOp = () => {};
 
 function runOnWorkerThread(): EffectCleanup {
   const worker = new SyncWorker();

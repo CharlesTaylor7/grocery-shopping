@@ -5,7 +5,5 @@ type Dismiss = () => void;
 type Render = (cb: Dismiss) => ReactNode;
 
 export function toast(render: Render) {
-  sonnerToast.custom((id) => (<>
-    {render(() => sonnerToast.dismiss(id))}
-  </>));
+  sonnerToast.custom((id) => <>{render(() => sonnerToast.dismiss(id))}</>);
 }

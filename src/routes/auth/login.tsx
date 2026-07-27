@@ -9,9 +9,7 @@ import { useNavigate } from "react-router";
 export default function Login() {
   const navigate = useNavigate();
   const formRef = useRef<HTMLFormElement>(null);
-  const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (
-    e,
-  ) => {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
 
     const data = new FormData(e.currentTarget as HTMLFormElement);
@@ -25,7 +23,7 @@ export default function Login() {
       const result = await authClient.signIn.email(payload);
 
       if (result.error) {
-        toast(() => (<>wrong password</>));
+        toast(() => <>wrong password</>);
         return;
       }
 
@@ -35,9 +33,9 @@ export default function Login() {
       toast(() => {
         const error = e as AuthApiError;
         return error.message;
-      })
-    };
-  }
+      });
+    }
+  };
   async function resetPassword() {
     const data = new FormData(formRef.current!);
 
@@ -57,33 +55,17 @@ export default function Login() {
   }
 
   return (
-    <form
-      ref={formRef}
-      className="flex flex-col gap-2 items-start p-2"
-      onSubmit={handleSubmit}
-    >
-      <input
-        type="email"
-        placeholder="Email"
-        name="email"
-        required
-      />
+    <form ref={formRef} className="flex flex-col gap-2 items-start p-2" onSubmit={handleSubmit}>
+      <input type="email" placeholder="Email" name="email" required />
       <div>
-        <input
-          type="password"
-          placeholder="Password"
-          name="password"
-          required
-        />
-        <button
-          type="button"
-          className="btn btn-ghost btn-sm"
-          onClick={resetPassword}
-        >
+        <input type="password" placeholder="Password" name="password" required />
+        <button type="button" className="btn btn-ghost btn-sm" onClick={resetPassword}>
           💀 I forgor (reset password)
         </button>
       </div>
-      <button type="submit" className="btn btn-primary">Login</button>
+      <button type="submit" className="btn btn-primary">
+        Login
+      </button>
     </form>
   );
 }

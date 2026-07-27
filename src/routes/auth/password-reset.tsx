@@ -13,9 +13,7 @@ export default function PasswordReset() {
     }
   });
   const formRef = useRef<HTMLFormElement>(null);
-  const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (
-    e,
-  ) => {
+  const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
 
     const data = new FormData(e.currentTarget as HTMLFormElement);
@@ -35,20 +33,13 @@ export default function PasswordReset() {
   };
 
   return (
-    <form
-      ref={formRef}
-      className="flex flex-col gap-2 items-start p-2"
-      onSubmit={handleSubmit}
-    >
+    <form ref={formRef} className="flex flex-col gap-2 items-start p-2" onSubmit={handleSubmit}>
       <div>
-        <input
-          type="password"
-          placeholder="New Password"
-          name="password"
-          required
-        />
+        <input type="password" placeholder="New Password" name="password" required />
       </div>
-      <button type="submit" className="btn btn-primary">Confirm</button>
+      <button type="submit" className="btn btn-primary">
+        Confirm
+      </button>
     </form>
   );
 }

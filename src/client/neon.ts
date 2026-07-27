@@ -5,17 +5,15 @@ import { BetterAuthReactAdapter } from "@neondatabase/neon-js/auth/react/adapter
 import { type ReactBetterAuthClient } from "@neondatabase/neon-js/auth";
 import { VITE_NEON_AUTH_URL, VITE_NEON_DATA_URL } from "@/client/config.ts";
 
-const neonClient = createClient(
-  {
-    auth: {
-      url: VITE_NEON_AUTH_URL,
-      adapter: BetterAuthReactAdapter({}),
-    },
-    dataApi: {
-      url: VITE_NEON_DATA_URL,
-    },
+const neonClient = createClient({
+  auth: {
+    url: VITE_NEON_AUTH_URL,
+    adapter: BetterAuthReactAdapter({}),
   },
-);
+  dataApi: {
+    url: VITE_NEON_DATA_URL,
+  },
+});
 
 export type NeonAuthClient = ReactBetterAuthClient;
 export type NeonDataClient = NeonPostgrestClient;

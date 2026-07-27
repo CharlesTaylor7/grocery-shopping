@@ -41,10 +41,7 @@ interface PostgrestResult {
   error?: { code: string };
   data?: unknown;
 }
-export function pushToPostgrest(
-  client: NeonDataClient,
-  action: Action,
-): Promise<unknown> {
+export function pushToPostgrest(client: NeonDataClient, action: Action): Promise<unknown> {
   let query: Promise<PostgrestResult>;
   switch (action.op) {
     case "new": {
@@ -54,13 +51,19 @@ export function pushToPostgrest(
     }
 
     case "edit": {
-      const { table, entity: { id, ...data } } = action;
+      const {
+        table,
+        entity: { id, ...data },
+      } = action;
       query = client.from(table).update(data).eq("id", id) as any;
       break;
     }
 
     case "delete": {
-      const { table, entity: { id } } = action;
+      const {
+        table,
+        entity: { id },
+      } = action;
       query = client.from(table).delete().eq("id", id) as any;
       break;
     }

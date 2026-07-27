@@ -22,14 +22,9 @@ interface SortableCardProps {
   children: ReactNode;
 }
 function SortableCard({ id, children }: SortableCardProps) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id,
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -93,8 +88,7 @@ export default function DndList() {
   const [items, setItems] = useState(INITIAL_ITEMS);
   const [activeId, setActiveId] = useState<string | null>(null);
 
-  const activeItem =
-    items.find((i) => i.id === activeId)
+  const activeItem = items.find((i) => i.id === activeId);
 
   const ids = items.map((i) => i.id);
 
@@ -128,36 +122,31 @@ export default function DndList() {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <SortableContext
-          items={ids}
-          strategy={verticalListSortingStrategy}
-        >
+        <SortableContext items={ids} strategy={verticalListSortingStrategy}>
           <div className="">
-            {items.map(item =>
+            {items.map((item) => (
               <SortableCard id={item.id} key={item.id}>
                 {item.title}
               </SortableCard>
-            )}
+            ))}
           </div>
         </SortableContext>
 
         {/* Drag Overlay: renders a "floating" clone while dragging */}
         <DragOverlay dropAnimation={{ duration: 180, easing: "ease" }}>
-          {activeItem
-            ? (
-              <div
-                style={{
-                  transform: "rotate(2deg)",
-                  boxShadow: "0 8px 24px rgba(0,0,0,0.18)",
-                  borderRadius: 10,
-                }}
-              >
-                {activeItem?.title}
-              </div>
-            )
-            : null}
+          {activeItem ? (
+            <div
+              style={{
+                transform: "rotate(2deg)",
+                boxShadow: "0 8px 24px rgba(0,0,0,0.18)",
+                borderRadius: 10,
+              }}
+            >
+              {activeItem?.title}
+            </div>
+          ) : null}
         </DragOverlay>
       </DndContext>
-    </div >
+    </div>
   );
 }

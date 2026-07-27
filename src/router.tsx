@@ -11,34 +11,40 @@ import TripList from "@/routes/trip/[id].tsx";
 import Nav from "@/routes/nav.tsx";
 import DndList from "./DndList";
 
-
 // for github pages MUST be hash router
 const router = createHashRouter([
   {
-    path: "/", Component: Root, children: [
+    path: "/",
+    Component: Root,
+    children: [
       { index: true, Component: Index },
       { path: "nav", Component: Nav },
       { path: "dnd", Component: DndList },
       {
-        path: "store", Component: Outlet, children: [
+        path: "store",
+        Component: Outlet,
+        children: [
           { index: true, Component: StoreList },
           { path: ":id", Component: Store },
         ],
       },
       {
-        path: "trip", Component: Outlet, children: [
+        path: "trip",
+        Component: Outlet,
+        children: [
           { index: true, Component: TripList },
           { path: ":id", Component: Trip },
         ],
       },
       {
-        path: "auth", children: [
-          { path: "login", Component: Login, },
-          { path: "signup", Component: Signup, },
-          { path: "password-reset", Component: PasswordReset, },
-        ]
+        path: "auth",
+        children: [
+          { path: "login", Component: Login },
+          { path: "signup", Component: Signup },
+          { path: "password-reset", Component: PasswordReset },
+        ],
       },
     ],
   },
-])
+]);
 export default router;
