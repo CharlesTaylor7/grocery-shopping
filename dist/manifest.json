@@ -1,0 +1,11 @@
+{
+  "name": "Groceries",
+  "start_url": "/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "pwa-icon.png",
+      "sizes": "512x512"
+    }
+  ]
+}
