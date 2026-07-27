@@ -1,6 +1,6 @@
 {
   "name": "Groceries",
-  "start_url": "/",
+  "start_url": "/grocery-shopping",
   "display": "standalone",
   "icons": [
     {
