@@ -13,17 +13,17 @@ export interface StoreItem {
   id: string;
   description: string;
   got: boolean;
-  store_id: string;
   order: number;
+  store_id: string;
 }
 
 export interface TripItem {
   id: string;
   description: string;
   got: boolean;
+  order: number;
   trip_id: string;
   store_id: string;
-  order: number;
 }
 
 export interface HasId {
@@ -57,6 +57,6 @@ export type Entity<TName extends TableName = TableName> = TName extends "stores"
 
 export type EntityFields<TOp extends Op = Op, TEntity extends HasId = HasId> =
   TOp extends "new" ? Partial<TEntity>
-    : TOp extends "edit" ? HasId & Partial<TEntity>
-    : TOp extends "delete" ? HasId
-    : never;
+  : TOp extends "edit" ? HasId & Partial<TEntity>
+  : TOp extends "delete" ? HasId
+  : never;
