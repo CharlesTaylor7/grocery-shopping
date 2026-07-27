@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import type { StoreItem } from "@/shared/types.ts";
 import { dataClient } from "@/client/neon.ts";
 import { openIndexedDB } from "@/client/indexed-db.ts";
@@ -7,19 +7,24 @@ import { v4 } from "uuid";
 import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-
-interface Store {
-  id: string;
-  name: string;
-}
+import { proxy, useSnapshot } from "valtio";
 
 interface LocalStoreItem extends Omit<StoreItem, "store_id"> { }
+interface State {
+  focusIndex: null | number,
+  storeName: string,
+  items: LocalStoreItem[],
+}
+const state = proxy<State>({
+  focusIndex: null,
+  storeName: '',
+  items: []
+});
+
 
 export default function Store() {
+  const snap = useSnapshot(state);
   const params = useParams();
-  const [focusIndex, setFocusIndex] = useState<number | null>(null);
-  const [store, setStore] = useState<Partial<Store>>({ id: params.id });
-  const [items, setItems] = useState<LocalStoreItem[]>([]);
   useEffect(() => {
     (async function() {
       const result = await dataClient
@@ -34,8 +39,8 @@ export default function Store() {
         const store = result.data[0];
         // @ts-ignore
         store.id = params.id;
-        setStore(store);
-        setItems(store.items as LocalStoreItem[]);
+        state.storeName = store.name;
+        state.items = store.items;
       } else {
         // go to indexed db for the store
         const db = await openIndexedDB();
@@ -51,29 +56,28 @@ export default function Store() {
   }, [params.id]);
 
   function appendNewItem() {
-    const lastItemOrder = items[items.length - 1]?.order ?? 0;
+    const lastItemOrder = snap.items[snap.items.length - 1]?.order ?? 0;
     const item = { id: v4(), got: false, description: "", order: lastItemOrder + 1000 };
-    setFocusIndex(items.length);
-    setItems([...items, item]);
+    state.focusIndex = state.items.length;
+    state.items.push(item);
   }
 
   function handleKeydown(e: any) {
     if (e.code == "Enter") {
-      if (focusIndex === null || focusIndex === items.length - 1) {
+      if (state.focusIndex === null || state.focusIndex === state.items.length - 1) {
         appendNewItem();
       }
       else {
-        setFocusIndex(i => i! + 1);
-        if (!items[focusIndex + 1].description) {
+        state.focusIndex++;
+        if (!state.items[state.focusIndex].description) {
           return
         } else {
-          const prevOrder = items[focusIndex].order;
-          const nextOrder = items[focusIndex + 1].order;
+          const prevOrder = state.items[state.focusIndex].order;
+          const nextOrder = state.items[state.focusIndex + 1].order;
           const order = (prevOrder + nextOrder) / 2
           const item = { id: v4(), got: false, description: "", order };
-          const copy = [...items, item];
-          copy.sort((a, b) => a.order - b.order);
-          setItems(copy);
+          state.items.push(item);
+          state.items.sort((a, b) => a.order - b.order);
         }
       }
 
@@ -83,11 +87,9 @@ export default function Store() {
       const id = e.currentTarget.dataset!.id;
       if (!val) {
         e.preventDefault();
-        const i = items.findIndex(x => x.id == id)
-        const copy = Array.from(items);
-        copy.splice(i, 1);
-        setItems(copy);
-        setFocusIndex(i => i ? i - 1 : null);
+        const i = state.items.findIndex(x => x.id == id)
+        state.items.splice(i, 1);
+        state.focusIndex = state.focusIndex !== null ? state.focusIndex - 1 : null;
 
       }
     }
@@ -97,40 +99,37 @@ export default function Store() {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
   function handleDragStart() {
-    setFocusIndex(null);
+    state.focusIndex = null;
   }
 
   function handleDragEnd({ active, over }: any) {
     if (!over || active.id === over.id) return;
-    const oldIndex = items.findIndex((i) => i.id === active.id);
-    const newIndex = items.findIndex((i) => i.id === over.id);
+    const oldIndex = state.items.findIndex((i) => i.id === active.id);
+    const newIndex = state.items.findIndex((i) => i.id === over.id);
 
     let newOrder;
     if (newIndex === 0) {
-      newOrder = items[0].order - 1000;
-    } else if (newIndex === items.length - 1) {
-      newOrder = items[newIndex].order + 1000;
+      newOrder = state.items[0].order - 1000;
+    } else if (newIndex === state.items.length - 1) {
+      newOrder = state.items[newIndex].order + 1000;
     } else if (newIndex > oldIndex) {
-      const adjacentItem = items[newIndex + 1];
-      newOrder = Math.floor((items[newIndex].order + adjacentItem.order) / 2);
+      const adjacentItem = state.items[newIndex + 1];
+      newOrder = Math.floor((state.items[newIndex].order + adjacentItem.order) / 2);
       if (newOrder == adjacentItem.order) console.warn("panick");
     } else {
-      const adjacentItem = items[newIndex - 1];
-      newOrder = Math.floor((items[newIndex].order + adjacentItem.order) / 2);
+      const adjacentItem = state.items[newIndex - 1];
+      newOrder = Math.floor((state.items[newIndex].order + adjacentItem.order) / 2);
       if (newOrder == adjacentItem.order) console.warn("panick");
     }
 
-    const copy = Array.from(items);
-    copy[oldIndex].order = newOrder;
-    copy.sort((a, b) => a.order - b.order);
-    setItems(copy);
+    state.items[oldIndex].order = newOrder;
+    state.items.sort((a, b) => a.order - b.order);
   }
 
-  const ids = items.map((i) => i.id);
 
   return (
     <div>
-      <h2 className="text-center underline">{store.name}</h2>
+      <h2 className="text-center underline">{snap.storeName}</h2>
 
       <div>
         <DndContext
@@ -139,22 +138,22 @@ export default function Store() {
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
         >
-          <SortableContext items={ids} strategy={verticalListSortingStrategy}>
-            {items.map((item, index) => (
+          <SortableContext
+            items={snap.items.map(item => item.id)}
+            strategy={verticalListSortingStrategy}>
+            {snap.items.map((item, index) => (
               <Sortable id={item.id} key={item.id}>
                 <div className="flex flex-row">
                   <input tabIndex={-1} type="checkbox" className="checkbox" />
                   <Input
-                    focus={index === focusIndex}
+                    focus={index === snap.focusIndex}
                     data-id={item.id}
                     type="text"
                     className="w-80 mx-4 outline-hidden"
-                    onFocus={() => setFocusIndex(index)}
+                    onFocus={() => state.focusIndex = index}
                     onKeyDown={handleKeydown}
                     onChange={e => {
-                      const copy = Array.from(items);
-                      copy[index].description = e.currentTarget.value;
-                      setItems(copy);
+                      state.items[index].description = e.currentTarget.value;
                     }}
                   />
                   {/* grip bars */}
