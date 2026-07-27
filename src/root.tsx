@@ -35,7 +35,7 @@ export default function Root() {
           <Toaster />
         </div>
       </div>
-      <SyncActions useWebWorker={false} />
+      <SyncActions useWebWorker />
       <ScrollRestoration />
     </>
   );

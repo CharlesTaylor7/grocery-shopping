@@ -20,5 +20,8 @@ export default defineConfig({
   build: {
     outDir: "docs",
     copyPublicDir: true,
-  }
+  },
+  worker: {
+    format: "es",
+  },
 })
