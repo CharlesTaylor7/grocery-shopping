@@ -11,7 +11,9 @@ interface Store {
   name: string;
 }
 
-type LocalStoreItem = Omit<StoreItem, "store_id">;
+interface LocalStoreItem extends Omit<StoreItem, "store_id"> {
+  autoFocus?: boolean
+}
 
 export default function Store() {
   const params = useParams();
@@ -47,7 +49,7 @@ export default function Store() {
 
   function newItem() {
     const lastItemOrder = items[items.length - 1]?.order ?? 0;
-    const item = { id: v4(), got: false, description: '', order: lastItemOrder + 1000 };
+    const item = { id: v4(), got: false, description: '', order: lastItemOrder + 1000, autoFocus: true };
     setItems([...items, item]);
   }
   useEffect(() => {
@@ -72,9 +74,9 @@ export default function Store() {
 
       <ul>
         {items.map((item) => (
-          <li key={item.id}>
+          <li key={item.id} data-id={item.id}>
             <input tabIndex={-1} type="checkbox" className="checkbox" />
-            <input type="text" className="w-80 mx-4" />
+            <input type="text" className="w-80 mx-4" autoFocus={item.autoFocus} />
             {item.description}
 
           </li>
