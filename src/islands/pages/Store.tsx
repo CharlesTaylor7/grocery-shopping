@@ -57,15 +57,21 @@ export default function Store() {
     setItems([...items, item]);
     setFocusId(item.id);
   }
-  useEffect(() => {
-    function handleKeydown(e: KeyboardEvent) {
-      if (e.code == "Enter") newItem();
+  function handleKeydown(e: KeyboardEvent) {
+    console.log(e)
+    if (e.code == "Enter") newItem();
+    if (e.code == "Backspace") {
+      const val = e.currentTarget.value;
+      const id = e.currentTarget.dataset!.id;
+      if (!val) {
+        const i = items.findIndex(x => x.id == id)
+        const copy = Array.from(items);
+        copy.splice(i, 1);
+        setItems(copy);
+      }
     }
+  }
 
-    document.addEventListener("keydown", handleKeydown);
-
-    return () => document.removeEventListener("keydown", handleKeydown);
-  });
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
@@ -118,7 +124,7 @@ export default function Store() {
               <Sortable id={item.id} key={item.id}>
                 <div className="flex flex-row">
                   <input tabIndex={-1} type="checkbox" className="checkbox" />
-                  <input type="text" className="w-80 mx-4" autoFocus={item.id == focusId} />
+                  <input data-id={item.id} type="text" className="w-80 mx-4" autoFocus={item.id == focusId} onKeyDown={handleKeydown} />
                   {item.description}
                   {/* grip bars */}
                   <Grip id={item.id} />
