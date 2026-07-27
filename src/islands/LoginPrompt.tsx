@@ -3,7 +3,7 @@
 // prompts for signup or login
 
 import { authClient } from "@/client/neon.ts";
-import { useLocation, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 
 export default function LoginPrompt() {
   const location = useLocation();
@@ -30,13 +30,13 @@ export default function LoginPrompt() {
   } else {
     return (
       <div className="flex gap-2">
-        <a href="/auth/login" className="underline">
+        <Link to="/auth/login" className="underline">
           Log in
-        </a>
+        </Link>
         <span>or</span>
-        <a href="/auth/signup" className="underline">
+        <Link to="/auth/signup" className="underline">
           Sign up
-        </a>
+        </Link>
       </div>
     );
   }

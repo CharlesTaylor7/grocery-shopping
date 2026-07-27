@@ -3,11 +3,13 @@
   - [x] replace deno package management files with pnpm
   - [x] replace signals and preact only stuff
   - [x] replace server routes with react-router
-  - [ ] sync worker is broken
-  - [ ] use github pages for hosting
+  - [x] use github pages for hosting
 
-- [ ] fork neon client and trim it down. 400kb is insane
-- [ ] test sync worker 
+- [ ] service worker cache for assets is broken
+- [ ] sync worker is broken
+- [x] login links are broken
+- [ ] separate state per store page
+- [ ] save items to db
   
 
 # MVP 
@@ -23,7 +25,7 @@
 - [ ] Import existing lists from markdown
 - [ ] select multiple stores for a trip
 - [ ] Collapsible regions for multi store trips 
-- [ ] Dnd list for trips and stores
+- [ ] fork neon client and trim it down. 400kb is insane
 
 ## UX
 - [ ] nav hamburger, smart actions in page header(s)

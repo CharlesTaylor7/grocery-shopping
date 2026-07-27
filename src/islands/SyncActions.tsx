@@ -12,7 +12,6 @@ export default function SyncActions(props: Props) {
     if (props.useWebWorker) {
       return runOnWorkerThread();
     } else {
-      console.log("run on main");
       runOnMainThread();
       return noOp;
     }
@@ -21,7 +20,7 @@ export default function SyncActions(props: Props) {
 }
 
 type EffectCleanup = () => void;
-const noOp = () => {};
+const noOp = () => { };
 
 function runOnWorkerThread(): EffectCleanup {
   const worker = new SyncWorker();

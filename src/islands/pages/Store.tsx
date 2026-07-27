@@ -8,7 +8,7 @@ import { v4 } from "uuid";
 import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { proxy, useSnapshot } from "valtio";
+import { proxy, snapshot, useSnapshot } from "valtio";
 
 interface LocalStoreItem extends Omit<StoreItem, "store_id"> { }
 interface State {
@@ -21,6 +21,11 @@ const state = proxy<State>({
   storeName: '',
   items: []
 });
+
+function useProxy<T extends object>(value: T) {
+  const ref = useRef<T>(proxy<T>(value))
+  return [ref.current];
+}
 
 
 export default function Store() {
