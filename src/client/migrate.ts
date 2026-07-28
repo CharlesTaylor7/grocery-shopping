@@ -1,4 +1,4 @@
-export const VERSION = 5;
+export const VERSION = 7;
 
 export function migrate(event: IDBVersionChangeEvent): IDBDatabase {
   const db: IDBDatabase = (event.target as any).result;
@@ -36,6 +36,28 @@ export function migrate(event: IDBVersionChangeEvent): IDBDatabase {
     );
   }
 
+  if (event.oldVersion < 6) {
+    db.deleteObjectStore("actions");
+    db.createObjectStore("actions", { keyPath: "idb_key", autoIncrement: true }).createIndex(
+      "actions_entity_id",
+      "entity.id",
+    );
+  }
+
+  if (event.oldVersion < 7) {
+    db.deleteObjectStore("actions");
+    const actions = db.createObjectStore("actions", { keyPath: "idb_key", autoIncrement: true });
+    actions
+      .createIndex(
+        "actions_entity_id",
+        "entity.id",
+      );
+    actions
+      .createIndex(
+        "actions_entity_store_id",
+        "entity.store_id",
+      );
+  }
 
   return db;
 }

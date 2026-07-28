@@ -5,16 +5,18 @@ import { syncNextAction } from "@/client/sync.ts";
 import { openIndexedDB } from "@/client/indexed-db.ts";
 import SyncWorker from "@/client/sync-worker.ts?worker";
 
+
+export type SyncMode = "immediate" | "offline-sim" | "main-loop" | "web-worker"
+
 interface Props {
-  // immediate means publish to postgrest immediately and ignore indexeddb
-  // offline-sim means publish to indexed db and don't start any worker to process those events
-  // main-loop means use an effect loop to publish indexedb actions from the main ui loop
-  // web-workermeans use a background web worker publish indexedb actions from the main ui loop
-  // 
-  mode: "immediate" | "offline-sim" | "main-loop" | "web-worker"
+  mode: SyncMode
   children: ReactNode;
 }
 
+// immediate means publish to postgrest immediately and ignore indexeddb
+// offline-sim means publish to indexed db and don't start any worker to process those events
+// main-loop means use an effect loop to publish indexedb actions from the main ui loop
+// web-workermeans use a background web worker publish indexedb actions from the main ui loop
 
 export default function SyncActionProvider(props: Props) {
   useEffect(() => {

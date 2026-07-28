@@ -9,7 +9,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "oxlint src/",
-    "format": "oxfmt src/"
+    "format": "oxfmt src/",
+    "typecheck": "tsc --noEmit "
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

@@ -4,7 +4,7 @@ import { flushSync } from "react-dom";
 import type { StoreItem } from "@/shared/types.ts";
 import { dataClient } from "@/client/neon.ts";
 import { openIndexedDB } from "@/client/indexed-db.ts";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { v4 } from "uuid";
 import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
@@ -29,16 +29,71 @@ const initialState: State = {
   items: []
 }
 
-
 export default function Store() {
+  // stateful hooks
   const params = useParams();
   const [state, setState] = useState(proxy(initialState));
   const snap = useSnapshot(state);
-  const sync = useSyncModel();
-  const notGotItems = snap.items.filter(item => !item.got);
+  const syncModel = useSyncModel();
+  const notGotItems = snap.items.filter(item => !item.got).toSorted((a, b) => a.order - b.order);
   const gotItems = (snap.items.filter(item => item.got) as GotItem[]).toSorted((a, b) => b.last_got_at.valueOf() - a.last_got_at.valueOf());
 
-  function handleAction(action: Action) {
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+  const navigate = useNavigate();
+
+  // effects
+  useEffect(() => {
+    if (!params.id) {
+      navigate("/store");
+    }
+    setState(proxy(initialState));
+    (async function() {
+      const result = await dataClient
+        .from("stores")
+        .select("name, items:store_items(id, description, got, order, last_got_at)")
+        .eq("id", params.id)
+        .order("order", {
+          referencedTable: "items",
+          ascending: true,
+        });
+      if (result.data?.length) {
+        const store = result.data[0];
+        state.storeName = store.name;
+        state.items = store.items.map(item => ({
+          ...item,
+          last_got_at: item.last_got_at ? new Date(item.last_got_at) : null
+        }))
+      }
+      else {
+        console.error(result.error);
+      }
+      // go to indexed db for the store
+      const db = await openIndexedDB();
+      const request = db
+        .transaction("actions")
+        .objectStore("actions")
+        .index("actions_entity_store_id")
+        .getAll(params.id);
+      request.onsuccess = () => {
+        for (const action of request.result) {
+
+          console.log("replay", action);
+          applyActionToState(action);
+        }
+      };
+
+    })();
+  }, [params.id]);
+
+  // callbacks
+  function sync(action: Action) {
+    if (action.table === "store_items") {
+      action.entity.store_id = params.id
+    }
+    syncModel.send(action);
+  }
+
+  function applyActionToState(action: Action) {
     if (action.table !== 'store_items') return;
     switch (action.op) {
       case 'new':
@@ -58,44 +113,12 @@ export default function Store() {
         }
     }
   }
-  useEffect(() => {
-    setState(proxy(initialState));
-    (async function() {
-      const result = await dataClient
-        .from("stores")
-        .select("name, items:store_items(id, description, got, order, last_got_at)")
-        .eq("id", params.id)
-        .order("order", {
-          referencedTable: "items",
-          ascending: true,
-        });
-      if (result.data?.length) {
-        const store = result.data[0];
-        state.storeName = store.name;
-        state.items = store.items.map(item => ({
-          ...item,
-          last_got_at: item.last_got_at ? new Date(item.last_got_at) : null
-        }))
-      } else {
-        console.error(result.error);
-        // go to indexed db for the store
-        const db = await openIndexedDB();
-        db
-          .transaction("actions")
-          .objectStore("actions")
-          .index("actions_entity_id")
-          .getAll(IDBKeyRange.only(params.id)).onsuccess = (event: any) => {
-            console.log(event);
-          };
-      }
-    })();
-  }, [params.id]);
 
   function appendNewItem() {
     const lastItemOrder = notGotItems[state.items.length - 1]?.order ?? 0;
     const item = { id: v4(), got: false, description: "", order: lastItemOrder + 1000, store_id: params.id };
 
-    sync.send({ op: 'new', table: 'store_items', entity: item })
+    sync({ op: 'new', table: 'store_items', entity: item })
     state.items.push(item);
     state.focusIndex = notGotItems.length;
   }
@@ -112,9 +135,8 @@ export default function Store() {
           const nextOrder = notGotItems[state.focusIndex + 1].order;
           const order = (prevOrder + nextOrder) / 2
           const item = { id: v4(), got: false, description: "", order, store_id: params.id };
-          sync.send({ op: 'new', table: 'store_items', entity: item })
+          sync({ op: 'new', table: 'store_items', entity: item })
           state.items.push(item);
-          state.items.sort((a, b) => a.order - b.order);
         }
         // advance to empty item
         state.focusIndex++;
@@ -128,7 +150,7 @@ export default function Store() {
         e.preventDefault();
         const i = state.items.findIndex(x => x.id == id)
 
-        sync.send({
+        sync({
           op: 'delete',
           table: 'store_items',
           entity: {
@@ -143,7 +165,6 @@ export default function Store() {
     }
   }
 
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
   function handleDragStart() {
     state.focusIndex = null;
@@ -169,7 +190,7 @@ export default function Store() {
       if (newOrder == adjacentItem.order) console.warn("panick");
     }
 
-    sync.send({
+    sync({
       op: 'edit',
       table: 'store_items',
       entity: {
@@ -178,7 +199,6 @@ export default function Store() {
       }
     });
     state.items[oldIndex].order = newOrder;
-    state.items.sort((a, b) => a.order - b.order);
   }
 
   function handleCheckbox(item: LocalStoreItem) {
@@ -191,7 +211,7 @@ export default function Store() {
           got,
           last_got_at: new Date()
         }
-        sync.send({ op: "edit", table: "store_items", entity });
+        sync({ op: "edit", table: "store_items", entity });
         document.startViewTransition(() => {
           flushSync(() => {
             itemState.got = entity.got
@@ -202,6 +222,7 @@ export default function Store() {
     }
   }
 
+  // render
   return (
     <div>
       <h2 className="text-center underline">{snap.storeName}</h2>
@@ -239,7 +260,7 @@ export default function Store() {
                       const local = state.items.find(x => x.id === item.id);
                       if (local) {
                         local.description = e.currentTarget.value;
-                        sync.send({
+                        sync({
                           op: "edit", table: "store_items", entity: {
                             id: local.id,
                             description: local.description,
