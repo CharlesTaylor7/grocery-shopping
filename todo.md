@@ -5,7 +5,7 @@
   - [x] replace server routes with react-router
   - [x] use github pages for hosting
 
-- [ ] service worker cache for assets is broken
+- [x] service worker cache for assets is broken
 - [ ] sync worker is broken
 - [x] login links are broken
 - [ ] separate state per store page

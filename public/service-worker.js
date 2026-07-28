@@ -1,11 +1,12 @@
 const ASSET_CACHE = "asset_v1";
 const DATA_CACHE = "data_v1";
 const ASSETS = ["/manifest.json", "/pwa-icon.png"];
+const BASE_ROUTE = "/grocery-shopping"
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(ASSET_CACHE).then((cache) => {
-      return cache.addAll(ASSETS);
+      return cache.addAll(ASSETS.map(url => `${BASE_ROUTE}${url}`));
     }),
   );
   self.skipWaiting();
