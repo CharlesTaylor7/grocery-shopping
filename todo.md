@@ -9,6 +9,11 @@
 - [x] login links are broken
 - [ ] separate state per store page
 - [ ] save items to db
+- [ ] timestamps for when an "item was last bought"
+
+# UI
+- '{n}d ago'
+- bigger checkbox click area
   
 
 # MVP 
