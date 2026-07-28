@@ -11,6 +11,7 @@ import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-
 import { CSS } from "@dnd-kit/utilities";
 import { proxy, useSnapshot } from "valtio";
 import { useSyncModel } from "@/client/model";
+import { type Action } from "@/shared/types";
 
 interface LocalStoreItem extends Omit<StoreItem, "store_id"> { }
 interface State {
@@ -34,6 +35,26 @@ export default function Store() {
   const gotItems = snap.items.filter(item => item.got);
   const notGotItems = snap.items.filter(item => !item.got);
 
+  function handleAction(action: Action) {
+    if (action.table !== 'store_items') return;
+    switch (action.op) {
+      case 'new':
+        state.items.push(action.entity as StoreItem);
+        break;
+      case 'edit':
+        const item = state.items.find(item => item.id === action.entity.id);
+        if (item) {
+          Object.assign(item, action.entity);
+        }
+        break;
+      case 'delete':
+        const index = state.items.findIndex(item => item.id === action.entity.id);
+        if (index !== -1) {
+          state.items.splice(index, 1);
+          break;
+        }
+    }
+  }
   useEffect(() => {
     setState(proxy(initialState));
     (async function() {

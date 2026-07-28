@@ -5,17 +5,18 @@ import { openIndexedDB } from "@/client/indexed-db.ts";
 import SyncWorker from "@/client/sync-worker.ts?worker";
 
 interface Props {
-  useWebWorker?: boolean;
+  mode?: "none" | "main-loop" | "web-worker"
 }
+
 export default function SyncActions(props: Props) {
   useEffect(() => {
-    if (props.useWebWorker) {
+    if (props.mode === "web-worker") {
       return runOnWorkerThread();
-    } else {
+    } else if (props.mode === 'main-loop') {
       runOnMainThread();
       return noOp;
     }
-  }, [props.useWebWorker]);
+  }, [props.mode]);
   return null;
 }
 

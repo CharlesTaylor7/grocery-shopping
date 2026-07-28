@@ -4,7 +4,7 @@ import { type ReactNode } from "react";
 interface Props {
   children: ReactNode;
 }
-const model = new SyncModel({ useIndexedDB: true });
+const model = new SyncModel({ useIndexedDB: false });
 
 export default function SyncContextProvider(props: Props) {
   return <SyncContext.Provider value={model}>{props.children}</SyncContext.Provider>;

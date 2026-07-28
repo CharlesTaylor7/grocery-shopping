@@ -20,7 +20,6 @@ export function syncNextAction({ db, client, log }: Args): Promise<unknown> {
       if (!cursor) return;
 
       const { primaryKey, value } = cursor;
-      log("before", value);
 
       try {
         await pushToPostgrest(client, value);
