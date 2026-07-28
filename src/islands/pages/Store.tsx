@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { flushSync } from "react-dom";
 import type { StoreItem } from "@/shared/types.ts";
 import { dataClient } from "@/client/neon.ts";
@@ -11,6 +11,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { proxy, useSnapshot } from "valtio";
 import { useSyncModel } from "@/client/model";
 import { type Action } from "@/shared/types";
+import Input from "@/components/Input";
 
 interface LocalStoreItem extends Omit<StoreItem, "store_id"> { }
 interface GotItem extends LocalStoreItem {
@@ -322,6 +323,9 @@ function Grip(props: GripProps) {
       {...listeners}
       {...attributes}
       className={`px-2 ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
+      style={{
+        touchAction: "none"
+      }}
     >
       <img src="/grocery-shopping/grip-bars.svg" />
     </div>
@@ -341,8 +345,6 @@ function Sortable(props: SortableProps) {
       style={{
         transform: CSS.Transform.toString(transform),
         transition,
-        cursor: "grab",
-        touchAction: "none",
       }}
     >
       {props.children}
@@ -350,18 +352,4 @@ function Sortable(props: SortableProps) {
   );
 }
 
-type ReactInputProps =
-  React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
 
-
-interface CustomInputProps extends ReactInputProps {
-  focus: boolean
-}
-
-function Input({ focus, ...props }: CustomInputProps) {
-  const ref = useRef<HTMLInputElement | null>(null)
-  useEffect(() => {
-    if (focus && ref.current) ref.current.focus();
-  }, [focus]);
-  return <input ref={ref} {...props} />
-}
