@@ -149,11 +149,11 @@ export default function Store() {
             strategy={verticalListSortingStrategy}>
             {notGotItems.map((item, index) => (
               <Sortable id={item.id} key={item.id}>
-                <div id={item.id} className="flex flex-row">
+                <div id={item.id} className="flex flex-row m-2">
                   <input
                     tabIndex={-1}
                     type="checkbox"
-                    className="checkbox"
+                    className="checkbox p-2"
                     checked={item.got}
                     onChange={e => {
                       const got = e.currentTarget.checked;
@@ -193,11 +193,11 @@ export default function Store() {
         {gotItems.length ? <h3 className="my-3">GOT</h3> : null}
         <div>
           {gotItems.map(item => (
-            <div id={item.id} key={item.id} className="flex flex-row">
+            <div id={item.id} key={item.id} className="flex flex-row m-2">
               <input
                 tabIndex={-1}
                 type="checkbox"
-                className="checkbox"
+                className="checkbox p-2"
                 checked={item.got}
                 onChange={e => {
                   const got = e.currentTarget.checked;
