@@ -1,4 +1,4 @@
-export const VERSION = 4;
+export const VERSION = 5;
 
 export function migrate(event: IDBVersionChangeEvent): IDBDatabase {
   const db: IDBDatabase = (event.target as any).result;
@@ -27,6 +27,15 @@ export function migrate(event: IDBVersionChangeEvent): IDBDatabase {
       ["entity", "id"],
     );
   }
+
+  if (event.oldVersion < 5) {
+    db.deleteObjectStore("actions");
+    db.createObjectStore("actions", { keyPath: "idb_key", autoIncrement: true }).createIndex(
+      "actions_entity_id",
+      ["entity.id"],
+    );
+  }
+
 
   return db;
 }

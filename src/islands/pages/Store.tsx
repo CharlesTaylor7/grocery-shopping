@@ -14,6 +14,10 @@ import { useSyncModel } from "@/client/model";
 import { type Action } from "@/shared/types";
 
 interface LocalStoreItem extends Omit<StoreItem, "store_id"> { }
+interface GotItem extends LocalStoreItem {
+  got: true,
+  last_got_at: Date,
+}
 interface State {
   focusIndex: null | number,
   storeName: string,
@@ -32,8 +36,7 @@ export default function Store() {
   const snap = useSnapshot(state);
   const sync = useSyncModel();
   const notGotItems = snap.items.filter(item => !item.got);
-  const gotItems = snap.items.filter(item => item.got).toSorted((a, b) => (b.last_got_at ?? 0).valueOf() - (a.last_got_at ?? 0).valueOf());
-  console.log(gotItems);
+  const gotItems = (snap.items.filter(item => item.got) as GotItem[]).toSorted((a, b) => b.last_got_at.valueOf() - a.last_got_at.valueOf());
 
   function handleAction(action: Action) {
     if (action.table !== 'store_items') return;
@@ -82,7 +85,7 @@ export default function Store() {
           .objectStore("actions")
           .index("actions_entity_id")
           .getAll(IDBKeyRange.only(params.id)).onsuccess = (event: any) => {
-            // console.log(event);
+            console.log(event);
           };
       }
     })();
