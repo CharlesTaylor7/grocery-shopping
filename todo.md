@@ -9,22 +9,24 @@
 - [x] login links are broken
 - [x] separate state per store page
 - [x] save items to db
+- [x] sort got items by when last got
+- [ ] handle rebalancing dnd order keys 
 - [ ] timestamps for when an "item was last bought"
 - [ ] debounce checked off
-- [ ] sort got items by when last got
+- [ ] Login doesn't work from PWA
 
 # UI
 - [x] bigger checkbox click area
 - [ ] '{n}d ago'
   
-
 # MVP 
-- [ ] create a store list
-- [ ] update a store list 
-- [ ] start a trip from a store
-- [ ] update a trip list
+- [x] create a store list
+- [x] update a store list 
 
 # Later
+
+- [ ] start a trip from a store
+- [ ] update a trip list
 - [ ] indexed db to use a queue to store pending sync events
 - [ ] web worker to sync device -> server
 - [ ] realtime from server to device

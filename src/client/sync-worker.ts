@@ -9,23 +9,40 @@ const client = new NeonPostgrestClient({
 
 onmessage = (msg) => {
   const token = msg.data;
-  client.headers.set("Authorization", `Bearer ${token}`);
+  if (token) {
+    client.headers.set("Authorization", `Bearer ${token}`);
+  } else {
+    // handle logout
+    client.headers.delete("Authorization");
+  }
 };
 
 const db = await openIndexedDB();
 
 while (true) {
-  if (!client.headers.get("Authorization") || !navigator.onLine) {
+  self.postMessage("worker loop")
+  if (!client.headers.get("Authorization")) {
+
+    self.postMessage("no authorization")
     await sleep(5000);
     continue;
   }
-  await syncNextAction({ db, client, log });
+  try {
+    const didWork = await syncNextAction({ db, client, log });
+
+    if (!didWork) {
+      self.postMessage("sync queue is empty")
+      await sleep(5000);
+    }
+  } catch (e) {
+    log(e)
+  }
 }
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function log() {
-  self.postMessage(JSON.stringify(arguments));
+function log(...args: any[]) {
+  self.postMessage(JSON.stringify(args));
 }

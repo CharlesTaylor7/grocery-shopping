@@ -9,7 +9,7 @@ interface Args {
   log: Log;
 }
 
-export function syncNextAction({ db, client, log }: Args): Promise<unknown> {
+export function syncNextAction({ db, client, log }: Args): Promise<boolean> {
   return new Promise((resolve, reject) => {
     const tx = db.transaction("actions", "readonly");
     const request = tx.objectStore("actions").openCursor();
@@ -17,7 +17,10 @@ export function syncNextAction({ db, client, log }: Args): Promise<unknown> {
     request.onsuccess = async (event: any) => {
       const cursor: IDBCursorWithValue | null = event.target.result;
 
-      if (!cursor) return;
+      if (!cursor) {
+        resolve(false);
+        return;
+      }
 
       const { primaryKey, value } = cursor;
 
@@ -31,7 +34,7 @@ export function syncNextAction({ db, client, log }: Args): Promise<unknown> {
       const deleteTx = db.transaction("actions", "readwrite");
 
       deleteTx.objectStore("actions").delete(primaryKey);
-      resolve(null);
+      resolve(true);
     };
   });
 }

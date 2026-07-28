@@ -3,8 +3,13 @@ import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router";
 import router from "@/router.tsx";
 import "@/client/styles.css";
+import { ENABLE_SERVICE_WORKER } from "./client/config";
 
-navigator.serviceWorker.register("/grocery-shopping/service-worker.js").catch(console.error);
+if (ENABLE_SERVICE_WORKER) {
+  navigator.serviceWorker
+    .register("/grocery-shopping/service-worker.js")
+    .catch(console.error);
+}
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

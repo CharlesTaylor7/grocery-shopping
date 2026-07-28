@@ -58,6 +58,11 @@ export function migrate(event: IDBVersionChangeEvent): IDBDatabase {
         "entity.store_id",
       );
   }
+  // unreleased
+  if (event.oldVersion < 8) {
+    // not used 
+    db.deleteObjectStore("stores");
+  }
 
   return db;
 }

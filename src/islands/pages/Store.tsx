@@ -29,10 +29,10 @@ const initialState: State = {
   items: []
 }
 
-let state: State = proxy(initialState);
+const state: State = proxy(initialState);
 
 function resetState() {
-  state = proxy(initialState);
+  Object.assign(state, initialState);
 }
 
 function applyActionToState(action: Action) {
@@ -61,6 +61,7 @@ export default function Store() {
   // stateful hooks
   const params = useParams();
   const snap = useSnapshot(state);
+  console.log("rerender", snap.items);
   const syncModel = useSyncModel();
   const notGotItems = snap.items.filter(item => !item.got).toSorted((a, b) => a.order - b.order);
   const gotItems = (snap.items.filter(item => item.got) as GotItem[]).toSorted((a, b) => b.last_got_at.valueOf() - a.last_got_at.valueOf());
