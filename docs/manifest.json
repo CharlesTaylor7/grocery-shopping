@@ -4,7 +4,7 @@
   "display": "standalone",
   "icons": [
     {
-      "src": "/grocery-shopping/pwa-icon.png",
+      "src": "pwa-icon.png",
       "sizes": "512x512"
     }
   ]
