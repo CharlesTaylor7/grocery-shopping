@@ -3,17 +3,17 @@ if ($status | is-not-empty) {
     print $status
     exit
 }
-print "Building"
 
 pnpm run build
-
-print "Record Version"
 git rev-parse HEAD
 | $"https://github.com/charlestaylor7/grocery-shopping/commit/($in)"
 | save -f docs/version
 
-print "Committing"
 jj ci -m "Build & version"
 jj bookmark set -r @- main
-print "Pushing"
+
+## builds with deployment of docs folder
 jj git push
+
+## watch it
+gh run watch
