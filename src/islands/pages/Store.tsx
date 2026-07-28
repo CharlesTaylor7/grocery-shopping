@@ -1,5 +1,4 @@
-// oxlint-disable
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { flushSync } from "react-dom";
 import type { StoreItem } from "@/shared/types.ts";
 import { dataClient } from "@/client/neon.ts";
@@ -29,10 +28,37 @@ const initialState: State = {
   items: []
 }
 
+let state: State = proxy(initialState);
+
+function resetState() {
+  state = proxy(initialState);
+}
+
+function applyActionToState(action: Action) {
+  if (action.table !== 'store_items') return;
+  switch (action.op) {
+    case 'new':
+      state.items.push(action.entity as StoreItem);
+      break;
+    case 'edit':
+      const item = state.items.find(item => item.id === action.entity.id);
+      if (item) {
+        Object.assign(item, action.entity);
+      }
+      break;
+    case 'delete':
+      const index = state.items.findIndex(item => item.id === action.entity.id);
+      if (index !== -1) {
+        state.items.splice(index, 1);
+        break;
+      }
+  }
+}
+
+
 export default function Store() {
   // stateful hooks
   const params = useParams();
-  const [state, setState] = useState(proxy(initialState));
   const snap = useSnapshot(state);
   const syncModel = useSyncModel();
   const notGotItems = snap.items.filter(item => !item.got).toSorted((a, b) => a.order - b.order);
@@ -46,7 +72,7 @@ export default function Store() {
     if (!params.id) {
       navigate("/store");
     }
-    setState(proxy(initialState));
+    resetState();
     (async function() {
       const result = await dataClient
         .from("stores")
@@ -83,35 +109,15 @@ export default function Store() {
       };
 
     })();
-  }, [params.id]);
+  }, [params.id, navigate]);
 
   // callbacks
   function sync(action: Action) {
     if (action.table === "store_items") {
+      //@ts-ignore
       action.entity.store_id = params.id
     }
     syncModel.send(action);
-  }
-
-  function applyActionToState(action: Action) {
-    if (action.table !== 'store_items') return;
-    switch (action.op) {
-      case 'new':
-        state.items.push(action.entity as StoreItem);
-        break;
-      case 'edit':
-        const item = state.items.find(item => item.id === action.entity.id);
-        if (item) {
-          Object.assign(item, action.entity);
-        }
-        break;
-      case 'delete':
-        const index = state.items.findIndex(item => item.id === action.entity.id);
-        if (index !== -1) {
-          state.items.splice(index, 1);
-          break;
-        }
-    }
   }
 
   function appendNewItem() {
@@ -327,7 +333,7 @@ interface SortableProps {
   children: ReactNode;
 }
 function Sortable(props: SortableProps) {
-  const { setNodeRef, transform, transition, isDragging } = useSortable({ id: props.id });
+  const { setNodeRef, transform, transition } = useSortable({ id: props.id });
 
   return (
     <div
@@ -335,7 +341,6 @@ function Sortable(props: SortableProps) {
       style={{
         transform: CSS.Transform.toString(transform),
         transition,
-        opacity: isDragging ? 0.35 : 1,
         cursor: "grab",
         touchAction: "none",
       }}
