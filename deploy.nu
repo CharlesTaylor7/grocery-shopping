@@ -15,5 +15,7 @@ jj bookmark set -r @- main
 ## builds with deployment of docs folder
 jj git push
 
+sleep 1sec
+
 ## watch it
 gh run watch
