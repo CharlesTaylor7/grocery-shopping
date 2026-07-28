@@ -22,15 +22,10 @@ const state = proxy<State>({
   items: []
 });
 
-function useProxy<T extends object>(value: T) {
-  const ref = useRef<T>(proxy<T>(value))
-  return [ref.current];
-}
-
 
 export default function Store() {
-  const snap = useSnapshot(state);
   const params = useParams();
+  const snap = useSnapshot(state);
   const gotItems = snap.items.filter(item => item.got);
   const notGotItems = snap.items.filter(item => !item.got);
   useEffect(() => {
@@ -64,7 +59,7 @@ export default function Store() {
   }, [params.id]);
 
   function appendNewItem() {
-    const lastItemOrder = snap.items[snap.items.length - 1]?.order ?? 0;
+    const lastItemOrder = state.items[state.items.length - 1]?.order ?? 0;
     const item = { id: v4(), got: false, description: "", order: lastItemOrder + 1000 };
     state.focusIndex = state.items.length;
     state.items.push(item);
