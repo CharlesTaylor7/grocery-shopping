@@ -3,6 +3,7 @@ import type { SubmitEventHandler } from "react";
 import { toast } from "@/client/toast";
 import { AuthApiError } from "@neondatabase/neon-js/auth";
 import { useNavigate } from "react-router";
+import { lastVisitedUrl } from "@/client/redirect";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -21,9 +22,8 @@ export default function Signup() {
       if (result.error) {
         toast(() => "wrong password");
         return;
-      } else {
-        navigate("/");
       }
+      navigate(lastVisitedUrl());
     } catch (e) {
       console.error(e);
       toast(() => {

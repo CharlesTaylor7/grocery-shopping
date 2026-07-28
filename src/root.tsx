@@ -4,6 +4,7 @@ import Toaster from "@/islands/Toaster";
 import LoginPrompt from "@/islands/LoginPrompt";
 import SyncActionProvider from "@/islands/SyncActionProvider";
 import { SYNC_MODE } from "@/client/config";
+import LastVisitSave from "./islands/LastVisitSave";
 
 export default function Root() {
   return (
@@ -25,6 +26,7 @@ export default function Root() {
         </div>
       </div>
       <ScrollRestoration />
+      <LastVisitSave />
     </SyncActionProvider>
   );
 }

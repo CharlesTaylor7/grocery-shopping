@@ -7,10 +7,10 @@ export default function AuthGuard() {
   const session = authClient.useSession();
   const navigate = useNavigate();
   useEffect(() => {
-    if (!session.data) {
+    if (!session.isPending && !session.data) {
       navigate("/auth/login");
     }
-  }, [navigate, session.data]);
+  }, [navigate, session]);
   if (session.isPending) return "Logging in...";
   if (!session.data) return "Redirecting...";
   return <Outlet />
