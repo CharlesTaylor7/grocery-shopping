@@ -35,7 +35,49 @@ function resetState() {
   Object.assign(state, initialState);
 }
 
-function applyActionToState(action: Action) {
+async function loader(storeId: string): Promise<State> {
+  const result = await dataClient
+    .from("stores")
+    .select("name, items:store_items(id, description, got, order, last_got_at)")
+    .eq("id", storeId)
+    .order("order", {
+      referencedTable: "items",
+      ascending: true,
+    });
+  const state: Partial<State> = {}
+  if (result.data?.length) {
+    const store = result.data[0];
+    state.storeName = store.name;
+    state.items = store.items.map(item => ({
+      ...item,
+      last_got_at: item.last_got_at ? new Date(item.last_got_at) : null
+    }))
+  }
+  else {
+    throw result.error;
+  }
+  // go to indexed db for offline pending items
+  const db = await openIndexedDB();
+  const request = db
+    .transaction("actions")
+    .objectStore("actions")
+    .index("actions_entity_store_id")
+    .getAll(storeId);
+  const actions = await promisify(request);
+  for (const action of actions) {
+    applyActionToState(state as State, action);
+  }
+  return state as State;
+}
+
+function promisify<T = unknown>(request: IDBRequest<T>): Promise<T> {
+  return new Promise((resolve, reject) => {
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = reject;
+  });
+}
+
+function applyActionToState(state: State, action: Action) {
   if (action.table !== 'store_items') return;
   switch (action.op) {
     case 'new':
@@ -58,6 +100,7 @@ function applyActionToState(action: Action) {
 
 
 export default function Store() {
+
   // stateful hooks
   const params = useParams();
   const snap = useSnapshot(state);
@@ -73,44 +116,10 @@ export default function Store() {
   useEffect(() => {
     if (!params.id) {
       navigate("/store");
+      return
     }
     resetState();
-    (async function() {
-      const result = await dataClient
-        .from("stores")
-        .select("name, items:store_items(id, description, got, order, last_got_at)")
-        .eq("id", params.id)
-        .order("order", {
-          referencedTable: "items",
-          ascending: true,
-        });
-      if (result.data?.length) {
-        const store = result.data[0];
-        state.storeName = store.name;
-        state.items = store.items.map(item => ({
-          ...item,
-          last_got_at: item.last_got_at ? new Date(item.last_got_at) : null
-        }))
-      }
-      else {
-        console.error(result.error);
-      }
-      // go to indexed db for the store
-      const db = await openIndexedDB();
-      const request = db
-        .transaction("actions")
-        .objectStore("actions")
-        .index("actions_entity_store_id")
-        .getAll(params.id);
-      request.onsuccess = () => {
-        for (const action of request.result) {
-
-          console.log("replay", action);
-          applyActionToState(action);
-        }
-      };
-
-    })();
+    loader(params.id).then(s => Object.assign(state, s));
   }, [params.id, navigate]);
 
   // callbacks
@@ -192,6 +201,7 @@ export default function Store() {
       const adjacentItem = state.items[newIndex + 1];
       newOrder = Math.floor((state.items[newIndex].order + adjacentItem.order) / 2);
       if (newOrder == adjacentItem.order) console.warn("panick");
+
     } else {
       const adjacentItem = state.items[newIndex - 1];
       newOrder = Math.floor((state.items[newIndex].order + adjacentItem.order) / 2);
@@ -352,5 +362,3 @@ function Sortable(props: SortableProps) {
     </div>
   );
 }
-
-
