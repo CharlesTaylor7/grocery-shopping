@@ -31,7 +31,6 @@ export default function Store() {
   const [state, setState] = useState(proxy(initialState));
   const snap = useSnapshot(state);
   const sync = useSyncModel();
-  console.log(snap);
   const gotItems = snap.items.filter(item => item.got);
   const notGotItems = snap.items.filter(item => !item.got);
 
@@ -86,7 +85,7 @@ export default function Store() {
 
   function appendNewItem() {
     const lastItemOrder = notGotItems[state.items.length - 1]?.order ?? 0;
-    const item = { id: v4(), got: false, description: "", order: lastItemOrder + 1000 };
+    const item = { id: v4(), got: false, description: "", order: lastItemOrder + 1000, store_id: params.id };
 
     sync.send({ op: 'new', table: 'store_items', entity: item })
     state.items.push(item);
@@ -104,7 +103,7 @@ export default function Store() {
           const prevOrder = notGotItems[state.focusIndex].order;
           const nextOrder = notGotItems[state.focusIndex + 1].order;
           const order = (prevOrder + nextOrder) / 2
-          const item = { id: v4(), got: false, description: "", order };
+          const item = { id: v4(), got: false, description: "", order, store_id: params.id };
           sync.send({ op: 'new', table: 'store_items', entity: item })
           state.items.push(item);
           state.items.sort((a, b) => a.order - b.order);

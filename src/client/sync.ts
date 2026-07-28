@@ -37,11 +37,12 @@ export function syncNextAction({ db, client, log }: Args): Promise<unknown> {
 }
 
 interface PostgrestResult {
-  error?: { code: string };
+  error?: { code: string, message: string };
   data?: unknown;
 }
 export function pushToPostgrest(client: NeonDataClient, action: Action): Promise<unknown> {
   let query: Promise<PostgrestResult>;
+  console.log(action)
   switch (action.op) {
     case "new": {
       const { table, entity } = action;
@@ -77,7 +78,7 @@ export function pushToPostgrest(client: NeonDataClient, action: Action): Promise
       if (result.error?.code === "23505") {
         return result;
       } else {
-        return Promise.reject(result);
+        return Promise.reject(result.error.message);
       }
     } else {
       return result;
