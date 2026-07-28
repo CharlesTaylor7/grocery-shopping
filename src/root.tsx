@@ -26,7 +26,6 @@ export default function Root() {
           <SyncContextProvider>
             <Outlet />
           </SyncContextProvider>
-          <LastVisitSave />
           <Toaster />
         </div>
       </div>

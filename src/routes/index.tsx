@@ -14,7 +14,6 @@ export default function Index() {
       <Link to="/auth/signup" className="underline">
         Sign up
       </Link>
-      <LastVisitRedirect />
     </div>
   );
 }
