@@ -31,8 +31,9 @@ export default function Store() {
   const [state, setState] = useState(proxy(initialState));
   const snap = useSnapshot(state);
   const sync = useSyncModel();
-  const gotItems = snap.items.filter(item => item.got);
   const notGotItems = snap.items.filter(item => !item.got);
+  const gotItems = snap.items.filter(item => item.got).toSorted((a, b) => (b.last_got_at ?? 0).valueOf() - (a.last_got_at ?? 0).valueOf());
+  console.log(gotItems);
 
   function handleAction(action: Action) {
     if (action.table !== 'store_items') return;
@@ -59,7 +60,7 @@ export default function Store() {
     (async function() {
       const result = await dataClient
         .from("stores")
-        .select("name, items:store_items(id, description, got, order)")
+        .select("name, items:store_items(id, description, got, order, last_got_at)")
         .eq("id", params.id)
         .order("order", {
           referencedTable: "items",
@@ -68,8 +69,12 @@ export default function Store() {
       if (result.data?.length) {
         const store = result.data[0];
         state.storeName = store.name;
-        state.items = store.items;
+        state.items = store.items.map(item => ({
+          ...item,
+          last_got_at: item.last_got_at ? new Date(item.last_got_at) : null
+        }))
       } else {
+        console.error(result.error);
         // go to indexed db for the store
         const db = await openIndexedDB();
         db
@@ -77,7 +82,7 @@ export default function Store() {
           .objectStore("actions")
           .index("actions_entity_id")
           .getAll(IDBKeyRange.only(params.id)).onsuccess = (event: any) => {
-            console.log(event);
+            // console.log(event);
           };
       }
     })();
@@ -173,6 +178,27 @@ export default function Store() {
     state.items.sort((a, b) => a.order - b.order);
   }
 
+  function handleCheckbox(item: LocalStoreItem) {
+    return (e: any) => {
+      const got = e.currentTarget.checked;
+      const itemState = state.items.find(x => x.id === item.id);
+      if (itemState) {
+        const entity = {
+          id: itemState.id,
+          got,
+          last_got_at: new Date()
+        }
+        sync.send({ op: "edit", table: "store_items", entity });
+        document.startViewTransition(() => {
+          flushSync(() => {
+            itemState.got = entity.got
+            itemState.last_got_at = entity.last_got_at
+          })
+        });
+      }
+    }
+  }
+
   return (
     <div>
       <h2 className="text-center underline">{snap.storeName}</h2>
@@ -195,21 +221,7 @@ export default function Store() {
                     type="checkbox"
                     className="checkbox p-2"
                     checked={item.got}
-                    onChange={e => {
-                      const got = e.currentTarget.checked;
-                      const local = state.items.find(x => x.id === item.id);
-                      if (local) {
-                        sync.send({
-                          op: "edit", table: "store_items", entity: {
-                            id: local.id,
-                            got,
-                          }
-                        });
-                        document.startViewTransition(() => {
-                          flushSync(() => local.got = got)
-                        });
-                      }
-                    }}
+                    onChange={handleCheckbox(item)}
                   />
                   < Input
                     focus={index === snap.focusIndex}
@@ -249,21 +261,7 @@ export default function Store() {
                 type="checkbox"
                 className="checkbox p-2"
                 checked={item.got}
-                onChange={e => {
-                  const got = e.currentTarget.checked;
-                  const local = state.items.find(x => x.id === item.id);
-                  if (local) {
-                    sync.send({
-                      op: "edit", table: "store_items", entity: {
-                        id: local.id,
-                        got,
-                      }
-                    });
-                    document.startViewTransition(() => {
-                      flushSync(() => local.got = got)
-                    });
-                  }
-                }}
+                onChange={handleCheckbox(item)}
               />
               <input
                 data-id={item.id}

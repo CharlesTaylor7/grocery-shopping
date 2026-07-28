@@ -7,13 +7,15 @@
 
 - [x] service worker cache for assets is broken
 - [x] login links are broken
-- [ ] separate state per store page
-- [ ] save items to db
+- [x] separate state per store page
+- [x] save items to db
 - [ ] timestamps for when an "item was last bought"
+- [ ] debounce checked off
+- [ ] sort got items by when last got
 
 # UI
-- '{n}d ago'
-- bigger checkbox click area
+- [x] bigger checkbox click area
+- [ ] '{n}d ago'
   
 
 # MVP 

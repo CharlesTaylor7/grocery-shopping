@@ -42,7 +42,6 @@ interface PostgrestResult {
 }
 export function pushToPostgrest(client: NeonDataClient, action: Action): Promise<unknown> {
   let query: Promise<PostgrestResult>;
-  console.log(action)
   switch (action.op) {
     case "new": {
       const { table, entity } = action;
