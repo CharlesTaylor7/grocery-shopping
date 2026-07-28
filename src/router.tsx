@@ -1,4 +1,4 @@
-import { createHashRouter, Outlet } from "react-router";
+import { createHashRouter } from "react-router";
 import Index from "@/routes/index.tsx";
 import Root from "@/root.tsx";
 import Login from "@/routes/auth/login";
@@ -9,7 +9,8 @@ import StoreList from "@/islands/pages/StoreList";
 import Trip from "@/routes/trip";
 import TripList from "@/routes/trip/[id].tsx";
 import Nav from "@/routes/nav.tsx";
-import DndList from "./DndList";
+import AuthGuard from "@/components/AuthGuard";
+
 
 // for github pages MUST be hash router
 const router = createHashRouter([
@@ -19,10 +20,9 @@ const router = createHashRouter([
     children: [
       { index: true, Component: Index },
       { path: "nav", Component: Nav },
-      { path: "dnd", Component: DndList },
       {
         path: "store",
-        Component: Outlet,
+        Component: AuthGuard,
         children: [
           { index: true, Component: StoreList },
           { path: ":id", Component: Store },
@@ -30,7 +30,7 @@ const router = createHashRouter([
       },
       {
         path: "trip",
-        Component: Outlet,
+        Component: AuthGuard,
         children: [
           { index: true, Component: TripList },
           { path: ":id", Component: Trip },

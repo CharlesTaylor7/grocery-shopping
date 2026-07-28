@@ -29,11 +29,10 @@ export default function LoginPrompt() {
     return null;
   } else {
     return (
-      <div className="flex gap-2">
+      <div className="flex flex-row gap-3">
         <Link to="/auth/login" className="underline">
           Log in
         </Link>
-        <span>or</span>
         <Link to="/auth/signup" className="underline">
           Sign up
         </Link>
