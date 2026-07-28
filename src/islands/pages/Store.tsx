@@ -10,6 +10,7 @@ import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from 
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { proxy, useSnapshot } from "valtio";
+import { useSyncModel } from "@/client/model";
 
 interface LocalStoreItem extends Omit<StoreItem, "store_id"> { }
 interface State {
@@ -28,6 +29,7 @@ export default function Store() {
   const params = useParams();
   const [state, setState] = useState(proxy(initialState));
   const snap = useSnapshot(state);
+  const sync = useSyncModel();
   console.log(snap);
   const gotItems = snap.items.filter(item => item.got);
   const notGotItems = snap.items.filter(item => !item.got);
@@ -64,8 +66,10 @@ export default function Store() {
   function appendNewItem() {
     const lastItemOrder = notGotItems[state.items.length - 1]?.order ?? 0;
     const item = { id: v4(), got: false, description: "", order: lastItemOrder + 1000 };
-    state.focusIndex = notGotItems.length;
+
+    sync.send({ op: 'new', table: 'store_items', entity: item })
     state.items.push(item);
+    state.focusIndex = notGotItems.length;
   }
 
   function handleKeydown(e: any) {
@@ -80,6 +84,7 @@ export default function Store() {
           const nextOrder = notGotItems[state.focusIndex + 1].order;
           const order = (prevOrder + nextOrder) / 2
           const item = { id: v4(), got: false, description: "", order };
+          sync.send({ op: 'new', table: 'store_items', entity: item })
           state.items.push(item);
           state.items.sort((a, b) => a.order - b.order);
         }
@@ -94,13 +99,21 @@ export default function Store() {
       if (!val) {
         e.preventDefault();
         const i = state.items.findIndex(x => x.id == id)
+
+        sync.send({
+          op: 'delete',
+          table: 'store_items',
+          entity: {
+            id: state.items[i].id,
+          }
+        });
+
         state.items.splice(i, 1);
         state.focusIndex = state.focusIndex !== null ? state.focusIndex - 1 : null;
 
       }
     }
   }
-
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
@@ -128,10 +141,17 @@ export default function Store() {
       if (newOrder == adjacentItem.order) console.warn("panick");
     }
 
+    sync.send({
+      op: 'edit',
+      table: 'store_items',
+      entity: {
+        id: state.items[oldIndex].id,
+        order: newOrder
+      }
+    });
     state.items[oldIndex].order = newOrder;
     state.items.sort((a, b) => a.order - b.order);
   }
-
 
   return (
     <div>
@@ -157,16 +177,19 @@ export default function Store() {
                     checked={item.got}
                     onChange={e => {
                       const got = e.currentTarget.checked;
-                      document.startViewTransition(() => {
-                        flushSync(() => {
-
-                          const local = state.items.find(x => x.id === item.id);
-                          if (local)
-                            local.got = got;
+                      const local = state.items.find(x => x.id === item.id);
+                      if (local) {
+                        sync.send({
+                          op: "edit", table: "store_items", entity: {
+                            id: local.id,
+                            got,
+                          }
                         });
-                      });
-                    }
-                    }
+                        document.startViewTransition(() => {
+                          flushSync(() => local.got = got)
+                        });
+                      }
+                    }}
                   />
                   < Input
                     focus={index === snap.focusIndex}
@@ -179,8 +202,15 @@ export default function Store() {
                     onChange={e => {
 
                       const local = state.items.find(x => x.id === item.id);
-                      if (local)
+                      if (local) {
                         local.description = e.currentTarget.value;
+                        sync.send({
+                          op: "edit", table: "store_items", entity: {
+                            id: local.id,
+                            description: local.description,
+                          }
+                        });
+                      }
                     }}
                   />
                   {/* grip bars */}
@@ -201,14 +231,18 @@ export default function Store() {
                 checked={item.got}
                 onChange={e => {
                   const got = e.currentTarget.checked;
-                  document.startViewTransition(() => {
-                    flushSync(() => {
-
-                      const local = state.items.find(x => x.id === item.id);
-                      if (local)
-                        local.got = got;
+                  const local = state.items.find(x => x.id === item.id);
+                  if (local) {
+                    sync.send({
+                      op: "edit", table: "store_items", entity: {
+                        id: local.id,
+                        got,
+                      }
                     });
-                  });
+                    document.startViewTransition(() => {
+                      flushSync(() => local.got = got)
+                    });
+                  }
                 }}
               />
               <input
