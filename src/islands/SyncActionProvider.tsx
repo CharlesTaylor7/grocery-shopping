@@ -58,7 +58,9 @@ async function runOnMainThread() {
     if (!navigator.onLine) {
       await sleep(5000);
     }
-    await syncNextAction({ db, client: dataClient, log: console.log });
+
+    const didWork = await syncNextAction({ db, client: dataClient, log: console.log });
+    if (!didWork) sleep(5000);
   }
 
   function sleep(ms: number) {
