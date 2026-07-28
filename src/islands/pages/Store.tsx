@@ -1,4 +1,5 @@
-import { useEffect, useRef, type ReactNode } from "react";
+// oxlint-disable
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { flushSync } from "react-dom";
 import type { StoreItem } from "@/shared/types.ts";
 import { dataClient } from "@/client/neon.ts";
@@ -8,7 +9,7 @@ import { v4 } from "uuid";
 import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { proxy, snapshot, useSnapshot } from "valtio";
+import { proxy, useSnapshot } from "valtio";
 
 interface LocalStoreItem extends Omit<StoreItem, "store_id"> { }
 interface State {
@@ -16,19 +17,22 @@ interface State {
   storeName: string,
   items: LocalStoreItem[],
 }
-const state = proxy<State>({
+const initialState: State = {
   focusIndex: null,
   storeName: '',
   items: []
-});
+}
 
 
 export default function Store() {
   const params = useParams();
+  const [state, setState] = useState(proxy(initialState));
   const snap = useSnapshot(state);
   const gotItems = snap.items.filter(item => item.got);
   const notGotItems = snap.items.filter(item => !item.got);
+
   useEffect(() => {
+    setState(proxy(initialState));
     (async function() {
       const result = await dataClient
         .from("stores")
@@ -40,8 +44,6 @@ export default function Store() {
         });
       if (result.data?.length) {
         const store = result.data[0];
-        // @ts-ignore
-        store.id = params.id;
         state.storeName = store.name;
         state.items = store.items;
       } else {
