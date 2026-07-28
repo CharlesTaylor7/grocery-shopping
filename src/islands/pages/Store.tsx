@@ -28,6 +28,7 @@ export default function Store() {
   const params = useParams();
   const [state, setState] = useState(proxy(initialState));
   const snap = useSnapshot(state);
+  console.log(snap);
   const gotItems = snap.items.filter(item => item.got);
   const notGotItems = snap.items.filter(item => !item.got);
 
@@ -61,29 +62,29 @@ export default function Store() {
   }, [params.id]);
 
   function appendNewItem() {
-    const lastItemOrder = state.items[state.items.length - 1]?.order ?? 0;
+    const lastItemOrder = notGotItems[state.items.length - 1]?.order ?? 0;
     const item = { id: v4(), got: false, description: "", order: lastItemOrder + 1000 };
-    state.focusIndex = state.items.length;
+    state.focusIndex = notGotItems.length;
     state.items.push(item);
   }
 
   function handleKeydown(e: any) {
     if (e.code == "Enter") {
-      if (state.focusIndex === null || state.focusIndex === state.items.length - 1) {
+      if (state.focusIndex === null || state.focusIndex === notGotItems.length - 1) {
         appendNewItem();
       }
       else {
-        state.focusIndex++;
-        if (!state.items[state.focusIndex].description) {
-          return
-        } else {
-          const prevOrder = state.items[state.focusIndex].order;
-          const nextOrder = state.items[state.focusIndex + 1].order;
+        // next item is non-empty, insert one between
+        if (notGotItems[state.focusIndex + 1].description) {
+          const prevOrder = notGotItems[state.focusIndex].order;
+          const nextOrder = notGotItems[state.focusIndex + 1].order;
           const order = (prevOrder + nextOrder) / 2
           const item = { id: v4(), got: false, description: "", order };
           state.items.push(item);
           state.items.sort((a, b) => a.order - b.order);
         }
+        // advance to empty item
+        state.focusIndex++;
       }
 
     }

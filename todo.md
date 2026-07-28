@@ -6,7 +6,6 @@
   - [x] use github pages for hosting
 
 - [x] service worker cache for assets is broken
-- [ ] sync worker is broken
 - [x] login links are broken
 - [ ] separate state per store page
 - [ ] save items to db
@@ -26,6 +25,7 @@
 - [ ] select multiple stores for a trip
 - [ ] Collapsible regions for multi store trips 
 - [ ] fork neon client and trim it down. 400kb is insane
+- [ ] sync worker is broken
 
 ## UX
 - [ ] nav hamburger, smart actions in page header(s)
