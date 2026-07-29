@@ -1,0 +1,68 @@
+name: Unit Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  unit-tests:
+    timeout-minutes: 15
+    runs-on:
+      group: neondatabase-protected-runner-group
+      labels: linux-ubuntu-latest
+
+    steps:
+      - name: Harden the runner
+        uses: step-security/harden-runner@c6295a65d1254861815972266d5933fd6e532bdf # v2.11.1
+        with:
+          egress-policy: audit
+
+      - name: Checkout code
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Setup JFrog npm
+        uses: ./.github/actions/setup-jfrog-npm
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Restore build cache
+        id: build-cache
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: |
+            packages/internal/dist
+            packages/postgrest-js/dist
+            packages/auth-ui/dist
+            packages/auth/dist
+            packages/neon-js/dist
+          key: build-${{ runner.os }}-${{ hashFiles('packages/*/src/**', 'packages/*/tsdown.config.ts', 'build/**', 'tsconfig.json', 'pnpm-lock.yaml') }}
+          restore-keys: |
+            build-${{ runner.os }}-
+
+      - name: Build packages
+        if: steps.build-cache.outputs.cache-hit != 'true'
+        run: pnpm run build
+
+      # Run unit tests using vitest
+      # Note: Uses `pnpm run test:ci` which runs `vitest run` for each package
+      # The CSS build tests in auth-ui require the build to complete first
+      - name: Run unit tests
+        run: pnpm run test:ci
