@@ -1,8 +1,9 @@
-import { useContext, createContext } from "react";
 import type { Action, Op, TableName } from "@/shared/types.ts";
 import { dataClient } from "@/client/neon.ts";
-import { openIndexedDB } from "@/client/indexed-db.ts";
+import { promisify, openIndexedDB } from "@/client/indexed-db.ts";
 import { pushToPostgrest } from "@/client/sync.ts";
+import { atom } from 'jotai';
+
 
 export interface SyncApi {
   // send an action
@@ -18,27 +19,27 @@ interface SyncOptions {
 
 // debug means it just does an immediate fetch
 export class SyncModel implements SyncApi {
-  private db?: IDBDatabase;
 
-  constructor(readonly opts: SyncOptions) {
+  constructor(private db?: IDBDatabase) {
+  }
+
+  static async new(opts: SyncOptions): Promise<SyncModel> {
     if (opts.useIndexedDB) {
-      openIndexedDB().then((db) => void (this.db = db));
+      const db = await openIndexedDB()
+      return new SyncModel(db);
     }
+    return new SyncModel();
   }
 
-  send<TOp extends Op, TName extends TableName>(action: Action<TName, TOp>): void {
+  send<TOp extends Op, TName extends TableName>(action: Action<TName, TOp>): Promise<unknown> {
     if (this.db) {
-      this.db.transaction("actions", "readwrite").objectStore("actions").put(action);
+      return promisify(this.db.transaction("actions", "readwrite").objectStore("actions").put(action));
     } else {
-      pushToPostgrest(dataClient, action);
+      return pushToPostgrest(dataClient, action);
     }
   }
 }
 
-export const SyncContext = createContext<SyncApi>(new SyncModel({ useIndexedDB: false }));
 
-export function useSyncModel(): SyncApi {
-  const model = useContext(SyncContext);
-  if (!model) throw new Error("can't useSyncModel without providing context !");
-  return model;
-}
+export const syncAtom = atom(SyncModel.new({ useIndexedDB: false }));
+

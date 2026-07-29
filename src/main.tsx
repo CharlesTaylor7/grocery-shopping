@@ -4,10 +4,6 @@ import { RouterProvider } from "react-router";
 import router from "@/router.tsx";
 import "@/client/styles.css";
 import { ENABLE_SERVICE_WORKER } from "./client/config";
-import { unstable_enableOp } from 'valtio'
-
-// Enable globally
-unstable_enableOp(true)
 
 if (ENABLE_SERVICE_WORKER) {
   navigator.serviceWorker

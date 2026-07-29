@@ -10,3 +10,6 @@ export const SYNC_MODE: SyncMode =
 
 export const ENABLE_SERVICE_WORKER: boolean =
   true
+
+export const AUTH_GUARD: boolean =
+  false

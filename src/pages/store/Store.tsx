@@ -3,24 +3,30 @@ import { useNavigate, useParams } from "react-router";
 import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useSnapshot } from "valtio";
-import { useSyncModel } from "@/client/model";
 import Input from "@/components/Input";
-import { proxy, load, handleDragStart, handleDragEnd, handleKeydown, handleCheckbox, appendNewItem, derivedProxy, } from "./actions";
+import { useAtom, useSetAtom, useAtomValue } from 'jotai';
+
+import { appendNewItemAtom, focusIndexAtom, gotItemsAtom, handleCheckboxAtom, handleDragEndAtom, handleDragStartAtom, handleKeydownAtom, handleTextboxAtom, loadStoreAtom, needItemsAtom, storeAtom } from "./actions";
 
 
 export default function Store() {
   // stateful hooks
   const params = useParams();
-  const stateSnapshot = useSnapshot(proxy);
-  const computedSnapshot = useSnapshot(derivedProxy);
-  const snap = { ...stateSnapshot, ...computedSnapshot };
-  const syncModel = useSyncModel();
   const storeId = params.id;
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
   const navigate = useNavigate();
-  const args = { snapshot: snap, syncModel };
 
+  const load = useSetAtom(loadStoreAtom);
+  const store = useAtomValue(storeAtom);
+  const handleDragStart = useSetAtom(handleDragStartAtom);
+  const handleDragEnd = useSetAtom(handleDragEndAtom);
+  const need = useAtomValue(needItemsAtom);
+  const gots = useAtomValue(gotItemsAtom);
+  const [focusIndex, setFocusIndex] = useAtom(focusIndexAtom);
+  const handleKeydown = useSetAtom(handleKeydownAtom);
+  const handleTextbox = useSetAtom(handleTextboxAtom);
+  const handleCheckbox = useSetAtom(handleCheckboxAtom);
+  const addNewItem = useSetAtom(appendNewItemAtom);
   // effects
   useEffect(() => {
     if (!storeId) {
@@ -28,58 +34,43 @@ export default function Store() {
       return
     }
     load(storeId);
-  }, [storeId, navigate]);
+  }, [load, storeId, navigate]);
 
   // render
   return (
     <div>
-      <h2 className="text-center underline">{stateSnapshot.storeName}</h2>
+      <h2 className="text-center underline">{store.name}</h2>
 
       <div>
         <DndContext
           sensors={sensors}
           collisionDetection={closestCenter}
           onDragStart={handleDragStart}
-          onDragEnd={(event) => handleDragEnd(args, event)}
+          onDragEnd={handleDragEnd}
         >
           <SortableContext
-            items={computedSnapshot.need.map(item => item.id)}
+            items={need.map(item => item.id)}
             strategy={verticalListSortingStrategy}>
-            {computedSnapshot.need.map((item, index) => (
+            {need.map((item, index) => (
               <Sortable id={item.id} key={item.id}>
                 <div id={item.id} className="flex flex-row m-2">
                   <input
+                    data-id={item.id}
                     tabIndex={-1}
                     type="checkbox"
                     className="checkbox p-2"
                     checked={item.got}
-                    onChange={handleCheckbox(args, item)}
+                    onChange={handleCheckbox}
                   />
                   <Input
-                    focus={index === stateSnapshot.focusIndex}
                     data-id={item.id}
+                    focus={index === focusIndex}
                     type="text"
                     className="w-80 mx-4 outline-hidden"
-                    onFocus={() => proxy.focusIndex = index}
-                    onKeyDown={(e) => handleKeydown(args, e)}
+                    onFocus={() => setFocusIndex(index)}
+                    onKeyDown={handleKeydown}
                     value={item.description}
-                    onChange={e => {
-                      const local = proxy.items[item.id];
-                      const description = e.currentTarget.value;
-                      if (local) {
-                        local.description = description;
-                        syncModel.send({
-                          op: "edit",
-                          table: "store_items",
-                          entity: {
-                            id: item.id,
-                            store_id: stateSnapshot.storeId,
-                            description,
-                          }
-                        })
-                      }
-                    }
-                    }
+                    onChange={handleTextbox}
                   />
                   {/* grip bars */}
                   <Grip id={item.id} />
@@ -88,16 +79,17 @@ export default function Store() {
             ))}
           </SortableContext>
         </DndContext>
-        {computedSnapshot.gots.length ? <h3 className="my-3">GOT</h3> : null}
+        {gots.length ? <h3 className="my-3">GOT</h3> : null}
         <div>
-          {computedSnapshot.gots.map(item => (
+          {gots.map(item => (
             <div id={item.id} key={item.id} className="flex flex-row m-2">
               <input
+                data-id={item.id}
                 tabIndex={-1}
                 type="checkbox"
                 className="checkbox p-2"
                 checked={item.got}
-                onChange={handleCheckbox(args, item)}
+                onChange={handleCheckbox}
               />
               <input
                 data-id={item.id}
@@ -110,7 +102,7 @@ export default function Store() {
           ))}
         </div>
       </div>
-      <button type="button" className="btn btn-ghost w-screen" onClick={() => appendNewItem(args)}>
+      <button type="button" className="btn btn-ghost w-screen" onClick={addNewItem}>
         +
       </button>
     </div>

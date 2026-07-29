@@ -1,10 +1,11 @@
-import { useSyncModel } from "@/client/model.ts";
 import type { Store, Action } from "@/shared/types.ts";
 import { useEffect, useState } from "react";
 import { dataClient } from "@/client/neon.ts";
 import { openIndexedDB } from "@/client/indexed-db.ts";
 import { Link } from "react-router";
 import { v4 as newId } from 'uuid';
+import { useAtom, useAtomValue } from 'jotai'
+import { syncAtom } from "@/client/model";
 
 export default function StoreList() {
   const [stores, setStores] = useState<Store[]>([]);
@@ -53,7 +54,7 @@ export default function StoreList() {
       sortStores();
     })();
   }, []);
-  const sync = useSyncModel();
+  const sync = useAtomValue(syncAtom);
   const [name, setName] = useState("");
 
   function onNewStore() {

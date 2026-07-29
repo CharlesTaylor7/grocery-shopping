@@ -5,6 +5,7 @@ import LoginPrompt from "@/islands/LoginPrompt";
 import SyncActionProvider from "@/islands/SyncActionProvider";
 import { SYNC_MODE } from "@/client/config";
 import LastVisitSave from "./islands/LastVisitSave";
+import { Suspense } from "react";
 
 export default function Root() {
   return (
@@ -21,7 +22,9 @@ export default function Root() {
         </h1>
 
         <div className="flex-1 overflow-y-scroll overflow-x-hidden">
-          <Outlet />
+          <Suspense fallback="the suspense is killing me" >
+            <Outlet />
+          </Suspense>
           <Toaster />
         </div>
       </div>

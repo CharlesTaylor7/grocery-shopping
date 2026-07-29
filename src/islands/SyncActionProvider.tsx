@@ -1,10 +1,12 @@
-import { SyncContext, SyncModel, type SyncApi } from "@/client/model.ts";
-import { type ReactNode, useEffect, useMemo } from "react";
+import { syncAtom, SyncModel, type SyncApi } from "@/client/model.ts";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { authClient, dataClient } from "@/client/neon.ts";
 import { syncNextAction } from "@/client/sync.ts";
 import { openIndexedDB } from "@/client/indexed-db.ts";
 import SyncWorker from "@/client/sync-worker.ts?worker";
+import { createStore, Provider, } from "jotai";
 
+type Store = ReturnType<typeof createStore>;
 
 export type SyncMode = "immediate" | "offline-sim" | "main-loop" | "web-worker"
 
@@ -19,18 +21,21 @@ interface Props {
 // web-workermeans use a background web worker publish indexedb actions from the main ui loop
 
 export default function SyncActionProvider(props: Props) {
+  const [store, _] = useState(createStore);
   useEffect(() => {
     if (props.mode === "web-worker") {
       return runOnWorkerThread();
     } else if (props.mode === 'main-loop') {
       return runOnMainThread();
     }
-  }, [props.mode]);
-  const model = useMemo<SyncApi>(() => new SyncModel({ useIndexedDB: props.mode !== "immediate" }), [props.mode]);
 
-  return <SyncContext.Provider value={model}>
+    store.set(syncAtom, SyncModel.new({ useIndexedDB: props.mode !== "immediate" }));
+
+  }, [props.mode, store]);
+
+  return <Provider store={store}>
     {props.children}
-  </SyncContext.Provider>;
+  </Provider>;
 }
 
 type EffectCleanup = () => void;
