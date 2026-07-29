@@ -63,17 +63,18 @@ export default function Store() {
                     value={item.description}
                     onChange={e => {
                       const local = state.items[item.id];
+                      const description = e.currentTarget.value;
                       if (local) {
+                        local.description = description;
                         syncModel.send({
                           op: "edit",
                           table: "store_items",
                           entity: {
                             id: item.id,
                             store_id: snapshot.storeId,
-                            description: snapshot.storeId
+                            description,
                           }
                         })
-                        local.description = e.currentTarget.value;
                       }
                     }
                     }

@@ -27,7 +27,6 @@ export class SyncModel implements SyncApi {
   }
 
   send<TOp extends Op, TName extends TableName>(action: Action<TName, TOp>): void {
-    console.log(action);
     if (this.db) {
       this.db.transaction("actions", "readwrite").objectStore("actions").put(action);
     } else {

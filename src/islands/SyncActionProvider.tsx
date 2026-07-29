@@ -23,8 +23,7 @@ export default function SyncActionProvider(props: Props) {
     if (props.mode === "web-worker") {
       return runOnWorkerThread();
     } else if (props.mode === 'main-loop') {
-      runOnMainThread();
-      return noOp;
+      return runOnMainThread();
     }
   }, [props.mode]);
   const model = useMemo<SyncApi>(() => new SyncModel({ useIndexedDB: props.mode !== "immediate" }), [props.mode]);
@@ -35,7 +34,6 @@ export default function SyncActionProvider(props: Props) {
 }
 
 type EffectCleanup = () => void;
-const noOp = () => { };
 
 function runOnWorkerThread(): EffectCleanup {
   const worker = new SyncWorker();
@@ -51,19 +49,42 @@ function runOnWorkerThread(): EffectCleanup {
   return () => worker.terminate();
 }
 
-async function runOnMainThread() {
-  const db = await openIndexedDB();
+function runOnMainThread(): EffectCleanup {
+  const worker = new MainThreadWorker();
+  worker.run();
+  return () => worker.terminate();
+}
 
-  while (true) {
-    if (!navigator.onLine) {
-      await sleep(5000);
-    }
 
-    const didWork = await syncNextAction({ db, client: dataClient, log: console.log });
-    if (!didWork) sleep(5000);
+class MainThreadWorker {
+  static counter = 0;
+  private id: number;
+  private terminated: boolean = false;
+  constructor() {
+    this.id = MainThreadWorker.counter++;
   }
 
-  function sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+  terminate() {
+    this.terminated = true;
+    console.log("terminate", this.id);
+  }
+
+  async run() {
+    console.log("start", this.id);
+    const db = await openIndexedDB();
+
+    while (!this.terminated) {
+      if (!navigator.onLine) {
+        await sleep(5000);
+        continue;
+      }
+
+      const didWork = await syncNextAction({ db, client: dataClient, log: console.log });
+      if (!didWork) await sleep(5000);
+    }
+
+    function sleep(ms: number) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
   }
 }
