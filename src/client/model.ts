@@ -1,7 +1,6 @@
 import { useContext, createContext } from "react";
 import type { Action, Op, TableName } from "@/shared/types.ts";
 import { dataClient } from "@/client/neon.ts";
-import * as UUID from "uuid";
 import { openIndexedDB } from "@/client/indexed-db.ts";
 import { pushToPostgrest } from "@/client/sync.ts";
 
@@ -9,7 +8,7 @@ export interface SyncApi {
   // send an action
   // it writes the item to indexed db
   // a background worker checks when we are online and sends pending events to the server
-  send<TOp extends Op, TName extends TableName>(action: Action<TOp, TName>): void;
+  send<TName extends TableName = TableName, TOp extends Op = Op>(action: Action<TName, TOp>): void;
 }
 
 interface SyncOptions {
@@ -27,12 +26,8 @@ export class SyncModel implements SyncApi {
     }
   }
 
-  send<TOp extends Op, TName extends TableName>(action: Action<TOp, TName>): void {
-    if (action.op === "new") {
-      // do this immediately and only once so any replays of this action are idempotent
-      action.entity.id = UUID.v4();
-    }
-
+  send<TOp extends Op, TName extends TableName>(action: Action<TName, TOp>): void {
+    console.log(action);
     if (this.db) {
       this.db.transaction("actions", "readwrite").objectStore("actions").put(action);
     } else {

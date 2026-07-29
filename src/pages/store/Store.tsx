@@ -5,9 +5,8 @@ import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-
 import { CSS } from "@dnd-kit/utilities";
 import { useSnapshot } from "valtio";
 import { useSyncModel } from "@/client/model";
-import { type Action } from "@/shared/types";
 import Input from "@/components/Input";
-import { state, resetState, load, handleDragStart, handleDragEnd, handleKeydown, handleCheckbox, appendNewItem } from "./actions";
+import { state, load, handleDragStart, handleDragEnd, handleKeydown, handleCheckbox, appendNewItem } from "./actions";
 
 
 export default function Store() {
@@ -15,29 +14,20 @@ export default function Store() {
   const params = useParams();
   const snapshot = useSnapshot(state);
   const syncModel = useSyncModel();
-
+  const storeId = params.id;
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
   const navigate = useNavigate();
+  const args = { snapshot, syncModel };
 
   // effects
   useEffect(() => {
-    if (!params.id) {
+    if (!storeId) {
       navigate("/store");
       return
     }
-    resetState();
-    load(params.id).then(s => Object.assign(state, s));
-  }, [params.id, navigate]);
+    load(storeId);
+  }, [storeId, navigate]);
 
-  // callbacks
-
-  function sync(action: Action) {
-    if (action.table === "store_items") {
-      //@ts-ignore
-      action.entity.store_id = params.id
-    }
-    syncModel.send(action);
-  }
   // render
   return (
     <div>
@@ -48,7 +38,7 @@ export default function Store() {
           sensors={sensors}
           collisionDetection={closestCenter}
           onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
+          onDragEnd={(event) => handleDragEnd(args, event)}
         >
           <SortableContext
             items={snapshot.need.map(item => item.id)}
@@ -61,29 +51,32 @@ export default function Store() {
                     type="checkbox"
                     className="checkbox p-2"
                     checked={item.got}
-                    onChange={handleCheckbox(item)}
+                    onChange={handleCheckbox(args, item)}
                   />
-                  < Input
+                  <Input
                     focus={index === snapshot.focusIndex}
                     data-id={item.id}
                     type="text"
                     className="w-80 mx-4 outline-hidden"
                     onFocus={() => state.focusIndex = index}
-                    onKeyDown={(e) => handleKeydown(snapshot, e)}
+                    onKeyDown={(e) => handleKeydown(args, e)}
                     value={item.description}
                     onChange={e => {
-
-                      const local = state.items.find(x => x.id === item.id);
+                      const local = state.items[item.id];
                       if (local) {
-                        local.description = e.currentTarget.value;
-                        sync({
-                          op: "edit", table: "store_items", entity: {
-                            id: local.id,
-                            description: local.description,
+                        syncModel.send({
+                          op: "edit",
+                          table: "store_items",
+                          entity: {
+                            id: item.id,
+                            store_id: snapshot.storeId,
+                            description: snapshot.storeId
                           }
-                        });
+                        })
+                        local.description = e.currentTarget.value;
                       }
-                    }}
+                    }
+                    }
                   />
                   {/* grip bars */}
                   <Grip id={item.id} />
@@ -101,7 +94,7 @@ export default function Store() {
                 type="checkbox"
                 className="checkbox p-2"
                 checked={item.got}
-                onChange={handleCheckbox(item)}
+                onChange={handleCheckbox(args, item)}
               />
               <input
                 data-id={item.id}
@@ -114,7 +107,7 @@ export default function Store() {
           ))}
         </div>
       </div>
-      <button type="button" className="btn btn-ghost w-screen" onClick={() => appendNewItem(snapshot)}>
+      <button type="button" className="btn btn-ghost w-screen" onClick={() => appendNewItem(args)}>
         +
       </button>
     </div>

@@ -43,7 +43,7 @@ export interface ActionFields {
   entity: EntityFields<Op>;
 }
 
-export type Action<TOp extends Op = Op, TName extends TableName = TableName> = {
+export type Action<TName extends TableName = TableName, TOp extends Op = Op> = {
   table: TName;
   op: TOp;
   idb_index?: number;
@@ -62,9 +62,9 @@ export type Entity<TName extends TableName = TableName> = TName extends "stores"
   : never;
 
 export type EntityFields<TOp extends Op = Op, TEntity extends HasId = HasId> = TOp extends "new"
-  ? Partial<TEntity>
+  ? TEntity
   : TOp extends "edit"
   ? HasId & Partial<TEntity>
   : TOp extends "delete"
-  ? HasId
+  ? HasId & Partial<TEntity>
   : never;

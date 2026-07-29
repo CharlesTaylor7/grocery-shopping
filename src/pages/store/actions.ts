@@ -2,11 +2,16 @@ import type { StoreItem } from "@/shared/types.ts";
 import { dataClient } from "@/client/neon.ts";
 import { openIndexedDB, promisify } from "@/client/indexed-db.ts";
 import { proxy, type Snapshot } from "valtio";
+import { type SyncApi } from "@/client/model";
 import { type Action } from "@/shared/types";
 import { flushSync } from "react-dom";
 import { v4 as newId } from "uuid";
 
 
+export interface ActionArgs {
+  snapshot: Snapshot<State>,
+  syncModel: SyncApi,
+}
 export interface LocalStoreItem extends Omit<StoreItem, "store_id"> { }
 export interface GotItem extends LocalStoreItem {
   got: true,
@@ -14,34 +19,47 @@ export interface GotItem extends LocalStoreItem {
 }
 
 export interface State {
-  focusIndex: null | number,
+  storeId: string,
   storeName: string,
-  items: LocalStoreItem[],
+  focusIndex: number,
+  items: Record<string, LocalStoreItem>,
+  get allInOrder(): LocalStoreItem[],
   get need(): LocalStoreItem[],
   get gots(): GotItem[],
 }
 
-const initialState: State = {
-  focusIndex: null,
-  storeName: '',
-  items: [],
+function initialState(): State {
+  return {
+    storeId: '',
+    storeName: '',
+    focusIndex: -1,
+    items: {},
 
-  get need() {
-    return this.items
-      .filter(item => !item.got)
-      .sort((a, b) => a.order - b.order);
-  },
+    get allInOrder() {
+      return Object.values(this.items)
+        .sort((a, b) => a.order - b.order);
+    },
 
-  get gots() {
-    const filtered = this.items.filter(item => item.got) as GotItem[];
-    return filtered.sort((a, b) => b.last_got_at.valueOf() - a.last_got_at.valueOf());
-  }
+    get need() {
+      return Object.values(this.items)
+        .filter(item => !item.got)
+        .sort((a, b) => a.order - b.order);
+    },
+
+    get gots() {
+      const filtered = Object.values(this.items).filter(item => item.got) as GotItem[];
+      return filtered.sort((a, b) => b.last_got_at.valueOf() - a.last_got_at.valueOf());
+    }
+  };
 }
 
-export const state: State = proxy(initialState);
+export const state: State = proxy(initialState());
 
 export function resetState() {
-  Object.assign(state, initialState);
+  state.storeId = '';
+  state.focusIndex = -1;
+  state.storeName = '';
+  state.items = {};
 }
 
 export async function load(storeId: string) {
@@ -53,14 +71,14 @@ export async function load(storeId: string) {
       referencedTable: "items",
       ascending: true,
     });
-  const state: Partial<State> = {}
   if (result.data?.length) {
     const store = result.data[0];
+    state.storeId = storeId;
     state.storeName = store.name;
-    state.items = store.items.map(item => ({
-      ...item,
-      last_got_at: item.last_got_at ? new Date(item.last_got_at) : null
-    }))
+    for (const item of store.items) {
+      item.last_got_at = item.last_got_at ? new Date(item.last_got_at) : null;
+      state.items[item.id] = item;
+    }
   }
   else {
     throw result.error;
@@ -79,39 +97,97 @@ export async function load(storeId: string) {
   }
 }
 
+
+type ValtioPath = (string | symbol)[];
+type ValtioOp = [op: 'set', path: ValtioPath, value: unknown, prevValue: unknown] | [op: 'delete', path: ValtioPath, prevValue: unknown];
+
+function handleOps(storeId: string, syncModel: SyncApi, ops: ValtioOp[]) {
+  for (const operation of ops) {
+    const [op, path, newValue] = operation;
+
+    if (path[0] !== "items") continue;
+
+    const id = path[1];
+    if (op === 'set' && path[2] === undefined) {
+      // new store item
+      const entity = newValue as StoreItem;
+      entity.store_id = storeId;
+      syncModel.send({
+        table: "store_items",
+        op: "new",
+        entity: newValue as any,
+      })
+    }
+    // TODO: use op batches to send a single edit 
+    else if (op === 'set') {
+      // update item
+      const entity: any = { id, store_id: storeId };
+      entity[path[2]] = newValue;
+      syncModel.send({
+        table: "store_items",
+        op: "edit",
+        entity,
+      })
+    }
+    else if (op === 'delete') {
+      const entity: any = { id, store_id: storeId }
+      // delete item
+      syncModel.send({
+        table: "store_items",
+        op: "delete",
+        entity: entity,
+      });
+    }
+    else {
+      console.log("skipping", operation);
+    }
+  }
+}
+
+
+
 export function applyAction(action: Action) {
   if (action.table !== 'store_items') return;
   switch (action.op) {
-    case 'new':
-      state.items.push(action.entity as StoreItem);
+    case 'new': {
+      state.items[action.entity.id!] = action.entity as StoreItem;
       break;
-    case 'edit':
-      const item = state.items.find(item => item.id === action.entity.id);
+    }
+    case 'edit': {
+      const item = state.items[action.entity.id!];
       if (item) {
         Object.assign(item, action.entity);
       }
       break;
-    case 'delete':
-      const index = state.items.findIndex(item => item.id === action.entity.id);
-      if (index !== -1) {
-        state.items.splice(index, 1);
-        break;
-      }
+    }
+    case 'delete': {
+      delete state.items[action.entity.id!];
+      break;
+    }
   }
 }
 
-export function appendNewItem(snapshot: Snapshot<State>) {
-  const lastItemOrder = snapshot.need[state.items.length - 1]?.order ?? 0;
-  const item = { id: newId(), got: false, description: "", order: lastItemOrder + 1000, };
+export function appendNewItem({ snapshot, syncModel }: ActionArgs) {
 
-  state.items.push(item);
-  state.focusIndex = snapshot.need.length;
+  const lastOrder = snapshot.allInOrder[snapshot.allInOrder.length - 1]?.order ?? 0;
+  const item = {
+    id: newId(),
+    got: false,
+    description: "",
+    order: lastOrder + 1000,
+    store_id: snapshot.storeId,
+  };
+
+  syncModel.send({ op: "new", table: "store_items", entity: item });
+  state.items[item.id] = item;
+  state.focusIndex = snapshot.allInOrder.length;
 }
 
-export function handleKeydown(snapshot: Snapshot<State>, e: any) {
+export function handleKeydown(args: ActionArgs, e: any) {
+  const { snapshot, syncModel } = args;
   if (e.code == "Enter") {
     if (state.focusIndex === null || state.focusIndex === snapshot.need.length - 1) {
-      appendNewItem(snapshot);
+      appendNewItem(args);
     }
     else {
       // next item is non-empty, insert one between
@@ -119,8 +195,9 @@ export function handleKeydown(snapshot: Snapshot<State>, e: any) {
         const prevOrder = snapshot.need[state.focusIndex].order;
         const nextOrder = snapshot.need[state.focusIndex + 1].order;
         const order = (prevOrder + nextOrder) / 2
-        const item = { id: newId(), got: false, description: "", order };
-        state.items.push(item);
+        const item = { id: newId(), got: false, description: "", order, store_id: snapshot.storeId };
+        syncModel.send({ op: "new", table: "store_items", entity: item });
+        state.items[item.id] = item;
       }
       // advance to empty item
       state.focusIndex++;
@@ -132,62 +209,76 @@ export function handleKeydown(snapshot: Snapshot<State>, e: any) {
     const id = e.currentTarget.dataset!.id;
     if (!val) {
       e.preventDefault();
-      const i = state.items.findIndex(x => x.id == id)
 
-      state.items.splice(i, 1);
-      state.focusIndex = state.focusIndex !== null ? state.focusIndex - 1 : null;
-
+      syncModel.send({ op: "delete", table: "store_items", entity: { id, store_id: snapshot.storeId } });
+      delete state.items[id];
+      state.focusIndex--;
     }
   }
 }
 
 
 export function handleDragStart() {
-  state.focusIndex = null;
+  state.focusIndex = -1;
 }
 
-export function handleDragEnd({ active, over }: any) {
+export function handleDragEnd(args: ActionArgs, event: any) {
+  const { active, over } = event;
   if (!over || active.id === over.id) return;
-  const oldIndex = state.items.findIndex((i) => i.id === active.id);
-  const newIndex = state.items.findIndex((i) => i.id === over.id);
+  const { snapshot, syncModel } = args;
+
+  const activeItem = state.items[active.id]
+  if (!activeItem) return;
+
+  const oldIndex = snapshot.allInOrder.findIndex((i) => i.id === active.id);
+  const newIndex = snapshot.allInOrder.findIndex((i) => i.id === over.id);
 
   let newOrder;
   if (newIndex === 0) {
-    newOrder = state.items[0].order - 1000;
-  } else if (newIndex === state.items.length - 1) {
-    newOrder = state.items[newIndex].order + 1000;
+    newOrder = snapshot.allInOrder[0].order - 1000;
+  } else if (newIndex === snapshot.allInOrder.length - 1) {
+    newOrder = snapshot.allInOrder[newIndex].order + 1000;
   } else if (newIndex > oldIndex) {
-    const adjacentItem = state.items[newIndex + 1];
-    newOrder = Math.floor((state.items[newIndex].order + adjacentItem.order) / 2);
+    const adjacentItem = snapshot.allInOrder[newIndex + 1];
+    newOrder = Math.floor((snapshot.allInOrder[newIndex].order + adjacentItem.order) / 2);
     if (newOrder == adjacentItem.order) console.warn("panick");
 
   } else {
-    const adjacentItem = state.items[newIndex - 1];
-    newOrder = Math.floor((state.items[newIndex].order + adjacentItem.order) / 2);
+    const adjacentItem = snapshot.allInOrder[newIndex - 1];
+    newOrder = Math.floor((snapshot.allInOrder[newIndex].order + adjacentItem.order) / 2);
     if (newOrder == adjacentItem.order) console.warn("panick");
   }
 
-  state.items[oldIndex].order = newOrder;
+  syncModel.send({
+    op: "edit", table: "store_items", entity: {
+      id: activeItem.id,
+      store_id: snapshot.storeId,
+      order: newOrder
+    }
+  });
+  activeItem.order = newOrder;
 }
 
-export function handleCheckbox(item: LocalStoreItem) {
-  return (e: any) => {
-    const got = e.currentTarget.checked;
-    const itemState = state.items.find(x => x.id === item.id);
+export function handleCheckbox(args: ActionArgs, item: Snapshot<LocalStoreItem>) {
+  const { snapshot: { storeId }, syncModel } = args;
+  return (e: React.ChangeEvent<HTMLInputElement>) => {
+    const itemState = state.items[item.id];
     if (itemState) {
-      const entity = {
-        id: itemState.id,
-        got,
-        last_got_at: new Date()
-      }
+      const got = e.currentTarget.checked;
+      const last_got_at = new Date()
+      syncModel.send({
+        op: "edit", table: "store_items", entity: {
+          id: itemState.id,
+          store_id: storeId,
+          got, last_got_at
+        }
+      });
       document.startViewTransition(() => {
         flushSync(() => {
-          itemState.got = entity.got
-          itemState.last_got_at = entity.last_got_at
+          itemState.got = got
+          itemState.last_got_at = last_got_at
         })
       });
     }
   }
 }
-
-

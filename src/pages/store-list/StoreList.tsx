@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { dataClient } from "@/client/neon.ts";
 import { openIndexedDB } from "@/client/indexed-db.ts";
 import { Link } from "react-router";
+import { v4 as newId } from 'uuid';
 
 export default function StoreList() {
   const [stores, setStores] = useState<Store[]>([]);
@@ -33,7 +34,7 @@ export default function StoreList() {
 
   useEffect(() => {
     // IIFE to handle async
-    (async function () {
+    (async function() {
       // fetch from postgrest
       const result = await dataClient.from("stores").select("id,name");
       if (Array.isArray(result.data)) {
@@ -56,10 +57,10 @@ export default function StoreList() {
   const [name, setName] = useState("");
 
   function onNewStore() {
-    const action: Action<"new", "stores"> = {
+    const action: Action<"stores", "new"> = {
       table: "stores",
       op: "new",
-      entity: { name },
+      entity: { id: newId(), name },
     };
     setName("");
     sync.send(action);
