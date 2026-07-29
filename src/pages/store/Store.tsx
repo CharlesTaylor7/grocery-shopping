@@ -1,5 +1,5 @@
 import { useEffect, type ReactNode } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "wouter";
 import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -7,6 +7,7 @@ import Input from "@/components/Input";
 import { useAtom, useSetAtom, useAtomValue } from 'jotai';
 
 import { appendNewItemAtom, focusIndexAtom, gotItemsAtom, handleCheckboxAtom, handleDragEndAtom, handleDragStartAtom, handleKeydownAtom, handleTextboxAtom, loadStoreAtom, needItemsAtom, storeAtom } from "./actions";
+import useNavigate from "@/useNavigate";
 
 
 export default function Store() {
@@ -14,8 +15,8 @@ export default function Store() {
   const params = useParams();
   const storeId = params.id;
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
   const load = useSetAtom(loadStoreAtom);
   const store = useAtomValue(storeAtom);
   const handleDragStart = useSetAtom(handleDragStartAtom);

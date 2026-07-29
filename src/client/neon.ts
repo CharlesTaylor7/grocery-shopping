@@ -1,10 +1,10 @@
 
 import { VITE_NEON_AUTH_URL, VITE_NEON_DATA_URL } from "@/client/config.ts";
 import { createAuthClient } from "@neondatabase/auth";
-import { BetterAuthReactAdapter } from "@neondatabase/auth/react";
+import { BetterAuthReactAdapter, type BetterAuthReactAdapterInstance } from "@neondatabase/auth/react";
 import { atom } from "jotai";
 
-export const authClient = createAuthClient(
+export const authClient = createAuthClient<BetterAuthReactAdapterInstance>(
   VITE_NEON_AUTH_URL,
   {
     adapter: BetterAuthReactAdapter({}),

@@ -1,4 +1,4 @@
-import { useParams } from "react-router";
+import { useParams } from "wouter";
 
 export default function Trip() {
   const params = useParams();

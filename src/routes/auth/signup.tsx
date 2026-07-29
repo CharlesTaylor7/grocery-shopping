@@ -1,8 +1,8 @@
 import { authClient } from "@/client/neon.ts";
 import type { SubmitEventHandler } from "react";
 import { toast } from "@/client/toast";
-import { useNavigate } from "react-router";
 import { lastVisitedUrl } from "@/client/redirect";
+import useNavigate from "@/useNavigate";
 
 export default function Signup() {
   const navigate = useNavigate();

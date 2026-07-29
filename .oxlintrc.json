@@ -18,7 +18,7 @@
       "error",
       {
         "name": "location",
-        "message": "Use react-router's useLocation()"
+        "message": "Use wouter's useLocation()"
       },
     ],
     "no-restricted-properties": [
@@ -26,17 +26,17 @@
       {
         "object": "window",
         "property": "location",
-        "message": "Use react-router's useLocation()"
+        "message": "Use wouter's useLocation()"
       },
       {
         "object": "document",
         "property": "location",
-        "message": "Use react-router's useLocation()"
+        "message": "Use wouter's useLocation()"
       },
       {
         "object": "globalThis",
         "property": "location",
-        "message": "Use react-router's useLocation()"
+        "message": "Use wouter's useLocation()"
       }
     ]
   }

@@ -3,12 +3,10 @@
 // prompts for signup or login
 
 import { authClient } from "@/client/neon.ts";
-import { Link, useLocation, useNavigate } from "react-router";
+import { Link, useLocation } from "wouter";
 
 export default function LoginPrompt() {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const path = location.pathname;
+  const [location, navigate] = useLocation();
   const session = authClient.useSession();
   function logout() {
     authClient.signOut();
@@ -25,7 +23,7 @@ export default function LoginPrompt() {
         </button>
       </div>
     );
-  } else if (session.isPending || path.startsWith("/auth") || path.endsWith("/")) {
+  } else if (session.isPending || location.startsWith("/auth") || location.endsWith("/")) {
     return null;
   } else {
     return (

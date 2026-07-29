@@ -1,11 +1,11 @@
 import type { Store, Action } from "@/shared/types.ts";
 import { useEffect, useState } from "react";
 import { openIndexedDB } from "@/client/indexed-db.ts";
-import { Link } from "react-router";
+import { Link } from "wouter";
 import { v4 as newId } from 'uuid';
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { syncAtom } from "@/client/model";
-import { dataClientAtom } from "@/client/neon";
+import { DataClient, dataClientAtom } from "@/client/neon";
 
 export default function StoreList() {
   const [stores, setStores] = useState<Store[]>([]);
@@ -33,10 +33,10 @@ export default function StoreList() {
     }
   }
 
-  const dataClient = useAtomValue(dataClientAtom);
   useEffect(() => {
     // IIFE to handle async
     (async function() {
+      const dataClient = await DataClient.new();
       // fetch from postgrest
       const result = await dataClient.get("stores",
         { select: 'id,name' });
@@ -53,7 +53,7 @@ export default function StoreList() {
       };
       sortStores();
     })();
-  }, [dataClient]);
+  }, []);
   const sync = useAtomValue(syncAtom);
   const [name, setName] = useState("");
 

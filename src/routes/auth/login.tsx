@@ -3,7 +3,7 @@ import type { SubmitEventHandler } from "react";
 import { toast } from "@/client/toast";
 import { useRef } from "react";
 import { lastVisitedUrl } from "@/client/redirect.ts";
-import { useNavigate } from "react-router";
+import useNavigate from "@/useNavigate";
 
 export default function Login() {
   const navigate = useNavigate();

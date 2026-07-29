@@ -1,7 +1,7 @@
 import { authClient } from "@/client/neon";
-import { useNavigate } from "react-router";
 import { useEffect } from "react";
 import { lastVisitedUrl } from "@/client/redirect";
+import useNavigate from "@/useNavigate";
 
 
 export default function Index() {

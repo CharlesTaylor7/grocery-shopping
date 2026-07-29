@@ -9,7 +9,7 @@ export const SYNC_MODE: SyncMode =
   "main-loop";
 
 export const ENABLE_SERVICE_WORKER: boolean =
-  true
+  false
 
 export const AUTH_GUARD: boolean =
   false

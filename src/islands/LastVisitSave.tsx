@@ -1,13 +1,14 @@
 import { useEffect } from "react";
-import { useLocation } from "react-router";
+import { useLocation } from "wouter";
 
 export default function LastVisitSave() {
-  const location = useLocation();
+  const [location] = useLocation();
   useEffect(() => {
-    const route = location.pathname
+    console.log(location);
+    const route = location
     if (route.endsWith("/") || route.startsWith("/auth")) return;
 
     localStorage.setItem("last_visited_url", route);
-  }, [location.pathname]);
+  }, [location]);
   return null;
 }

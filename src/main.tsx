@@ -1,9 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { RouterProvider } from "react-router";
-import router from "@/router.tsx";
+import App from "@/components/App";
 import "@/client/styles.css";
-import { ENABLE_SERVICE_WORKER } from "./client/config";
+import { ENABLE_SERVICE_WORKER } from "@/client/config";
 
 if (ENABLE_SERVICE_WORKER) {
   navigator.serviceWorker
@@ -13,6 +12,6 @@ if (ENABLE_SERVICE_WORKER) {
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <App />
   </StrictMode>,
 );

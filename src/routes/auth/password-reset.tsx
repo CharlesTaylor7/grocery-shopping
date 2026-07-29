@@ -1,7 +1,8 @@
 import { authClient } from "@/client/neon.ts";
+import useNavigate from "@/useNavigate";
 import type { SubmitEventHandler } from "react";
 import { useEffect, useRef } from "react";
-import { useNavigate, useSearchParams } from "react-router";
+import { useSearchParams } from "wouter";
 
 export default function PasswordReset() {
   const [params, _] = useSearchParams();
