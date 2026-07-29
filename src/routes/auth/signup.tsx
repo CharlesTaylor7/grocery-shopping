@@ -1,7 +1,6 @@
 import { authClient } from "@/client/neon.ts";
 import type { SubmitEventHandler } from "react";
 import { toast } from "@/client/toast";
-import { AuthApiError } from "@neondatabase/auth";
 import { useNavigate } from "react-router";
 import { lastVisitedUrl } from "@/client/redirect";
 
@@ -27,7 +26,7 @@ export default function Signup() {
     } catch (e) {
       console.error(e);
       toast(() => {
-        const error = e as AuthApiError;
+        const error = e as { message: string };
         return error.message;
       });
     }
