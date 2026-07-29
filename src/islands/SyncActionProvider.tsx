@@ -57,20 +57,15 @@ function runOnMainThread(): EffectCleanup {
 
 
 class MainThreadWorker {
-  static counter = 0;
-  private id: number;
   private terminated: boolean = false;
   constructor() {
-    this.id = MainThreadWorker.counter++;
   }
 
   terminate() {
     this.terminated = true;
-    console.log("terminate", this.id);
   }
 
   async run() {
-    console.log("start", this.id);
     const db = await openIndexedDB();
 
     while (!this.terminated) {

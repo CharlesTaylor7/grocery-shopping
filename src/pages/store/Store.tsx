@@ -6,18 +6,20 @@ import { CSS } from "@dnd-kit/utilities";
 import { useSnapshot } from "valtio";
 import { useSyncModel } from "@/client/model";
 import Input from "@/components/Input";
-import { state, load, handleDragStart, handleDragEnd, handleKeydown, handleCheckbox, appendNewItem } from "./actions";
+import { proxy, load, handleDragStart, handleDragEnd, handleKeydown, handleCheckbox, appendNewItem, derivedProxy, } from "./actions";
 
 
 export default function Store() {
   // stateful hooks
   const params = useParams();
-  const snapshot = useSnapshot(state);
+  const stateSnapshot = useSnapshot(proxy);
+  const computedSnapshot = useSnapshot(derivedProxy);
+  const snap = { ...stateSnapshot, ...computedSnapshot };
   const syncModel = useSyncModel();
   const storeId = params.id;
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
   const navigate = useNavigate();
-  const args = { snapshot, syncModel };
+  const args = { snapshot: snap, syncModel };
 
   // effects
   useEffect(() => {
@@ -31,7 +33,7 @@ export default function Store() {
   // render
   return (
     <div>
-      <h2 className="text-center underline">{snapshot.storeName}</h2>
+      <h2 className="text-center underline">{stateSnapshot.storeName}</h2>
 
       <div>
         <DndContext
@@ -41,9 +43,9 @@ export default function Store() {
           onDragEnd={(event) => handleDragEnd(args, event)}
         >
           <SortableContext
-            items={snapshot.need.map(item => item.id)}
+            items={computedSnapshot.need.map(item => item.id)}
             strategy={verticalListSortingStrategy}>
-            {snapshot.need.map((item, index) => (
+            {computedSnapshot.need.map((item, index) => (
               <Sortable id={item.id} key={item.id}>
                 <div id={item.id} className="flex flex-row m-2">
                   <input
@@ -54,15 +56,15 @@ export default function Store() {
                     onChange={handleCheckbox(args, item)}
                   />
                   <Input
-                    focus={index === snapshot.focusIndex}
+                    focus={index === stateSnapshot.focusIndex}
                     data-id={item.id}
                     type="text"
                     className="w-80 mx-4 outline-hidden"
-                    onFocus={() => state.focusIndex = index}
+                    onFocus={() => proxy.focusIndex = index}
                     onKeyDown={(e) => handleKeydown(args, e)}
                     value={item.description}
                     onChange={e => {
-                      const local = state.items[item.id];
+                      const local = proxy.items[item.id];
                       const description = e.currentTarget.value;
                       if (local) {
                         local.description = description;
@@ -71,7 +73,7 @@ export default function Store() {
                           table: "store_items",
                           entity: {
                             id: item.id,
-                            store_id: snapshot.storeId,
+                            store_id: stateSnapshot.storeId,
                             description,
                           }
                         })
@@ -86,9 +88,9 @@ export default function Store() {
             ))}
           </SortableContext>
         </DndContext>
-        {snapshot.gots.length ? <h3 className="my-3">GOT</h3> : null}
+        {computedSnapshot.gots.length ? <h3 className="my-3">GOT</h3> : null}
         <div>
-          {snapshot.gots.map(item => (
+          {computedSnapshot.gots.map(item => (
             <div id={item.id} key={item.id} className="flex flex-row m-2">
               <input
                 tabIndex={-1}

@@ -23,7 +23,8 @@
     "react-router": "^8",
     "sonner": "^2.0.7",
     "uuid": "^14.0.1",
-    "valtio": "^2.3.2"
+    "valtio": "^2.3.2",
+    "valtio-reactive": "^0.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.29.7",

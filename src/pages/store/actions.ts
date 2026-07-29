@@ -1,19 +1,22 @@
 import type { StoreItem } from "@/shared/types.ts";
 import { dataClient } from "@/client/neon.ts";
 import { openIndexedDB, promisify } from "@/client/indexed-db.ts";
-import { proxy, type Snapshot } from "valtio";
+import { proxy as valtioProxy, type Snapshot as ValtioSnapshot } from "valtio";
 import { type SyncApi } from "@/client/model";
 import { type Action } from "@/shared/types";
 import { flushSync } from "react-dom";
 import { v4 as newId } from "uuid";
+import { computed } from "valtio-reactive";
 
 
+
+export type Snapshot = ValtioSnapshot<State & ComputedState>;
 export interface ActionArgs {
-  snapshot: Snapshot<State>,
+  snapshot: Snapshot,
   syncModel: SyncApi,
 }
-export interface LocalStoreItem extends Omit<StoreItem, "store_id"> { }
-export interface GotItem extends LocalStoreItem {
+
+export interface GotItem extends StoreItem {
   got: true,
   last_got_at: Date,
 }
@@ -22,10 +25,12 @@ export interface State {
   storeId: string,
   storeName: string,
   focusIndex: number,
-  items: Record<string, LocalStoreItem>,
-  get allInOrder(): LocalStoreItem[],
-  get need(): LocalStoreItem[],
-  get gots(): GotItem[],
+  items: Record<string, StoreItem>,
+}
+export interface ComputedState {
+  allInOrder: Array<StoreItem>,
+  gots: Array<GotItem>,
+  need: Array<StoreItem>,
 }
 
 function initialState(): State {
@@ -34,32 +39,31 @@ function initialState(): State {
     storeName: '',
     focusIndex: -1,
     items: {},
-
-    get allInOrder() {
-      return Object.values(this.items)
-        .sort((a, b) => a.order - b.order);
-    },
-
-    get need() {
-      return Object.values(this.items)
-        .filter(item => !item.got)
-        .sort((a, b) => a.order - b.order);
-    },
-
-    get gots() {
-      const filtered = Object.values(this.items).filter(item => item.got) as GotItem[];
-      return filtered.sort((a, b) => b.last_got_at.valueOf() - a.last_got_at.valueOf());
-    }
-  };
+  }
 }
 
-export const state: State = proxy(initialState());
+export const proxy: State = valtioProxy(initialState());
+export const derivedProxy = computed<ComputedState>(({
+  allInOrder: () =>
+    Object.values(proxy.items)
+      .sort((a, b) => a.order - b.order),
+
+  need: () => Object.values(proxy.items)
+    .filter(item => !item.got)
+    .sort((a, b) => a.order - b.order),
+
+  gots: () => {
+    const filtered = Object.values(proxy.items).filter(item => item.got) as GotItem[];
+    return filtered.sort((a, b) => b.last_got_at.valueOf() - a.last_got_at.valueOf());
+  }
+}));
+
 
 export function resetState() {
-  state.storeId = '';
-  state.focusIndex = -1;
-  state.storeName = '';
-  state.items = {};
+  proxy.storeId = '';
+  proxy.focusIndex = -1;
+  proxy.storeName = '';
+  proxy.items = {};
 }
 
 export async function load(storeId: string) {
@@ -73,11 +77,14 @@ export async function load(storeId: string) {
     });
   if (result.data?.length) {
     const store = result.data[0];
-    state.storeId = storeId;
-    state.storeName = store.name;
+    proxy.storeId = storeId;
+    proxy.storeName = store.name;
     for (const item of store.items) {
       item.last_got_at = item.last_got_at ? new Date(item.last_got_at) : null;
-      state.items[item.id] = item;
+      // @ts-ignore
+      item.store_id = storeId
+      // @ts-ignore
+      proxy.items[item.id] = item;
     }
   }
   else {
@@ -150,18 +157,18 @@ export function applyAction(action: Action) {
   if (action.table !== 'store_items') return;
   switch (action.op) {
     case 'new': {
-      state.items[action.entity.id!] = action.entity as StoreItem;
+      proxy.items[action.entity.id!] = action.entity as StoreItem;
       break;
     }
     case 'edit': {
-      const item = state.items[action.entity.id!];
+      const item = proxy.items[action.entity.id!];
       if (item) {
         Object.assign(item, action.entity);
       }
       break;
     }
     case 'delete': {
-      delete state.items[action.entity.id!];
+      delete proxy.items[action.entity.id!];
       break;
     }
   }
@@ -179,28 +186,28 @@ export function appendNewItem({ snapshot, syncModel }: ActionArgs) {
   };
 
   syncModel.send({ op: "new", table: "store_items", entity: item });
-  state.items[item.id] = item;
-  state.focusIndex = snapshot.allInOrder.length;
+  proxy.items[item.id] = item;
+  proxy.focusIndex = snapshot.allInOrder.length;
 }
 
 export function handleKeydown(args: ActionArgs, e: any) {
   const { snapshot, syncModel } = args;
   if (e.code == "Enter") {
-    if (state.focusIndex === null || state.focusIndex === snapshot.need.length - 1) {
+    if (proxy.focusIndex === null || proxy.focusIndex === snapshot.need.length - 1) {
       appendNewItem(args);
     }
     else {
       // next item is non-empty, insert one between
-      if (snapshot.need[state.focusIndex + 1].description) {
-        const prevOrder = snapshot.need[state.focusIndex].order;
-        const nextOrder = snapshot.need[state.focusIndex + 1].order;
+      if (snapshot.need[proxy.focusIndex + 1]?.description) {
+        const prevOrder = snapshot.need[proxy.focusIndex].order;
+        const nextOrder = snapshot.need[proxy.focusIndex + 1].order;
         const order = (prevOrder + nextOrder) / 2
         const item = { id: newId(), got: false, description: "", order, store_id: snapshot.storeId };
         syncModel.send({ op: "new", table: "store_items", entity: item });
-        state.items[item.id] = item;
+        proxy.items[item.id] = item;
       }
       // advance to empty item
-      state.focusIndex++;
+      proxy.focusIndex++;
     }
 
   }
@@ -211,15 +218,15 @@ export function handleKeydown(args: ActionArgs, e: any) {
       e.preventDefault();
 
       syncModel.send({ op: "delete", table: "store_items", entity: { id, store_id: snapshot.storeId } });
-      delete state.items[id];
-      state.focusIndex--;
+      delete proxy.items[id];
+      proxy.focusIndex--;
     }
   }
 }
 
 
 export function handleDragStart() {
-  state.focusIndex = -1;
+  proxy.focusIndex = -1;
 }
 
 export function handleDragEnd(args: ActionArgs, event: any) {
@@ -227,7 +234,7 @@ export function handleDragEnd(args: ActionArgs, event: any) {
   if (!over || active.id === over.id) return;
   const { snapshot, syncModel } = args;
 
-  const activeItem = state.items[active.id]
+  const activeItem = proxy.items[active.id]
   if (!activeItem) return;
 
   const oldIndex = snapshot.allInOrder.findIndex((i) => i.id === active.id);
@@ -259,10 +266,10 @@ export function handleDragEnd(args: ActionArgs, event: any) {
   activeItem.order = newOrder;
 }
 
-export function handleCheckbox(args: ActionArgs, item: Snapshot<LocalStoreItem>) {
+export function handleCheckbox(args: ActionArgs, item: ValtioSnapshot<StoreItem>) {
   const { snapshot: { storeId }, syncModel } = args;
   return (e: React.ChangeEvent<HTMLInputElement>) => {
-    const itemState = state.items[item.id];
+    const itemState = proxy.items[item.id];
     if (itemState) {
       const got = e.currentTarget.checked;
       const last_got_at = new Date()
