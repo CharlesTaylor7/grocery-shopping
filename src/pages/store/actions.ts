@@ -1,7 +1,6 @@
 import type { StoreItem } from "@/shared/types.ts";
-import { dataClient } from "@/client/neon.ts";
+import { dataClient, dataClientAtom, DataClient } from "@/client/neon.ts";
 import { openIndexedDB, promisify } from "@/client/indexed-db.ts";
-import { type SyncApi } from "@/client/model";
 import { type Action } from "@/shared/types";
 import { flushSync } from "react-dom";
 import { v4 as newId } from "uuid";
@@ -47,17 +46,18 @@ export const gotItemsAtom = atom(get => {
 export const loadStoreAtom = atom(
   null,
   async (get, set, storeId: string) => {
+    const dataClient = await get(dataClientAtom);
     // TODO: how to abort this?
-    const result = await dataClient
-      .from("stores")
-      .select("name, items:store_items(id, description, got, order, last_got_at)")
-      .eq("id", storeId)
-      .order("order", {
-        referencedTable: "items",
-        ascending: true,
-      });
-    if (result.data?.length) {
-      const store = result.data[0];
+    const stores = await dataClient
+      .get("stores",
+        {
+          'select': 'name,items:store_items(id, description, got, order, last_got_at)',
+          'id': `eq.${storeId}`,
+          'store_items.order': "order.asc"
+        })
+
+    if (stores.length) {
+      const store = stores[0];
       set(storeAtom, { id: storeId, name: store.name });
       const items: Record<string, StoreItem> = {};
       for (const item of store.items) {
@@ -68,9 +68,6 @@ export const loadStoreAtom = atom(
         items[item.id] = item;
       }
       set(storeItemsAtom, items);
-    }
-    else {
-      throw result.error;
     }
     // go to indexed db for offline pending items
     const db = await openIndexedDB();

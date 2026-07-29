@@ -19,3 +19,5 @@ sleep 1sec
 
 ## watch it
 gh run watch
+
+print "Live at https://charlestaylor7.github.io/grocery-shopping"

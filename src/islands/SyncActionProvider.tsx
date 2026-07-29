@@ -1,12 +1,11 @@
-import { syncAtom, SyncModel, type SyncApi } from "@/client/model.ts";
-import { type ReactNode, useEffect, useMemo, useState } from "react";
+import { syncAtom, SyncModel } from "@/client/model.ts";
+import { type ReactNode, useEffect, useState } from "react";
 import { authClient, dataClient } from "@/client/neon.ts";
 import { syncNextAction } from "@/client/sync.ts";
 import { openIndexedDB } from "@/client/indexed-db.ts";
 import SyncWorker from "@/client/sync-worker.ts?worker";
 import { createStore, Provider, } from "jotai";
 
-type Store = ReturnType<typeof createStore>;
 
 export type SyncMode = "immediate" | "offline-sim" | "main-loop" | "web-worker"
 

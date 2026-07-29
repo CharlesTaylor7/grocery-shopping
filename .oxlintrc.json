@@ -20,10 +20,6 @@
         "name": "location",
         "message": "Use react-router's useLocation()"
       },
-      {
-        "name": "URLSearchParams",
-        "message": "Use react-router's useSearchParams()"
-      }
     ],
     "no-restricted-properties": [
       "error",

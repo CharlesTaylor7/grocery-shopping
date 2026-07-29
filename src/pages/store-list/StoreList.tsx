@@ -1,6 +1,5 @@
 import type { Store, Action } from "@/shared/types.ts";
 import { useEffect, useState } from "react";
-import { dataClient } from "@/client/neon.ts";
 import { openIndexedDB } from "@/client/indexed-db.ts";
 import { Link } from "react-router";
 import { v4 as newId } from 'uuid';
