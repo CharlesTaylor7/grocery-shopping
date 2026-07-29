@@ -1,64 +1,91 @@
-import { createClient } from "@neondatabase/neon-js";
 
-import { type NeonPostgrestClient } from "@neondatabase/postgrest-js";
-import { BetterAuthReactAdapter } from "@neondatabase/neon-js/auth/react/adapters";
-import { type ReactBetterAuthClient } from "@neondatabase/neon-js/auth";
 import { VITE_NEON_AUTH_URL, VITE_NEON_DATA_URL } from "@/client/config.ts";
+import { createAuthClient } from "@neondatabase/auth";
+import { BetterAuthReactAdapter } from "@neondatabase/auth/react";
 import { atom } from "jotai";
 
-const neonClient = createClient({
-  auth: {
-    url: VITE_NEON_AUTH_URL,
+export const authClient = createAuthClient(
+  VITE_NEON_AUTH_URL,
+  {
     adapter: BetterAuthReactAdapter({}),
-  },
-  dataApi: {
-    url: VITE_NEON_DATA_URL,
-  },
-});
+  }
+);
 
-export type NeonAuthClient = ReactBetterAuthClient;
-export type NeonDataClient = NeonPostgrestClient;
-export const authClient: NeonAuthClient = neonClient.auth;
-export const dataClient: NeonDataClient = neonClient;
-async function authHeaders(): Promise<Headers> {
+
+async function authHeader(): Promise<string> {
   const token = await authClient.token();
   if (!token.data) throw new Error("not logged in");
 
-  const headers = new Headers();
-  headers.set("Authorization", `Bearer ${token.data.token}`);
-  return headers;
+  return `Bearer ${token.data.token}`;
 }
+
+// TODO: use this so we can catch specific codes
+interface PostgrestResult {
+  error?: { code: string, message: string };
+  data?: unknown;
+}
+
 
 // https://docs.postgrest.org/en/v14/references/api/tables_views.html
 export class DataClient {
-  constructor(private headers: Headers) { }
+
+  constructor(public authHeader: string) { }
 
   static new() {
-    return authHeaders().then(headers => new DataClient(headers));
+    return authHeader().then(header => new DataClient(header));
   }
 
   async get<T = any>(table: string, query: Record<string, string>): Promise<T[]> {
     const queryString = new URLSearchParams(query);
     const url = `${VITE_NEON_DATA_URL}/${table}?${queryString}`
-    console.log(url)
     const response = await fetch(url,
       {
         method: "GET",
-        headers: this.headers
+        headers: {
+          "Authorization": this.authHeader,
+        }
       });
     const json = await response.json();
     return json;
   }
 
-  async patch() {
-    return fetch(VITE_NEON_DATA_URL,
+  async patch(table: string, query: Record<string, string>, data: object) {
+    const queryString = new URLSearchParams(query);
+    const url = `${VITE_NEON_DATA_URL}/${table}?${queryString}`
+    await fetch(url,
       {
         method: "PATCH",
-        headers: this.headers
+        headers: {
+          "Authorization": this.authHeader,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
       })
   }
-  async delete() {
-    return fetch(VITE_NEON_DATA_URL, { method: "DELETE", })
+
+  async post(table: string, data: object) {
+    const url = `${VITE_NEON_DATA_URL}/${table}`
+    await fetch(url,
+      {
+        method: "POST",
+        headers: {
+          "Authorization": this.authHeader,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+  }
+
+  async delete(table: string, query: Record<string, string>) {
+    const queryString = new URLSearchParams(query);
+    const url = `${VITE_NEON_DATA_URL}/${table}?${queryString}`
+    await fetch(url,
+      {
+        method: "DELETE",
+        headers: {
+          "Authorization": this.authHeader,
+        },
+      })
   }
 }
 

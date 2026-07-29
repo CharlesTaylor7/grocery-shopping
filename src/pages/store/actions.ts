@@ -1,5 +1,5 @@
 import type { StoreItem } from "@/shared/types.ts";
-import { dataClient, dataClientAtom, DataClient } from "@/client/neon.ts";
+import { dataClientAtom } from "@/client/neon.ts";
 import { openIndexedDB, promisify } from "@/client/indexed-db.ts";
 import { type Action } from "@/shared/types";
 import { flushSync } from "react-dom";

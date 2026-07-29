@@ -5,6 +5,7 @@ import { Link } from "react-router";
 import { v4 as newId } from 'uuid';
 import { useAtom, useAtomValue } from 'jotai'
 import { syncAtom } from "@/client/model";
+import { dataClientAtom } from "@/client/neon";
 
 export default function StoreList() {
   const [stores, setStores] = useState<Store[]>([]);
@@ -32,14 +33,14 @@ export default function StoreList() {
     }
   }
 
+  const dataClient = useAtomValue(dataClientAtom);
   useEffect(() => {
     // IIFE to handle async
     (async function() {
       // fetch from postgrest
-      const result = await dataClient.from("stores").select("id,name");
-      if (Array.isArray(result.data)) {
-        setStores(result.data);
-      }
+      const result = await dataClient.get("stores",
+        { select: 'id,name' });
+      setStores(result);
 
       // apply local changes
       const db = await openIndexedDB();
@@ -52,7 +53,7 @@ export default function StoreList() {
       };
       sortStores();
     })();
-  }, []);
+  }, [dataClient]);
   const sync = useAtomValue(syncAtom);
   const [name, setName] = useState("");
 

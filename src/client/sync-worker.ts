@@ -1,11 +1,8 @@
-import { NeonPostgrestClient } from "@neondatabase/postgrest-js";
 import { openIndexedDB } from "@/client/indexed-db.ts";
 import { syncNextAction } from "@/client/sync.ts";
-import { VITE_NEON_DATA_URL } from "@/client/config.ts";
+import { DataClient } from "@/client/neon";
 
-const client = new NeonPostgrestClient({
-  dataApiUrl: VITE_NEON_DATA_URL,
-});
+const client = await DataClient.new();
 
 const db = await openIndexedDB();
 
@@ -18,15 +15,15 @@ const syncArgs = { db, client, log };
 onmessage = (msg) => {
   const token = msg.data;
   if (token) {
-    client.headers.set("Authorization", `Bearer ${token}`);
+    client.authHeader = `Bearer ${token}`;
     processQueue();
   } else {
-    client.headers.delete("Authorization");
+    client.authHeader = '';
   }
 };
 
 async function processQueue() {
-  if (!client.headers.get("Authorization")) return;
+  if (!client.authHeader) return;
 
   let didWork = true;
   while (didWork) {

@@ -1,11 +1,11 @@
-import { type NeonDataClient } from "@/client/neon.ts";
+import { DataClient } from "@/client/neon.ts";
 import { type Action } from "@/shared/types.ts";
 
 type Log = (...args: unknown[]) => void;
 
 interface Args {
   db: IDBDatabase;
-  client: NeonDataClient;
+  client: DataClient;
   log: Log;
 }
 
@@ -39,51 +39,38 @@ export function syncNextAction({ db, client, log }: Args): Promise<boolean> {
   });
 }
 
-interface PostgrestResult {
-  error?: { code: string, message: string };
-  data?: unknown;
-}
-export function pushToPostgrest(client: NeonDataClient, action: Action): Promise<unknown> {
-  let query: Promise<PostgrestResult>;
+export async function pushToPostgrest(client: DataClient, action: Action): Promise<unknown> {
   switch (action.op) {
     case "new": {
       const { table, entity } = action;
-      query = client.from(table).insert(entity) as any;
+      return await client.post(table, entity);
       break;
     }
 
     case "edit": {
-      const {
-        table,
-        entity: { id, ...data },
-      } = action;
-      query = client.from(table).update(data).eq("id", id) as any;
+      const { table, entity: { id, ...data } } = action;
+      return await client.patch(table, { id: `eq.${id}` }, data);
       break;
     }
 
     case "delete": {
-      const {
-        table,
-        entity: { id },
-      } = action;
-      query = client.from(table).delete().eq("id", id) as any;
+      const { table, entity: { id } } = action;
+      return await client.delete(table, { id: `eq.${id}` });
       break;
     }
     default:
-      return Promise.resolve(null);
+      console.log("unknown op", action.op);
   }
-  // query's are lazy, transform to an eager promise to begin execution.
-  // This is so we can run the query in a non async context in a "fire-and-forget" fashion.
-  return query.then((result) => {
-    if (result.error) {
-      // unique constraint violation. just ignore it and move on
-      if (result.error?.code === "23505") {
-        return result;
-      } else {
-        return Promise.reject(result.error.message);
-      }
-    } else {
-      return result;
-    }
-  });
+  // TODO: port this:
+  //   if (result.error) {
+  //     // unique constraint violation. just ignore it and move on
+  //     if (result.error?.code === "23505") {
+  //       return result;
+  //     } else {
+  //       return Promise.reject(result.error.message);
+  //     }
+  //   } else {
+  //     return result;
+  //   }
+  // });
 }

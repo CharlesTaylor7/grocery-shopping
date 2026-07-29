@@ -1,6 +1,6 @@
 import { syncAtom, SyncModel } from "@/client/model.ts";
 import { type ReactNode, useEffect, useState } from "react";
-import { authClient, dataClient } from "@/client/neon.ts";
+import { authClient, DataClient } from "@/client/neon.ts";
 import { syncNextAction } from "@/client/sync.ts";
 import { openIndexedDB } from "@/client/indexed-db.ts";
 import SyncWorker from "@/client/sync-worker.ts?worker";
@@ -71,6 +71,7 @@ class MainThreadWorker {
 
   async run() {
     const db = await openIndexedDB();
+    const client = await DataClient.new();
 
     while (!this.terminated) {
       if (!navigator.onLine) {
@@ -78,7 +79,7 @@ class MainThreadWorker {
         continue;
       }
 
-      const didWork = await syncNextAction({ db, client: dataClient, log: console.log });
+      const didWork = await syncNextAction({ db, client, log: console.log });
       if (!didWork) await sleep(5000);
     }
 

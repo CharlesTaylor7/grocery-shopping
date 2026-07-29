@@ -1,7 +1,7 @@
 import { authClient } from "@/client/neon.ts";
 import type { SubmitEventHandler } from "react";
 import { toast } from "@/client/toast";
-import { AuthApiError } from "@neondatabase/neon-js/auth";
+import { AuthApiError } from "@neondatabase/auth";
 import { useNavigate } from "react-router";
 import { lastVisitedUrl } from "@/client/redirect";
 
