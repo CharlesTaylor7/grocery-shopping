@@ -15,14 +15,13 @@ import {
   initBroadcastChannel,
 } from './better-auth-methods';
 import { anonymousTokenClient } from '../plugins/anonymous-token';
-import { injectClientInfo } from '../utils/client-info';
 import type { BetterAuthInstance } from '../types';
 import { normalizeBetterAuthError } from './better-auth-helpers';
 
 export interface NeonAuthAdapterCoreAuthOptions extends Omit<
   BetterAuthClientOptions,
   'plugins'
-> {}
+> { }
 
 export const FORCE_FETCH_HEADER = 'X-Force-Fetch';
 
@@ -73,7 +72,7 @@ export abstract class NeonAuthAdapterCore {
           userOnRequest?.(request);
         },
         customFetchImpl: async (url, init) => {
-          const headers = injectClientInfo(init?.headers);
+          const headers = new Headers(init?.headers);
           // Skip deduplication if X-Force-Fetch header is present
           if (headers.has(FORCE_FETCH_HEADER)) {
             headers.delete(FORCE_FETCH_HEADER);

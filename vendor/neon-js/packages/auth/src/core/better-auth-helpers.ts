@@ -1,4 +1,3 @@
-import { AuthError, AuthApiError } from '../adapters/supabase/auth-interface';
 import type { BetterFetchError } from '@better-fetch/fetch';
 import type {
   BetterAuthErrorResponse,
@@ -9,11 +8,6 @@ import type { Session, User, UserIdentity } from '@supabase/auth-js';
 import { toISOString } from '../utils/date';
 import { DEFAULT_SESSION_EXPIRY_MS } from './constants';
 import type { accountInfo, listUserAccounts } from 'better-auth/api';
-import {
-  AuthErrorCode,
-  getErrorDefinition,
-} from '../adapters/supabase/errors/definitions';
-import { BETTER_AUTH_ERROR_MAP } from '../adapters/supabase/errors/mappings';
 
 /**
  * Normalize Better Auth errors to standard AuthError format
@@ -418,20 +412,20 @@ export function mapBetterAuthIdentity(
     last_sign_in_at: toISOString(betterAuthUserIdentityAccount.updatedAt),
     identity_data: accountInfoData
       ? {
-          provider: betterAuthUserIdentityAccount.providerId,
-          provider_id: betterAuthUserIdentityAccount.accountId,
-          scopes: betterAuthUserIdentityAccount.scopes,
-          email: accountInfoData.data.email,
-          name: accountInfoData.data.user.name,
-          picture: accountInfoData.data.user.picture,
-          email_verified: accountInfoData.data.user.email_verified,
-          ...accountInfoData.data,
-        }
+        provider: betterAuthUserIdentityAccount.providerId,
+        provider_id: betterAuthUserIdentityAccount.accountId,
+        scopes: betterAuthUserIdentityAccount.scopes,
+        email: accountInfoData.data.email,
+        name: accountInfoData.data.user.name,
+        picture: accountInfoData.data.user.picture,
+        email_verified: accountInfoData.data.user.email_verified,
+        ...accountInfoData.data,
+      }
       : {
-          provider: betterAuthUserIdentityAccount.providerId,
-          provider_id: betterAuthUserIdentityAccount.accountId,
-          scopes: betterAuthUserIdentityAccount.scopes,
-        },
+        provider: betterAuthUserIdentityAccount.providerId,
+        provider_id: betterAuthUserIdentityAccount.accountId,
+        scopes: betterAuthUserIdentityAccount.scopes,
+      },
   };
 }
 
