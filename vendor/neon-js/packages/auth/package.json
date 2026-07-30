@@ -4,20 +4,6 @@
   "description": "TypeScript SDK for Neon Auth - authentication for PostgreSQL with multiple adapter support",
   "type": "module",
   "license": "Apache-2.0",
-  "keywords": [
-    "neon",
-    "neondb",
-    "postgresql",
-    "postgres",
-    "authentication",
-    "auth",
-    "typescript",
-    "sdk",
-    "better-auth",
-    "supabase",
-    "react",
-    "nextjs"
-  ],
   "homepage": "https://github.com/neondatabase/neon-js/tree/main/packages/auth#readme",
   "bugs": {
     "url": "https://github.com/neondatabase/neon-js/issues"
@@ -47,14 +33,6 @@
       "types": "./dist/react/index.d.mts",
       "default": "./dist/react/index.mjs"
     },
-    "./react/ui": {
-      "types": "./dist/react/ui/index.d.mts",
-      "default": "./dist/react/ui/index.mjs"
-    },
-    "./react/ui/server": {
-      "types": "./dist/react/ui/server.d.mts",
-      "default": "./dist/react/ui/server.mjs"
-    },
     "./react/adapters": {
       "types": "./dist/react/adapters/index.d.mts",
       "default": "./dist/react/adapters/index.mjs"
@@ -66,28 +44,10 @@
     "./vanilla/adapters": {
       "types": "./dist/vanilla/adapters/index.d.mts",
       "default": "./dist/vanilla/adapters/index.mjs"
-    },
-    "./next": {
-      "types": "./dist/next/index.d.mts",
-      "default": "./dist/next/index.mjs"
-    },
-    "./next/server": {
-      "types": "./dist/next/server/index.d.mts",
-      "default": "./dist/next/server/index.mjs"
-    },
-    "./ui/css": {
-      "types": "./dist/ui/css.d.ts",
-      "default": "./dist/ui/css.css"
-    },
-    "./ui/tailwind": {
-      "default": "./dist/ui/tailwind.css"
     }
   },
   "files": [
-    "codemods/migrate-auth-ui-imports.mjs",
-    "dist",
-    "llms.txt",
-    "sbom.cdx.json"
+    "dist"
   ],
   "publishConfig": {
     "access": "public"
@@ -105,17 +65,13 @@
   },
   "peerDependencies": {
     "react": ">=18.0.0",
-    "react-dom": ">=18.0.0",
-    "next": ">=16.0.0"
+    "react-dom": ">=18.0.0"
   },
   "peerDependenciesMeta": {
     "react": {
       "optional": true
     },
     "react-dom": {
-      "optional": true
-    },
-    "next": {
       "optional": true
     }
   }
