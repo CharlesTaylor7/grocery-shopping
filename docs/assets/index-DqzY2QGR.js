@@ -745,7 +745,6 @@ var appendNewItemAtom = atom(null, (get, set) => {
 		description: "",
 		order: lastOrder + 1e3
 	};
-	set(focusIndexAtom, get(itemsInOrderAtom).length);
 	set(applyAndSyncAtom, {
 		op: "new",
 		table: "store_items",
@@ -755,9 +754,9 @@ var appendNewItemAtom = atom(null, (get, set) => {
 var handleKeydownAtom = atom(null, (get, set, event) => {
 	const focusIndex = get(focusIndexAtom);
 	const needItems = get(needItemsAtom);
-	if (event.code == "Enter") if (focusIndex === -1 || focusIndex === needItems.length - 1) set(appendNewItemAtom);
-	else {
-		if (needItems[focusIndex + 1].description) {
+	if (event.code == "Enter") {
+		if (focusIndex === -1 || focusIndex === needItems.length - 1) set(appendNewItemAtom);
+		else if (needItems[focusIndex + 1]?.description) {
 			const order = (needItems[focusIndex].order + needItems[focusIndex + 1].order) / 2;
 			set(applyAndSyncAtom, {
 				op: "new",
@@ -770,9 +769,8 @@ var handleKeydownAtom = atom(null, (get, set, event) => {
 				}
 			});
 		}
-		set(focusIndexAtom, focusIndex + 1);
-	}
-	if (event.code == "Backspace") {
+		set(focusIndexAtom, (i) => i + 1);
+	} else if (event.code == "Backspace") {
 		const val = event.currentTarget.value;
 		const id = event.currentTarget.dataset.id;
 		if (!val) {
@@ -784,7 +782,9 @@ var handleKeydownAtom = atom(null, (get, set, event) => {
 			});
 			set(focusIndexAtom, (i) => i - 1);
 		}
-	}
+	} else if (event.code === "ArrowUp") set(focusIndexAtom, (i) => Math.max(0, i - 1));
+	else if (event.code === "ArrowDown") set(focusIndexAtom, (i) => Math.min(get(needItemsAtom).length - 1, i + 1));
+	else console.log(event);
 });
 var handleDragStartAtom = atom(null, (_get, set) => {
 	set(focusIndexAtom, -1);
