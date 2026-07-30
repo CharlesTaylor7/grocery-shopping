@@ -1,22 +1,15 @@
 
-import { VITE_NEON_AUTH_URL, VITE_NEON_DATA_URL } from "@/client/config.ts";
-import { createAuthClient } from "@neondatabase/auth";
-import { BetterAuthReactAdapter, type BetterAuthReactAdapterInstance } from "@neondatabase/auth/react";
+import { NEON_DATA_URL } from "@/client/config.ts";
 import { atom } from "jotai";
+import { authClient } from "@/client/auth";
 
-export const authClient = createAuthClient<BetterAuthReactAdapterInstance>(
-  VITE_NEON_AUTH_URL,
-  {
-    adapter: BetterAuthReactAdapter({}),
-  }
-);
 
 
 async function authHeader(): Promise<string> {
-  const token = await authClient.token();
-  if (!token.data) throw new Error("not logged in");
+  const token = await authClient.getJWT();
+  if (!token) throw new Error("not logged in");
 
-  return `Bearer ${token.data.token}`;
+  return `Bearer ${token}`;
 }
 
 // TODO: use this so we can catch specific codes
@@ -37,7 +30,7 @@ export class DataClient {
 
   async get<T = any>(table: string, query: Record<string, string>): Promise<T[]> {
     const queryString = new URLSearchParams(query);
-    const url = `${VITE_NEON_DATA_URL}/${table}?${queryString}`
+    const url = `${NEON_DATA_URL}/${table}?${queryString}`
     const response = await fetch(url,
       {
         method: "GET",
@@ -51,7 +44,7 @@ export class DataClient {
 
   async patch(table: string, query: Record<string, string>, data: object) {
     const queryString = new URLSearchParams(query);
-    const url = `${VITE_NEON_DATA_URL}/${table}?${queryString}`
+    const url = `${NEON_DATA_URL}/${table}?${queryString}`
     await fetch(url,
       {
         method: "PATCH",
@@ -64,7 +57,7 @@ export class DataClient {
   }
 
   async post(table: string, data: object) {
-    const url = `${VITE_NEON_DATA_URL}/${table}`
+    const url = `${NEON_DATA_URL}/${table}`
     await fetch(url,
       {
         method: "POST",
@@ -78,7 +71,7 @@ export class DataClient {
 
   async delete(table: string, query: Record<string, string>) {
     const queryString = new URLSearchParams(query);
-    const url = `${VITE_NEON_DATA_URL}/${table}?${queryString}`
+    const url = `${NEON_DATA_URL}/${table}?${queryString}`
     await fetch(url,
       {
         method: "DELETE",

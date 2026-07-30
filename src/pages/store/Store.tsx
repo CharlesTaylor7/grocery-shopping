@@ -117,6 +117,7 @@ interface GripProps {
 function Grip(props: GripProps) {
   const { listeners, isDragging, attributes } = useSortable({ id: props.id });
   return (
+    // @ts-ignore
     <div
       {...listeners}
       {...attributes}

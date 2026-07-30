@@ -1,5 +1,5 @@
+import { authClient } from "@/client/auth";
 import { useEffect, type ReactNode, } from "react";
-import { authClient } from "@/client/neon";
 import { AUTH_GUARD } from "@/client/config";
 import useNavigate from "@/useNavigate";
 

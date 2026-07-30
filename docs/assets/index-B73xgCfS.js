@@ -1,14 +1,12 @@
-import { A as S, E as init_hooks_module, M as init_preact_module, N as k, T as h, a as init_compat, b as A, d as P, g as init_compat_module, p as bn, w as d } from "./@dnd-kit/accessibility-CY2E8eFF.js";
-import { t as createRoot } from "./@preact/compat-BziXLWG-.js";
-import { n as toast$1, t as Toaster$1 } from "./sonner-DTVp468i.js";
-import { t as u } from "./preact-B5cDmkcx.js";
-import { n as createAuthClient, t as BetterAuthReactAdapter } from "./@neondatabase/auth-CD2jcYUT.js";
-import { a as atom, i as useSetAtom, n as useAtom, o as createStore, r as useAtomValue, t as Provider } from "./jotai-DaZilVSe.js";
-import { a as Router, c as useParams, i as Route, l as useSearchParams, n as Link, o as Switch, r as Redirect, s as useLocation, t as useHashLocation } from "./wouter-VGClCXSa.js";
-import { d as CSS, i as closestCenter, l as useSensor, r as PointerSensor, t as DndContext, u as useSensors } from "./@dnd-kit/core-ClOCHvl7.js";
-import { n as useSortable, r as verticalListSortingStrategy, t as SortableContext } from "./@dnd-kit/sortable-BwLyN9Tr.js";
+import { C as d, M as k, T as init_hooks_module, f as bn, h as init_compat_module, j as init_preact_module, k as S, u as P, w as h, y as A } from "./@dnd-kit/accessibility-B1tMwVlI.js";
+import { n as createRoot, t as u } from "./preact-rWMCDR7I.js";
+import { n as toast$1, t as Toaster$1 } from "./sonner-BUguUrAV.js";
+import { a as Router, c as useParams, i as Route, l as useSearchParams, n as Link, o as Switch, r as Redirect, s as useLocation, t as useHashLocation } from "./wouter-DXDiGBmg.js";
+import { a as atom, i as useSetAtom, n as useAtom, o as createStore, r as useAtomValue, t as Provider } from "./jotai-Bop2fZUf.js";
+import { d as CSS, i as closestCenter, l as useSensor, r as PointerSensor, t as DndContext, u as useSensors } from "./@dnd-kit/core-zvKwXjFl.js";
+import { n as useSortable, r as verticalListSortingStrategy, t as SortableContext } from "./@dnd-kit/sortable-C4XGw3Ld.js";
 import { t as v4 } from "./uuid-BtdgrrNB.js";
-import { t as atomWithImmer } from "./jotai-immer-C8eXBFiQ.js";
+import { t as atomWithImmer } from "./jotai-immer-BQXjyaUf.js";
 
 //#region \0vite/modulepreload-polyfill.js
 (function polyfill() {
@@ -43,7 +41,7 @@ import { t as atomWithImmer } from "./jotai-immer-C8eXBFiQ.js";
 
 //#endregion
 //#region src/islands/Toaster.tsx
-init_compat();
+init_compat_module();
 function Toaster() {
 	return /* @__PURE__ */ u("div", {
 		className: "bottom-0 sticky",
@@ -53,64 +51,103 @@ function Toaster() {
 
 //#endregion
 //#region src/client/config.ts
-var VITE_NEON_AUTH_URL = "https://ep-red-morning-awzkc1lp.neonauth.c-12.us-east-1.aws.neon.tech/neondb/auth";
-var VITE_NEON_DATA_URL = "https://ep-red-morning-awzkc1lp.apirest.c-12.us-east-1.aws.neon.tech/neondb/rest/v1";
+var NEON_AUTH_URL = "https://ep-red-morning-awzkc1lp.neonauth.c-12.us-east-1.aws.neon.tech/neondb/auth";
+var NEON_DATA_URL = "https://ep-red-morning-awzkc1lp.apirest.c-12.us-east-1.aws.neon.tech/neondb/rest/v1";
 var SYNC_MODE = "main-loop";
 
 //#endregion
-//#region src/client/neon.ts
-var authClient = createAuthClient(VITE_NEON_AUTH_URL, { adapter: BetterAuthReactAdapter({}) });
-async function authHeader() {
-	const token = await authClient.token();
-	if (!token.data) throw new Error("not logged in");
-	return `Bearer ${token.data.token}`;
+//#region src/client/auth.ts
+async function getAccessToken() {
+	return await authClient.getJWT();
 }
-var DataClient = class DataClient {
-	authHeader;
-	constructor(authHeader) {
-		this.authHeader = authHeader;
+var AuthClient = class {
+	headers;
+	constructor() {
+		this.headers = new Headers({ "Content-Type": "application/json" });
 	}
-	static new() {
-		return authHeader().then((header) => new DataClient(header));
+	useSession() {
+		return {
+			isPending: false,
+			error: "Not implemented"
+		};
 	}
-	async get(table, query) {
-		const url = `${VITE_NEON_DATA_URL}/${table}?${new URLSearchParams(query)}`;
+	async getJWT() {
+		const url = `${NEON_AUTH_URL}/token`;
+		return (await (await fetch(url, {
+			method: "GET",
+			headers: this.headers,
+			credentials: "include"
+		})).json()).token;
+	}
+	async getSession() {
+		const url = `${NEON_AUTH_URL}/get-session`;
 		return await (await fetch(url, {
 			method: "GET",
-			headers: { "Authorization": this.authHeader }
+			headers: this.headers,
+			credentials: "include"
 		})).json();
 	}
-	async patch(table, query, data) {
-		const url = `${VITE_NEON_DATA_URL}/${table}?${new URLSearchParams(query)}`;
-		await fetch(url, {
-			method: "PATCH",
-			headers: {
-				"Authorization": this.authHeader,
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify(data)
-		});
-	}
-	async post(table, data) {
-		const url = `${VITE_NEON_DATA_URL}/${table}`;
-		await fetch(url, {
+	async loginWithEmail(args) {
+		const url = `${NEON_AUTH_URL}/sign-in/email`;
+		return (await fetch(url, {
 			method: "POST",
-			headers: {
-				"Authorization": this.authHeader,
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify(data)
-		});
+			headers: this.headers,
+			credentials: "include",
+			body: JSON.stringify({
+				email: args.email,
+				password: args.password,
+				rememberMe: true
+			})
+		})).statusText;
 	}
-	async delete(table, query) {
-		const url = `${VITE_NEON_DATA_URL}/${table}?${new URLSearchParams(query)}`;
-		await fetch(url, {
-			method: "DELETE",
-			headers: { "Authorization": this.authHeader }
-		});
+	async signupWithEmail(args) {
+		const url = `${NEON_AUTH_URL}/sign-up/email`;
+		return (await fetch(url, {
+			method: "POST",
+			headers: this.headers,
+			credentials: "include",
+			body: JSON.stringify({
+				name: args.name,
+				email: args.email,
+				password: args.password
+			})
+		})).statusText;
+	}
+	async resetPassword(args) {
+		const url = `${NEON_AUTH_URL}/sign-out`;
+		return (await fetch(url, {
+			method: "POST",
+			headers: this.headers,
+			credentials: "include",
+			body: JSON.stringify({
+				newPassword: args.newPassword,
+				token: args.token
+			})
+		})).statusText;
+	}
+	async requestPasswordReset(args) {
+		const url = `${NEON_AUTH_URL}/request-password-reset`;
+		return (await fetch(url, {
+			method: "POST",
+			headers: this.headers,
+			credentials: "include",
+			body: JSON.stringify({
+				email: args.email,
+				redirectTo: "/grocery-shopping/#/auth/password-reset"
+			})
+		})).statusText;
+	}
+	async signOut() {
+		const url = `${NEON_AUTH_URL}/sign-out`;
+		return (await fetch(url, {
+			method: "POST",
+			headers: this.headers,
+			credentials: "include",
+			body: JSON.stringify({})
+		})).statusText;
 	}
 };
-var dataClientAtom = atom(DataClient.new());
+var authClient = new AuthClient();
 
 //#endregion
 //#region src/islands/LoginPrompt.tsx
@@ -148,6 +185,60 @@ function LoginPrompt() {
 		})]
 	});
 }
+
+//#endregion
+//#region src/client/neon.ts
+async function authHeader() {
+	const token = await authClient.getJWT();
+	if (!token) throw new Error("not logged in");
+	return `Bearer ${token}`;
+}
+var DataClient = class DataClient {
+	authHeader;
+	constructor(authHeader) {
+		this.authHeader = authHeader;
+	}
+	static new() {
+		return authHeader().then((header) => new DataClient(header));
+	}
+	async get(table, query) {
+		const url = `${NEON_DATA_URL}/${table}?${new URLSearchParams(query)}`;
+		return await (await fetch(url, {
+			method: "GET",
+			headers: { "Authorization": this.authHeader }
+		})).json();
+	}
+	async patch(table, query, data) {
+		const url = `${NEON_DATA_URL}/${table}?${new URLSearchParams(query)}`;
+		await fetch(url, {
+			method: "PATCH",
+			headers: {
+				"Authorization": this.authHeader,
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(data)
+		});
+	}
+	async post(table, data) {
+		const url = `${NEON_DATA_URL}/${table}`;
+		await fetch(url, {
+			method: "POST",
+			headers: {
+				"Authorization": this.authHeader,
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(data)
+		});
+	}
+	async delete(table, query) {
+		const url = `${NEON_DATA_URL}/${table}?${new URLSearchParams(query)}`;
+		await fetch(url, {
+			method: "DELETE",
+			headers: { "Authorization": this.authHeader }
+		});
+	}
+};
+var dataClientAtom = atom(DataClient.new());
 
 //#endregion
 //#region src/client/migrate.ts
@@ -289,7 +380,7 @@ var syncAtom = atom(SyncModel.new({ useIndexedDB: false }));
 //#endregion
 //#region src/client/sync-worker.ts?worker
 function WorkerWrapper(options) {
-	return new Worker("/grocery-shopping/assets/sync-worker-CqCItQ1V.js", {
+	return new Worker("/grocery-shopping/assets/sync-worker-CELXdEYH.js", {
 		type: "module",
 		name: options?.name
 	});
@@ -314,8 +405,8 @@ function runOnWorkerThread() {
 	worker.addEventListener("message", (ev) => {
 		console.log("from worker", ev.data);
 	});
-	authClient.token().then((token) => {
-		if (token.data) worker.postMessage(token.data.token);
+	getAccessToken().then((token) => {
+		worker.postMessage(token);
 	});
 	return () => worker.terminate();
 }
@@ -352,7 +443,7 @@ var MainThreadWorker = class {
 
 //#endregion
 //#region src/islands/LastVisitSave.tsx
-init_compat();
+init_compat_module();
 function LastVisitSave() {
 	const [location] = useLocation();
 	h(() => {
@@ -366,7 +457,7 @@ function LastVisitSave() {
 
 //#endregion
 //#region src/components/HashRouter.tsx
-init_compat();
+init_compat_module();
 function HashRouter(props) {
 	return k(Router, { hook: useHashLocation }, props.children);
 }
@@ -386,7 +477,7 @@ function useNavigate() {
 
 //#endregion
 //#region src/routes/index.tsx
-init_compat();
+init_compat_module();
 function Index() {
 	const session = authClient.useSession();
 	const navigate = useNavigate();
@@ -408,24 +499,21 @@ function toast(render) {
 
 //#endregion
 //#region src/routes/auth/login.tsx
-init_compat();
+init_compat_module();
 init_preact_module();
 function Login() {
 	const navigate = useNavigate();
 	const formRef = A(null);
-	const handleSubmit = async (e) => {
-		e.preventDefault();
-		const data = new FormData(e.currentTarget);
+	async function handleSubmit(event) {
+		event.preventDefault();
+		const data = new FormData(event.currentTarget);
 		const payload = {
 			email: data.get("email")?.toString(),
 			password: data.get("password")?.toString(),
 			rememberMe: true
 		};
 		try {
-			if ((await authClient.signIn.email(payload)).error) {
-				toast(() => /* @__PURE__ */ u(S, { children: "wrong password" }));
-				return;
-			}
+			await authClient.loginWithEmail(payload);
 			navigate(lastVisitedUrl());
 		} catch (e) {
 			console.error(e);
@@ -433,13 +521,10 @@ function Login() {
 				return e.message;
 			});
 		}
-	};
+	}
 	async function resetPassword() {
 		const email = new FormData(formRef.current).get("email")?.toString();
-		await authClient.requestPasswordReset({
-			email,
-			redirectTo: "/grocery-shopping/#/auth/password-reset"
-		});
+		await authClient.requestPasswordReset({ email });
 		toast(() => {
 			return /* @__PURE__ */ u(S, { children: ["Password reset sent to ", /* @__PURE__ */ u("span", {
 				className: "underline",
@@ -482,27 +567,23 @@ function Login() {
 //#region src/routes/auth/signup.tsx
 function Signup() {
 	const navigate = useNavigate();
-	const handleSubmit = async (e) => {
-		e.preventDefault();
-		const data = new FormData(e.currentTarget);
+	async function handleSubmit(event) {
+		event.preventDefault();
+		const data = new FormData(event.currentTarget);
 		const payload = {
 			name: data.get("username")?.toString(),
 			email: data.get("email")?.toString(),
 			password: data.get("password")?.toString()
 		};
 		try {
-			if ((await authClient.signUp.email(payload)).error) {
-				toast(() => "wrong password");
-				return;
-			}
+			await authClient.signupWithEmail(payload);
 			navigate(lastVisitedUrl());
 		} catch (e) {
-			console.error(e);
 			toast(() => {
 				return e.message;
 			});
 		}
-	};
+	}
 	return /* @__PURE__ */ u("form", {
 		className: "flex flex-col gap-2 items-start p-2",
 		onSubmit: handleSubmit,
@@ -536,7 +617,7 @@ function Signup() {
 
 //#endregion
 //#region src/routes/auth/password-reset.tsx
-init_compat();
+init_compat_module();
 function PasswordReset() {
 	const [params, _] = useSearchParams();
 	const token = params.get("token");
@@ -545,19 +626,15 @@ function PasswordReset() {
 		if (!token) navigate("/auth/login");
 	});
 	const formRef = A(null);
-	const handleSubmit = async (e) => {
+	async function handleSubmit(e) {
 		e.preventDefault();
 		const payload = {
 			newPassword: new FormData(e.currentTarget).get("password")?.toString(),
 			token
 		};
-		const result = await authClient.resetPassword(payload);
-		if (result.error) {
-			console.error(result.error.message);
-			return;
-		}
+		await authClient.resetPassword(payload);
 		navigate("/auth/login");
-	};
+	}
 	return /* @__PURE__ */ u("form", {
 		ref: formRef,
 		className: "flex flex-col gap-2 items-start p-2",
@@ -577,7 +654,7 @@ function PasswordReset() {
 
 //#endregion
 //#region src/components/Input.tsx
-init_compat();
+init_compat_module();
 function Input({ focus, ...props }) {
 	const ref = A(null);
 	h(() => {
@@ -591,7 +668,7 @@ function Input({ focus, ...props }) {
 
 //#endregion
 //#region src/pages/store/actions.ts
-init_compat();
+init_compat_module();
 var storeAtom = atom({
 	id: "",
 	name: ""
@@ -770,7 +847,7 @@ var handleTextboxAtom = atom(null, (_get, set, event) => {
 
 //#endregion
 //#region src/pages/store/Store.tsx
-init_compat();
+init_compat_module();
 function Store() {
 	const storeId = useParams().id;
 	const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
@@ -896,7 +973,7 @@ function Sortable(props) {
 
 //#endregion
 //#region src/pages/store-list/StoreList.tsx
-init_compat();
+init_compat_module();
 init_preact_module();
 function StoreList() {
 	const [stores, setStores] = d([]);
@@ -995,7 +1072,7 @@ function Nav() {
 
 //#endregion
 //#region src/components/AuthGuard.tsx
-init_compat();
+init_compat_module();
 function AuthGuard(props) {
 	const session = authClient.useSession();
 	const navigate = useNavigate();
@@ -1060,7 +1137,7 @@ function RouteTree() {
 
 //#endregion
 //#region src/components/App.tsx
-init_compat();
+init_compat_module();
 function App() {
 	return /* @__PURE__ */ u(SyncActionProvider, {
 		mode: SYNC_MODE,
@@ -1096,7 +1173,7 @@ function App() {
 
 //#endregion
 //#region src/main.tsx
-init_compat();
+init_compat_module();
 if (false) navigator.serviceWorker.register("/grocery-shopping/service-worker.js").catch(console.error);
 createRoot(document.getElementById("root")).render(/* @__PURE__ */ u(S, { children: /* @__PURE__ */ u(App, {}) }));
 

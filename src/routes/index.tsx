@@ -1,4 +1,4 @@
-import { authClient } from "@/client/neon";
+import { authClient } from "@/client/auth.ts";
 import { useEffect } from "react";
 import { lastVisitedUrl } from "@/client/redirect";
 import useNavigate from "@/useNavigate";

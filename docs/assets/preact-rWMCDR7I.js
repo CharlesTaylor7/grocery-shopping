@@ -1,5 +1,19 @@
-import { M as init_preact_module, P as l } from "./@dnd-kit/accessibility-CY2E8eFF.js";
+import { N as l, _ as nn, h as init_compat_module, j as init_preact_module, v as pn } from "./@dnd-kit/accessibility-B1tMwVlI.js";
 
+//#region node_modules/.pnpm/preact@10.29.7/node_modules/preact/compat/client.mjs
+init_compat_module();
+function createRoot(container) {
+	return {
+		render: function(children) {
+			nn(children, container);
+		},
+		unmount: function() {
+			pn(container);
+		}
+	};
+}
+
+//#endregion
 //#region node_modules/.pnpm/preact@10.29.7/node_modules/preact/jsx-runtime/dist/jsxRuntime.module.js
 init_preact_module();
 var f = 0;
@@ -30,4 +44,4 @@ function u(e, t, n, o, i, u) {
 }
 
 //#endregion
-export { u as t };
+export { createRoot as n, u as t };

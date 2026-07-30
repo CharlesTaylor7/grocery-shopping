@@ -33,11 +33,8 @@
 - [ ] Import existing lists from markdown
 - [ ] select multiple stores for a trip
 - [ ] Collapsible regions for multi store trips 
-- [ ] fork neon client and trim it down. 400kb is insane
-    - vendor everything except react, react-dom, and react-router
-    - react is "too big to fail" and "not my problem". 
-    - everything else is trimmable.
-- [ ] sync worker is broken
+- [ ] vendor as much as is reasonable 
+https://better-auth.com/docs/authentication/discord
 
 ## UX
 - [ ] nav hamburger, smart actions in page header(s)

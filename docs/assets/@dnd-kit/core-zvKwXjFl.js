@@ -1,4 +1,4 @@
-import { C as _, D as q, E as init_hooks_module, M as init_preact_module, O as x, S as T, T as h, a as init_compat, b as A, f as _n, g as init_compat_module, j as X, k as y, m as gn, n as LiveRegion, o as $, r as useAnnouncement, t as HiddenText, u as N, w as d } from "./accessibility-CY2E8eFF.js";
+import { A as X, C as d, D as x, E as q, O as y, S as _, T as init_hooks_module, a as init_compat, d as _n, h as init_compat_module, j as init_preact_module, l as N, n as LiveRegion, o as $, p as gn, r as useAnnouncement, t as HiddenText, w as h, x as T, y as A } from "./accessibility-B1tMwVlI.js";
 
 //#region node_modules/.pnpm/@dnd-kit+utilities@3.2.2_@preact+compat@18.3.2_preact@10.29.7_/node_modules/@dnd-kit/utilities/dist/utilities.esm.js
 init_compat();

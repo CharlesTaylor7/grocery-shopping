@@ -1,6 +1,7 @@
+import { authClient, getAccessToken } from "@/client/auth";
 import { syncAtom, SyncModel } from "@/client/model.ts";
 import { type ReactNode, useEffect, useState } from "react";
-import { authClient, DataClient } from "@/client/neon.ts";
+import { DataClient } from "@/client/neon.ts";
 import { syncNextAction } from "@/client/sync.ts";
 import { openIndexedDB } from "@/client/indexed-db.ts";
 import SyncWorker from "@/client/sync-worker.ts?worker";
@@ -44,10 +45,8 @@ function runOnWorkerThread(): EffectCleanup {
   worker.addEventListener("message", (ev) => {
     console.log("from worker", ev.data);
   });
-  authClient.token().then((token) => {
-    if (token.data) {
-      worker.postMessage(token.data.token);
-    }
+  getAccessToken().then((token) => {
+    worker.postMessage(token);
   });
 
   return () => worker.terminate();

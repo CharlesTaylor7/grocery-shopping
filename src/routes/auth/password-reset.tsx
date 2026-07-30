@@ -1,12 +1,11 @@
-import { authClient } from "@/client/neon.ts";
+import { authClient } from "@/client/auth";
 import useNavigate from "@/useNavigate";
-import type { SubmitEventHandler } from "react";
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "wouter";
 
 export default function PasswordReset() {
   const [params, _] = useSearchParams();
-  const token = params.get('token');
+  const token = params.get("token");
   const navigate = useNavigate();
   useEffect(() => {
     if (!token) {
@@ -14,7 +13,7 @@ export default function PasswordReset() {
     }
   });
   const formRef = useRef<HTMLFormElement>(null);
-  const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (e) => {
+  async function handleSubmit(e: any) {
     e.preventDefault();
 
     const data = new FormData(e.currentTarget as HTMLFormElement);
@@ -23,12 +22,7 @@ export default function PasswordReset() {
       newPassword: data.get("password")?.toString()!,
       token: token!,
     };
-    const result = await authClient.resetPassword(payload);
-
-    if (result.error) {
-      console.error(result.error.message);
-      return;
-    }
+    await authClient.resetPassword(payload);
 
     navigate("/auth/login");
   };

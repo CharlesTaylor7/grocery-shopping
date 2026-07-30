@@ -1,14 +1,13 @@
-import { authClient } from "@/client/neon.ts";
-import type { SubmitEventHandler } from "react";
+import { authClient } from "@/client/auth";
 import { toast } from "@/client/toast";
 import { lastVisitedUrl } from "@/client/redirect";
 import useNavigate from "@/useNavigate";
 
 export default function Signup() {
   const navigate = useNavigate();
-  const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (e) => {
-    e.preventDefault();
-    const data = new FormData(e.currentTarget as HTMLFormElement);
+  async function handleSubmit(event: any) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget as HTMLFormElement);
 
     const payload = {
       name: data.get("username")?.toString()!,
@@ -16,21 +15,16 @@ export default function Signup() {
       password: data.get("password")?.toString()!,
     };
     try {
-      const result = await authClient.signUp.email(payload);
+      await authClient.signupWithEmail(payload);
 
-      if (result.error) {
-        toast(() => "wrong password");
-        return;
-      }
       navigate(lastVisitedUrl());
     } catch (e) {
-      console.error(e);
       toast(() => {
         const error = e as { message: string };
         return error.message;
       });
     }
-  };
+  }
 
   return (
     <form className="flex flex-col gap-2 items-start p-2" onSubmit={handleSubmit}>

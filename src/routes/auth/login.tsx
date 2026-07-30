@@ -1,5 +1,4 @@
-import { authClient } from "@/client/neon.ts";
-import type { SubmitEventHandler } from "react";
+import { authClient } from "@/client/auth";
 import { toast } from "@/client/toast";
 import { useRef } from "react";
 import { lastVisitedUrl } from "@/client/redirect.ts";
@@ -8,10 +7,10 @@ import useNavigate from "@/useNavigate";
 export default function Login() {
   const navigate = useNavigate();
   const formRef = useRef<HTMLFormElement>(null);
-  const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (e) => {
-    e.preventDefault();
+  async function handleSubmit(event: Event) {
+    event.preventDefault();
 
-    const data = new FormData(e.currentTarget as HTMLFormElement);
+    const data = new FormData(event.currentTarget as HTMLFormElement);
 
     const payload = {
       email: data.get("email")?.toString()!,
@@ -19,12 +18,7 @@ export default function Login() {
       rememberMe: true,
     };
     try {
-      const result = await authClient.signIn.email(payload);
-
-      if (result.error) {
-        toast(() => <>wrong password</>);
-        return;
-      }
+      await authClient.loginWithEmail(payload);
 
       navigate(lastVisitedUrl());
     } catch (e) {
@@ -39,11 +33,7 @@ export default function Login() {
     const data = new FormData(formRef.current!);
 
     const email = data.get("email")?.toString()!;
-    await authClient.requestPasswordReset({
-      email,
-      // github pages
-      redirectTo: "/grocery-shopping/#/auth/password-reset",
-    });
+    await authClient.requestPasswordReset({ email });
     toast(() => {
       return (
         <>

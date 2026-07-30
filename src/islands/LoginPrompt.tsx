@@ -1,8 +1,7 @@
 // greets signed in user
 // allows signout
 // prompts for signup or login
-
-import { authClient } from "@/client/neon.ts";
+import { authClient } from "@/client/auth";
 import { Link, useLocation } from "wouter";
 
 export default function LoginPrompt() {

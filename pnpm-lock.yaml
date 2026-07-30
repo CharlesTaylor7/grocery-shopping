@@ -4,9 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@neondatabase/auth': link:vendor/neon-auth
-
 importers:
 
   .:
@@ -20,9 +17,6 @@ importers:
       '@dnd-kit/utilities':
         specifier: ^3.2.2
         version: 3.2.2(@preact/compat@18.3.2(preact@10.29.7))
-      '@neondatabase/auth':
-        specifier: link:vendor/neon-auth
-        version: link:vendor/neon-auth
       immer:
         specifier: ^11.1.15
         version: 11.1.15
