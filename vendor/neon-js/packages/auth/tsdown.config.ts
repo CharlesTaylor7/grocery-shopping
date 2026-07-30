@@ -26,21 +26,6 @@ export default defineConfig(
     },
     treeshake: true,
     hooks: {
-      'build:done': async () => {
-        // Copy CSS bundle from auth-ui package
-        copyCssBundle({
-          sourceDir: path.resolve(import.meta.dirname, '..', 'auth-ui', 'dist'),
-          targetDir: path.resolve(import.meta.dirname, 'dist', 'ui'),
-          files: [
-            { src: 'style.css', dest: 'css.css' },
-            { src: 'tailwind.css', dest: 'tailwind.css' },
-            { src: 'theme.css', dest: 'theme.css' },
-            { src: 'theme-inline.css', dest: 'theme-inline.css' },
-            { src: '.safelist.html', dest: '.safelist.html' },
-          ],
-          packageName: '@neondatabase/auth',
-        });
-      },
     },
   })
 );

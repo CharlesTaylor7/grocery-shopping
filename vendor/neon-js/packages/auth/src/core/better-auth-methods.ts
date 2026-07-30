@@ -7,7 +7,6 @@ import {
   SessionCacheManager,
   type CachedSessionData,
 } from './session-cache-manager';
-import { AnonymousTokenCacheManager } from './anonymous-token-cache-manager';
 import type { BetterAuthSession, BetterAuthUser } from './better-auth-types';
 import {
   NEON_AUTH_SESSION_VERIFIER_PARAM_NAME,
@@ -18,7 +17,6 @@ import {
 } from './constants';
 import { openOAuthPopup } from './oauth-popup';
 import { isBrowser, isIframe } from '../utils/browser';
-import { anonymousTokenResponseSchema } from '../plugins/anonymous-token';
 
 interface SocialSignInResponse {
   redirect: boolean;
@@ -34,8 +32,6 @@ export const BETTER_AUTH_METHODS_IN_FLIGHT_REQUESTS =
 
 export const BETTER_AUTH_METHODS_CACHE = new SessionCacheManager();
 
-export const BETTER_AUTH_ANONYMOUS_TOKEN_CACHE =
-  new AnonymousTokenCacheManager();
 
 /**
  * Auth change event types (adapter-agnostic).
@@ -70,8 +66,6 @@ export const BETTER_AUTH_ENDPOINTS = {
   updateUser: '/update-user',
   getSession: '/get-session',
   token: '/token',
-  anonymousSignIn: '/sign-in/anonymous',
-  anonymousToken: '/token/anonymous',
 } as const;
 
 /**
@@ -136,7 +130,7 @@ async function handleSocialSignInViaPopup(
 
 export const BETTER_AUTH_METHODS_HOOKS: Record<string, MethodHook> = {
   signUp: {
-    onRequest: () => {},
+    onRequest: () => { },
     onSuccess: (responseData) => {
       if (isSessionResponseData(responseData)) {
         const sessionData = {
@@ -160,7 +154,7 @@ export const BETTER_AUTH_METHODS_HOOKS: Record<string, MethodHook> = {
       // In iframe - use popup flow instead
       return handleSocialSignInViaPopup(input, init);
     },
-    onRequest: () => {},
+    onRequest: () => { },
     onSuccess: (responseData) => {
       if (isSessionResponseData(responseData)) {
         const sessionData = {
@@ -183,7 +177,7 @@ export const BETTER_AUTH_METHODS_HOOKS: Record<string, MethodHook> = {
     },
   },
   updateUser: {
-    onRequest: () => {},
+    onRequest: () => { },
     onSuccess: (responseData) => {
       if (isSessionResponseData(responseData)) {
         const sessionData = {
@@ -268,24 +262,6 @@ export const BETTER_AUTH_METHODS_HOOKS: Record<string, MethodHook> = {
             history.replaceState(history.state, '', url.href);
           }
         }
-      }
-    },
-  },
-  anonymousToken: {
-    beforeFetch: () => {
-      const cachedResponse =
-        BETTER_AUTH_ANONYMOUS_TOKEN_CACHE.getCachedResponse();
-      if (!cachedResponse) {
-        return null;
-      }
-
-      return Response.json(cachedResponse, { status: 200 });
-    },
-    onRequest: () => {},
-    onSuccess: (responseData) => {
-      const parsed = anonymousTokenResponseSchema.safeParse(responseData);
-      if (parsed.success) {
-        BETTER_AUTH_ANONYMOUS_TOKEN_CACHE.setCachedResponse(parsed.data);
       }
     },
   },
@@ -382,13 +358,7 @@ function isSessionResponseData(
 export function deriveBetterAuthMethodFromUrl(
   url: string
 ): keyof typeof BETTER_AUTH_METHODS_HOOKS | undefined {
-  if (url.includes('/sign-in/anonymous')) {
-    return 'anonymousSignIn';
-  }
   // Check for anonymous token BEFORE generic /token check
-  if (url.includes(BETTER_AUTH_ENDPOINTS.anonymousToken)) {
-    return 'anonymousToken';
-  }
   if (url.includes(BETTER_AUTH_ENDPOINTS.signIn)) {
     return 'signIn';
   }

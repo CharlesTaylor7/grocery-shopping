@@ -19,12 +19,6 @@ export interface NeonAuthConfig<T extends NeonAuthAdapter> {
     url: string,
     fetchOptions?: { headers?: Record<string, string> }
   ) => T;
-  /**
-   * When true, automatically uses an anonymous token when no user session exists.
-   * This enables RLS-based data access for users with the anonymous role.
-   * @default false
-   */
-  allowAnonymous?: boolean;
 }
 
 /**
@@ -123,8 +117,6 @@ export function createInternalNeonAuth<
   const { fetchOptions } = config ?? {};
   const adapter = adapterBuilder(url, fetchOptions) as T;
 
-  // Capture allowAnonymous at creation time
-  const allowAnonymous = config?.allowAnonymous ?? false;
 
   // Check if this is a SupabaseAuthAdapter by checking for its unique initialize method
   const isSupabaseAuthAdapter =
@@ -132,13 +124,13 @@ export function createInternalNeonAuth<
 
   if (!isSupabaseAuthAdapter) {
     return {
-      getJWTToken: () => adapter.getJWTToken(allowAnonymous),
+      getJWTToken: () => adapter.getJWTToken(),
       adapter: adapter.getBetterAuthInstance(),
     } as NeonAuth<T>;
   }
 
   return {
-    getJWTToken: () => adapter.getJWTToken(allowAnonymous),
+    getJWTToken: () => adapter.getJWTToken(),
     adapter,
   } as NeonAuth<T>;
 }

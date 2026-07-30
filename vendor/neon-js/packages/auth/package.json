@@ -84,7 +84,6 @@
     }
   },
   "files": [
-    "codemods/migrate-auth-ui-imports.mjs",
     "dist",
     "llms.txt",
     "sbom.cdx.json"
