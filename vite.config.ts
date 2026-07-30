@@ -1,14 +1,11 @@
 import { defineConfig } from 'vite'
-import react, { reactCompilerPreset } from '@vitejs/plugin-react'
-import babel from '@rolldown/plugin-babel'
 import tailwindcss from "@tailwindcss/vite";
+import alias from '@rollup/plugin-alias';
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     tailwindcss(),
-    react(),
-    babel({ presets: [reactCompilerPreset()] })
   ],
   base: '/grocery-shopping/',
   resolve: {
@@ -21,6 +18,16 @@ export default defineConfig({
     outDir: "docs",
     copyPublicDir: true,
     rolldownOptions: {
+      plugins: [
+        alias({
+          entries: [
+            { find: 'react/client', replacement: 'preact/compat' },
+            { find: 'react', replacement: 'preact/compat' },
+            { find: 'react-dom', replacement: 'preact/compat' },
+            { find: 'react/jsx-runtime', replacement: 'preact/jsx-runtime' }
+          ]
+        })
+      ],
       output: {
         manualChunks(id) {
           const marker = "/node_modules/";
