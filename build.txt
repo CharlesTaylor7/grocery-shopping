@@ -1,11 +1,0 @@
-vite v8.1.5 building client environment for production...
-[2Ktransforming.../*! 🌼 daisyUI 5.7.0 */
-✓ 2086 modules transformed.
-rendering chunks...
-computing gzip size...
-docs/index.html                        0.56 kB │ gzip:   0.32 kB
-docs/assets/sync-worker-C2RMnZD5.js  428.70 kB
-docs/assets/index-CGblNOL4.css       188.78 kB │ gzip:  26.04 kB
-docs/assets/index-DqeJoob6.js        545.83 kB │ gzip: 145.81 kB
-
-✓ built in 803ms
