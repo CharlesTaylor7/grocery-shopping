@@ -1,3 +1,5 @@
+
+import preact from '@preact/preset-vite';
 import { defineConfig } from 'vite'
 import tailwindcss from "@tailwindcss/vite";
 import alias from '@rollup/plugin-alias';
@@ -5,6 +7,7 @@ import alias from '@rollup/plugin-alias';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
+    preact(),
     tailwindcss(),
   ],
   base: '/grocery-shopping/',
