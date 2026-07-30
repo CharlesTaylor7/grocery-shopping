@@ -11,6 +11,9 @@ export default defineConfig({
   resolve: {
     tsconfigPaths: true,
   },
+  worker: {
+    format: "es",
+  },
   server: {
     port: 3000,
   },
@@ -28,26 +31,26 @@ export default defineConfig({
           ]
         })
       ],
-      output: {
-        manualChunks(id) {
-          const marker = "/node_modules/";
-          const idx = id.lastIndexOf(marker);
-          if (idx === -1) return;
-
-          const pkgPath = id.slice(idx + marker.length);
-          const parts = pkgPath.split("/");
-
-          if (parts[0].startsWith("@")) {
-            return `${parts[0]}/${parts[1]}`;
-          }
-
-          return parts[0];
-        },
-      },
+      /*
+            output: {
+              minify: false,
+              manualChunks(id) {
+                const marker = "/node_modules/";
+                const idx = id.lastIndexOf(marker);
+                if (idx === -1) return;
+      
+                const pkgPath = id.slice(idx + marker.length);
+                const parts = pkgPath.split("/");
+      
+                if (parts[0].startsWith("@")) {
+                  return `${parts[0]}/${parts[1]}`;
+                }
+      
+                return parts[0];
+              },
+            },
+      */
     },
-  },
-  worker: {
-    format: "es",
   },
 
 })
