@@ -39,9 +39,22 @@ export default defineConfig({
 
       output: {
         minify: false,
-        manualChunks(id) {
+        manualChunks(id: string) {
+          // Handle vendored dnd-kit packages
+          const dndMarker = "/vendor/dnd-kit/packages/";
+          const dndIdx = id.lastIndexOf(dndMarker);
+
+          if (dndIdx !== -1) {
+            const pkgPath = id.slice(dndIdx + dndMarker.length);
+            const pkgName = pkgPath.split("/")[0];
+
+            return `@dnd-kit/${pkgName}`;
+          }
+
+          // Handle node_modules packages
           const marker = "/node_modules/";
           const idx = id.lastIndexOf(marker);
+
           if (idx === -1) return;
 
           const pkgPath = id.slice(idx + marker.length);

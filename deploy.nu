@@ -4,6 +4,7 @@ if ($status | is-not-empty) {
     exit
 }
 
+pnpm run build:vendor
 pnpm run build
 git rev-parse HEAD
 | $"https://github.com/charlestaylor7/grocery-shopping/commit/($in)"
