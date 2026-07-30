@@ -2,7 +2,7 @@ import { A as S, E as init_hooks_module, M as init_preact_module, N as k, T as h
 import { t as createRoot } from "./@preact/compat-BziXLWG-.js";
 import { n as toast$1, t as Toaster$1 } from "./sonner-DTVp468i.js";
 import { t as u } from "./preact-B5cDmkcx.js";
-import { n as createAuthClient, t as BetterAuthReactAdapter } from "./@neondatabase/auth-C4saecD0.js";
+import { n as createAuthClient, t as BetterAuthReactAdapter } from "./@neondatabase/auth-CD2jcYUT.js";
 import { a as atom, i as useSetAtom, n as useAtom, o as createStore, r as useAtomValue, t as Provider } from "./jotai-DaZilVSe.js";
 import { a as Router, c as useParams, i as Route, l as useSearchParams, n as Link, o as Switch, r as Redirect, s as useLocation, t as useHashLocation } from "./wouter-VGClCXSa.js";
 import { d as CSS, i as closestCenter, l as useSensor, r as PointerSensor, t as DndContext, u as useSensors } from "./@dnd-kit/core-ClOCHvl7.js";
@@ -289,7 +289,7 @@ var syncAtom = atom(SyncModel.new({ useIndexedDB: false }));
 //#endregion
 //#region src/client/sync-worker.ts?worker
 function WorkerWrapper(options) {
-	return new Worker("/grocery-shopping/assets/sync-worker-Dk7_cX9y.js", {
+	return new Worker("/grocery-shopping/assets/sync-worker-CqCItQ1V.js", {
 		type: "module",
 		name: options?.name
 	});
