@@ -3,12 +3,12 @@ import {
   getScrollableAncestors,
   getFirstCollision,
   KeyboardCode,
-  DroppableContainer,
-  KeyboardCoordinateGetter,
+  type DroppableContainer,
+  type KeyboardCoordinateGetter,
 } from '@dnd-kit/core';
-import {subtract} from '@dnd-kit/utilities';
+import { subtract } from '@dnd-kit/utilities';
 
-import {hasSortableData} from '../../types';
+import { hasSortableData } from '../../types';
 
 const directions: string[] = [
   KeyboardCode.Down,
@@ -103,13 +103,13 @@ export const sortableKeyboardCoordinates: KeyboardCoordinateGetter = (
         const offset =
           hasDifferentScrollAncestors || !hasSameContainer
             ? {
-                x: 0,
-                y: 0,
-              }
+              x: 0,
+              y: 0,
+            }
             : {
-                x: isAfterActive ? collisionRect.width - newRect.width : 0,
-                y: isAfterActive ? collisionRect.height - newRect.height : 0,
-              };
+              x: isAfterActive ? collisionRect.width - newRect.width : 0,
+              y: isAfterActive ? collisionRect.height - newRect.height : 0,
+            };
         const rectCoordinates = {
           x: newRect.left,
           y: newRect.top,

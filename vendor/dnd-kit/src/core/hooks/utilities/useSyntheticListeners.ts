@@ -1,10 +1,10 @@
-import {useMemo} from 'react';
+import { useMemo } from 'react';
 
-import type {SyntheticEventName, UniqueIdentifier} from '../../types';
+import type { SyntheticEventName, UniqueIdentifier } from '../../types';
 
 export type SyntheticListener = {
   eventName: SyntheticEventName;
-  handler: (event: React.SyntheticEvent, id: UniqueIdentifier) => void;
+  handler: (event: Event, id: UniqueIdentifier) => void;
 };
 
 export type SyntheticListeners = SyntheticListener[];
@@ -17,8 +17,8 @@ export function useSyntheticListeners(
 ): SyntheticListenerMap {
   return useMemo(() => {
     return listeners.reduce<SyntheticListenerMap>(
-      (acc, {eventName, handler}) => {
-        acc[eventName] = (event: React.SyntheticEvent) => {
+      (acc, { eventName, handler }) => {
+        acc[eventName] = (event: Event) => {
           handler(event, id);
         };
 

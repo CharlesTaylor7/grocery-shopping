@@ -1,4 +1,4 @@
-import type {MutableRefObject} from 'react';
+import type { MutableRefObject } from 'react';
 import type {
   Active,
   Over,
@@ -14,8 +14,8 @@ import type {
   UniqueIdentifier,
   ClientRect,
 } from '../types';
-import type {Collision} from '../utilities/algorithms';
-import type {PointerActivationConstraint} from './pointer';
+import type { Collision } from '../utilities/algorithms';
+import type { PointerActivationConstraint } from './pointer';
 
 export enum Response {
   Start = 'start',
@@ -82,7 +82,7 @@ export type Activators<T> = Activator<T>[];
 type Teardown = () => void;
 
 export interface Sensor<T extends Object> {
-  new (props: SensorProps<T>): SensorInstance;
+  new(props: SensorProps<T>): SensorInstance;
   activators: Activators<T>;
   setup?(): Teardown | undefined;
 }
@@ -95,6 +95,6 @@ export type SensorDescriptor<T extends Object> = {
 };
 
 export type SensorHandler = (
-  event: React.SyntheticEvent,
+  event: Event,
   active: UniqueIdentifier
 ) => boolean | void;

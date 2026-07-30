@@ -1,20 +1,18 @@
-import type {TouchEvent} from 'react';
-
 import {
   AbstractPointerSensor,
   PointerSensorProps,
   PointerEventHandlers,
   PointerSensorOptions,
 } from '../pointer';
-import type {SensorProps} from '../types';
+import type { SensorProps } from '../types';
 
 const events: PointerEventHandlers = {
-  cancel: {name: 'touchcancel'},
-  move: {name: 'touchmove'},
-  end: {name: 'touchend'},
+  cancel: { name: 'touchcancel' },
+  move: { name: 'touchmove' },
+  end: { name: 'touchend' },
 };
 
-export interface TouchSensorOptions extends PointerSensorOptions {}
+export interface TouchSensorOptions extends PointerSensorOptions { }
 
 export type TouchSensorProps = SensorProps<TouchSensorOptions>;
 
@@ -27,16 +25,16 @@ export class TouchSensor extends AbstractPointerSensor {
     {
       eventName: 'onTouchStart' as const,
       handler: (
-        {nativeEvent: event}: TouchEvent,
-        {onActivation}: TouchSensorOptions
+        event: TouchEvent,
+        { onActivation }: TouchSensorOptions
       ) => {
-        const {touches} = event;
+        const { touches } = event;
 
         if (touches.length > 1) {
           return false;
         }
 
-        onActivation?.({event});
+        onActivation?.({ event });
 
         return true;
       },
@@ -58,6 +56,6 @@ export class TouchSensor extends AbstractPointerSensor {
 
     // We create a new handler because the teardown function of another sensor
     // could remove our event listener if we use a referentially equal listener.
-    function noop() {}
+    function noop() { }
   }
 }

@@ -1,2 +1,2 @@
-export {PositionedOverlay} from './PositionedOverlay';
-export type {Props as PositionedOverlayProps} from './PositionedOverlay';
+export { PositionedOverlay } from './PositionedOverlay';
+export type { Props as PositionedOverlayProps } from './PositionedOverlay';

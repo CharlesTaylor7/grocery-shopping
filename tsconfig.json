@@ -1,6 +1,7 @@
 {
   "include": [
-    "src"
+    "src",
+    "vendor"
   ],
   "compilerOptions": {
     "allowImportingTsExtensions": true,
@@ -17,13 +18,22 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
+    "jsxImportSource": "preact",
     "skipLibCheck": true,
+    "esModuleInterop": true,
+    "verbatimModuleSyntax": false,
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "strict": true,
     "rootDirs": [
       "."
     ],
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@dnd-kit/": [
+        "./vendor/dnd-kit/*"
       ],
       "react": [
         "./node_modules/preact/compat/"
@@ -38,11 +48,5 @@
         "./node_modules/preact/compat/*"
       ]
     }
-  },
-  "esModuleInterop": true,
-  "verbatimModuleSyntax": true,
-  "noEmit": true,
-  "resolveJsonModule": true,
-  "skipLibCheck": true,
-  "strict": true
+  }
 }

@@ -7,7 +7,6 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build > build.txt",
-    "build:vendor": "cd vendor/dnd-kit && pnpm build",
     "preview": "vite preview",
     "lint": "oxlint src/",
     "format": "oxfmt src/",

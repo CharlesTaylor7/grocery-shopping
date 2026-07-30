@@ -1,10 +1,10 @@
-import React, {forwardRef} from 'react';
-import {CSS, isKeyboardEvent} from '@dnd-kit/utilities';
+import React, { forwardRef, JSX } from 'react';
+import { CSS, isKeyboardEvent } from '@dnd-kit/utilities';
 
-import type {Transform} from '@dnd-kit/utilities';
+import type { Transform } from '@dnd-kit/utilities';
 
-import {getRelativeTransformOrigin} from '../../../../utilities';
-import type {ClientRect, UniqueIdentifier} from '../../../../types';
+import { getRelativeTransformOrigin } from '../../../../utilities';
+import type { ClientRect, UniqueIdentifier } from '../../../../types';
 
 type TransitionGetter = (
   activatorEvent: Event | null
@@ -56,10 +56,10 @@ export const PositionedOverlay = forwardRef<HTMLElement, Props>(
     const scaleAdjustedTransform = adjustScale
       ? transform
       : {
-          ...transform,
-          scaleX: 1,
-          scaleY: 1,
-        };
+        ...transform,
+        scaleX: 1,
+        scaleY: 1,
+      };
     const styles: React.CSSProperties | undefined = {
       ...baseStyles,
       width: rect.width,
@@ -70,9 +70,9 @@ export const PositionedOverlay = forwardRef<HTMLElement, Props>(
       transformOrigin:
         adjustScale && activatorEvent
           ? getRelativeTransformOrigin(
-              activatorEvent as MouseEvent | KeyboardEvent | TouchEvent,
-              rect
-            )
+            activatorEvent as MouseEvent | KeyboardEvent | TouchEvent,
+            rect
+          )
           : undefined,
       transition:
         typeof transition === 'function'

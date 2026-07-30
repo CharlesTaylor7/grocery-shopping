@@ -1,7 +1,2 @@
 allowBuilds:
   core-js: true
-overrides:
-  '@dnd-kit/accessibility': link:vendor/dnd-kit/packages/accessibility
-  '@dnd-kit/core': link:vendor/dnd-kit/packages/core
-  '@dnd-kit/sortable': link:vendor/dnd-kit/packages/sortable
-  '@dnd-kit/utilities': link:vendor/dnd-kit/packages/utilities
