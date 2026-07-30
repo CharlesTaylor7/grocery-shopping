@@ -9,6 +9,12 @@ export default defineConfig({
   base: "/grocery-shopping/",
   resolve: {
     tsconfigPaths: true,
+    alias: {
+      "react/client": "preact/compat",
+      react: "preact/compat",
+      "react-dom": "preact/compat",
+      "react/jsx-runtime": "preact/jsx-runtime",
+    },
   },
   worker: {
     format: "es",
@@ -30,6 +36,7 @@ export default defineConfig({
           ],
         }),
       ],
+
       output: {
         minify: false,
         manualChunks(id) {

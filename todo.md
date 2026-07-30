@@ -10,6 +10,7 @@
 - [x] separate state per store page
 - [x] save items to db
 - [x] sort got items by when last got
+- [ ]  
 - [ ] handle rebalancing dnd order keys 
 - [ ] timestamps for when an "item was last bought"
 - [ ] debounce checked off
