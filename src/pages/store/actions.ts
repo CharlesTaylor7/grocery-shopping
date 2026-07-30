@@ -132,7 +132,6 @@ export const appendNewItemAtom = atom(null,
       order: lastOrder + 1000,
     };
 
-    set(focusIndexAtom, get(itemsInOrderAtom).length);
     set(applyAndSyncAtom, { op: "new", table: "store_items", entity: item });
   }
 )
@@ -143,12 +142,13 @@ export const handleKeydownAtom = atom(null,
     const focusIndex = get(focusIndexAtom)
     const needItems = get(needItemsAtom);
     if (event.code == "Enter") {
+
       if (focusIndex === -1 || focusIndex === needItems.length - 1) {
         set(appendNewItemAtom);
       }
       else {
         // next item is non-empty, insert one between
-        if (needItems[focusIndex + 1].description) {
+        if (needItems[focusIndex + 1]?.description) {
           const prevOrder = needItems[focusIndex].order;
           const nextOrder = needItems[focusIndex + 1].order;
           const order = (prevOrder + nextOrder) / 2
@@ -158,11 +158,11 @@ export const handleKeydownAtom = atom(null,
             , entity: { id: newId(), got: false, description: "", order, }
           });
         }
-        set(focusIndexAtom, focusIndex + 1);
       }
-
+      set(focusIndexAtom, i => i + 1);
     }
-    if (event.code == "Backspace") {
+
+    else if (event.code == "Backspace") {
       const val = event.currentTarget.value;
       const id = event.currentTarget.dataset.id!;
       if (!val) {
@@ -171,6 +171,16 @@ export const handleKeydownAtom = atom(null,
         set(applyAndSyncAtom, { op: "delete", table: "store_items", entity: { id } })
         set(focusIndexAtom, i => i - 1);
       }
+    }
+    else if (event.code === "ArrowUp") {
+      set(focusIndexAtom, i => Math.max(0, i - 1));
+    }
+
+    else if (event.code === "ArrowDown") {
+      set(focusIndexAtom, i => Math.min(get(needItemsAtom).length - 1, i + 1));
+    }
+    else {
+      console.log(event);
     }
   })
 
