@@ -14,6 +14,7 @@ import {
   deriveBetterAuthMethodFromUrl,
   initBroadcastChannel,
 } from './better-auth-methods';
+import { anonymousTokenClient } from '../plugins/anonymous-token';
 import type { BetterAuthInstance } from '../types';
 import { normalizeBetterAuthError } from './better-auth-helpers';
 
@@ -31,6 +32,7 @@ const supportedBetterAuthClientPlugins = [
   emailOTPClient(),
   magicLinkClient(),
   phoneNumberClient(),
+  anonymousTokenClient(),
 ] satisfies BetterAuthClientOptions['plugins'];
 
 export type SupportedBetterAuthClientPlugins =
@@ -179,18 +181,25 @@ export abstract class NeonAuthAdapterCore {
   abstract getBetterAuthInstance(): BetterAuthInstance;
 
   /**
-   * Get JWT token for authenticated access.
+   * Get JWT token for authenticated or anonymous access.
    * Single source of truth for token retrieval logic.
    *
+   * @param allowAnonymous - When true, fetches anonymous token if no session exists
    * @returns JWT token string or null if unavailable
    */
-  async getJWTToken(): Promise<string | null> {
+  async getJWTToken(allowAnonymous: boolean): Promise<string | null> {
     const client = this.getBetterAuthInstance();
 
     // First, try to get authenticated session JWT
     const session = await client.getSession();
     if (session.data?.session?.token) {
       return session.data.session.token;
+    }
+
+    // No authenticated session - check if anonymous access is allowed
+    if (allowAnonymous) {
+      const anonymousTokenResponse = await client.getAnonymousToken();
+      return anonymousTokenResponse.data?.token ?? null;
     }
 
     // Anonymous access disabled - return null

@@ -1,5 +1,10 @@
 
 import { type BetterAuthReactAdapterInstance } from './adapters/better-auth-react/better-auth-react-adapter';
+import {
+  BetterAuthVanillaAdapter,
+  type BetterAuthVanillaAdapterInstance,
+} from './adapters/better-auth-vanilla/better-auth-vanilla-adapter';
+import { type SupabaseAuthAdapterInstance } from './adapters/supabase/supabase-adapter';
 import type {
   VanillaBetterAuthClient,
   ReactBetterAuthClient,
@@ -8,7 +13,10 @@ import type {
 /**
  * Union type of all supported auth adapter instances
  */
-export type NeonAuthAdapter = BetterAuthReactAdapterInstance
+export type NeonAuthAdapter =
+  | BetterAuthVanillaAdapterInstance
+  | BetterAuthReactAdapterInstance
+  | SupabaseAuthAdapterInstance;
 
 /**
  * Configuration for createAuthClient
@@ -19,6 +27,12 @@ export interface NeonAuthConfig<T extends NeonAuthAdapter> {
     url: string,
     fetchOptions?: { headers?: Record<string, string> }
   ) => T;
+  /**
+   * When true, automatically uses an anonymous token when no user session exists.
+   * This enables RLS-based data access for users with the anonymous role.
+   * @default false
+   */
+  allowAnonymous?: boolean;
 }
 
 /**
@@ -45,10 +59,10 @@ interface NeonAuthConfigInternal<T extends NeonAuthAdapter>
  */
 export type NeonAuthPublicApi<T extends NeonAuthAdapter> =
   T extends BetterAuthVanillaAdapterInstance
-  ? VanillaBetterAuthClient
-  : T extends BetterAuthReactAdapterInstance
-  ? ReactBetterAuthClient
-  : T; // SupabaseAuthAdapter - use adapter methods directly
+    ? VanillaBetterAuthClient
+    : T extends BetterAuthReactAdapterInstance
+      ? ReactBetterAuthClient
+      : T; // SupabaseAuthAdapter - use adapter methods directly
 
 /**
  * NeonAuth type - combines base functionality with the appropriate public API
@@ -117,6 +131,8 @@ export function createInternalNeonAuth<
   const { fetchOptions } = config ?? {};
   const adapter = adapterBuilder(url, fetchOptions) as T;
 
+  // Capture allowAnonymous at creation time
+  const allowAnonymous = config?.allowAnonymous ?? false;
 
   // Check if this is a SupabaseAuthAdapter by checking for its unique initialize method
   const isSupabaseAuthAdapter =
@@ -124,13 +140,13 @@ export function createInternalNeonAuth<
 
   if (!isSupabaseAuthAdapter) {
     return {
-      getJWTToken: () => adapter.getJWTToken(),
+      getJWTToken: () => adapter.getJWTToken(allowAnonymous),
       adapter: adapter.getBetterAuthInstance(),
     } as NeonAuth<T>;
   }
 
   return {
-    getJWTToken: () => adapter.getJWTToken(),
+    getJWTToken: () => adapter.getJWTToken(allowAnonymous),
     adapter,
   } as NeonAuth<T>;
 }

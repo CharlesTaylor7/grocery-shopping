@@ -81,6 +81,7 @@ export type { MagicLinkOptions } from 'better-auth/plugins/magic-link';
 // Phone Number plugin
 export type { PhoneNumberOptions } from 'better-auth/plugins/phone-number';
 
+// Anonymous plugin - no additional types to export
 
 // ============================================
 // Backwards compatibility aliases
