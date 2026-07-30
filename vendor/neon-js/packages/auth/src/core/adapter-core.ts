@@ -16,7 +16,6 @@ import {
 } from './better-auth-methods';
 import { anonymousTokenClient } from '../plugins/anonymous-token';
 import type { BetterAuthInstance } from '../types';
-import { normalizeBetterAuthError } from './better-auth-helpers';
 
 export interface NeonAuthAdapterCoreAuthOptions extends Omit<
   BetterAuthClientOptions,
@@ -85,7 +84,7 @@ export abstract class NeonAuthAdapterCore {
                 .clone()
                 .json()
                 .catch(() => ({}));
-              throw normalizeBetterAuthError({
+              throw ({
                 status: response.status,
                 statusText: response.statusText,
                 message:
@@ -129,7 +128,7 @@ export abstract class NeonAuthAdapterCore {
               .clone()
               .json()
               .catch(() => ({}));
-            throw normalizeBetterAuthError({
+            throw ({
               status: response.status,
               statusText: response.statusText,
               message:

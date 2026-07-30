@@ -13,7 +13,6 @@ import { parseSetCookies, parseCookieValue } from '@/server/utils/cookies';
 import { validateSessionData } from '@/server/session/validator';
 import { NEON_AUTH_SESSION_COOKIE_NAME, NEON_AUTH_SESSION_DATA_COOKIE_NAME } from './constants';
 import { mintSessionDataFromResponse } from './session/minting';
-import { normalizeBetterAuthError } from '@/core/better-auth-helpers';
 import type { ResolvedNeonAuthLogging } from './logger';
 import { classifyFetchFailure } from './network-error';
 
@@ -195,7 +194,7 @@ export function createAuthServerInternal(
       // break `{...error}` spread and `JSON.stringify(error)` on the server
       // return surface. Keep the POJO contract `{ message, status,
       // statusText, code }` intact for server consumers.
-      const normalized = normalizeBetterAuthError({
+      const normalized = ({
         status: response.status,
         statusText: response.statusText,
         message: responseData?.message || response.statusText,

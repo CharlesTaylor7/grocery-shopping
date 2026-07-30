@@ -5,9 +5,7 @@
   "packageManager": "pnpm@9.15.9",
   "type": "module",
   "workspaces": [
-    "packages/*",
-    "e2e",
-    "examples/*"
+    "packages/*"
   ],
   "scripts": {
     "link:neon-js": "cd packages/auth && pnpm link && cd ../postgrest-js && pnpm link && cd ../auth-ui && pnpm link && cd ../neon-js && pnpm link",
@@ -46,8 +44,7 @@
     "typescript": "5.9.3",
     "typescript-eslint": "8.54.0",
     "vite-tsconfig-paths": "5.1.4",
-    "tsx": "4.21.0",
-    "vitest": "4.1.7"
+    "tsx": "4.21.0"
   },
   "dependencies": {},
   "pnpm": {
@@ -59,19 +56,8 @@
       "@better-auth/telemetry": "1.4.18",
       "@better-fetch/fetch": "1.1.21",
       "better-call": "1.1.8",
-      "tailwindcss": "4.2.1",
-      "@tailwindcss/cli": "4.2.1",
-      "@tailwindcss/oxide": "4.2.1",
-      "next": "16.2.6",
-      "vitest": "4.1.7",
       "defu": "6.1.7",
-      "vite": "7.3.2",
       "fastify": ">=5.8.5"
-    },
-    "supportedArchitectures": {
-      "os": ["linux", "darwin", "win32"],
-      "cpu": ["x64", "arm64"],
-      "libc": ["glibc", "musl"]
     }
   }
 }

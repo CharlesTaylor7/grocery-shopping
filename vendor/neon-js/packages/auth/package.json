@@ -34,9 +34,6 @@
   "main": "./dist/index.mjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.mts",
-  "bin": {
-    "neon-auth-codemod": "./codemods/migrate-auth-ui-imports.mjs"
-  },
   "exports": {
     ".": {
       "types": "./dist/index.d.mts",
