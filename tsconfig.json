@@ -32,8 +32,8 @@
       "@/*": [
         "./src/*"
       ],
-      "@dnd-kit/": [
-        "./vendor/dnd-kit/*"
+      "@dnd-kit/*": [
+        "./vendor/dnd-kit/src/*"
       ],
       "react": [
         "./node_modules/preact/compat/"

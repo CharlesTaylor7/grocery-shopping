@@ -1,16 +1,16 @@
-import {useContext, useEffect, useMemo, useRef} from 'react';
+import { useContext, useEffect, useMemo, useRef } from 'react';
 import {
   useDraggable,
   useDroppable,
   UseDraggableArguments,
   UseDroppableArguments,
 } from '@dnd-kit/core';
-import type {Data} from '@dnd-kit/core';
-import {CSS, isKeyboardEvent, useCombinedRefs} from '@dnd-kit/utilities';
+import type { Data } from '@dnd-kit/core';
+import { CSS, isKeyboardEvent, useCombinedRefs } from '@dnd-kit/utilities';
 
-import {Context} from '../components';
-import type {Disabled, SortableData, SortingStrategy} from '../types';
-import {isValidIndex} from '../utilities';
+import { Context } from '../components';
+import type { Disabled, SortableData, SortingStrategy } from '../types';
+import { isValidIndex } from '../utilities';
 import {
   defaultAnimateLayoutChanges,
   defaultAttributes,
@@ -24,11 +24,11 @@ import type {
   NewIndexGetter,
   SortableTransition,
 } from './types';
-import {useDerivedTransform} from './utilities';
+import { useDerivedTransform } from './utilities';
 
 export interface Arguments
   extends Omit<UseDraggableArguments, 'disabled'>,
-    Pick<UseDroppableArguments, 'resizeObserverConfig'> {
+  Pick<UseDroppableArguments, 'resizeObserverConfig'> {
   animateLayoutChanges?: AnimateLayoutChanges;
   disabled?: boolean | Disabled;
   getNewIndex?: NewIndexGetter;
@@ -64,7 +64,7 @@ export function useSortable({
   );
   const index = items.indexOf(id);
   const data = useMemo<SortableData & Data>(
-    () => ({sortable: {containerId, index, items}, ...customData}),
+    () => ({ sortable: { containerId, index, items }, ...customData }),
     [containerId, customData, index, items]
   );
   const itemsAfterCurrentSortable = useMemo(
@@ -118,17 +118,17 @@ export function useSortable({
   const strategy = localStrategy ?? globalStrategy;
   const finalTransform = displaceItem
     ? dragSourceDisplacement ??
-      strategy({
-        rects: sortedRects,
-        activeNodeRect,
-        activeIndex,
-        overIndex,
-        index,
-      })
+    strategy({
+      rects: sortedRects,
+      activeNodeRect,
+      activeIndex,
+      overIndex,
+      index,
+    })
     : null;
   const newIndex =
     isValidIndex(activeIndex) && isValidIndex(overIndex)
-      ? getNewIndex({id, items, activeIndex, overIndex})
+      ? getNewIndex({ id, items, activeIndex, overIndex })
       : index;
   const activeId = active?.id;
   const previous = useRef({

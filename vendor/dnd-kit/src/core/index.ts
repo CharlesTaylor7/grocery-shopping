@@ -1,14 +1,11 @@
 export {
   DndContext,
   DragOverlay,
-  defaultAnnouncements,
-  defaultScreenReaderInstructions,
   defaultDropAnimation,
   defaultDropAnimationSideEffects,
   useDndMonitor,
 } from './components';
 export type {
-  Announcements,
   CancelDrop,
   DndContextProps,
   DndMonitorListener,
@@ -21,7 +18,6 @@ export type {
   DropAnimationSideEffects,
   DraggableMeasuring,
   MeasuringConfiguration,
-  ScreenReaderInstructions,
 } from './components';
 
 export {
@@ -43,8 +39,8 @@ export type {
   UseDroppableArguments,
 } from './hooks';
 
-export {applyModifiers} from './modifiers';
-export type {Modifier, Modifiers} from './modifiers';
+export { applyModifiers } from './modifiers';
+export type { Modifier, Modifiers } from './modifiers';
 
 export {
   KeyboardSensor,

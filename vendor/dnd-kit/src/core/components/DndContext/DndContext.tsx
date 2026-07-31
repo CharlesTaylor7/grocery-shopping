@@ -73,12 +73,6 @@ import type {
   DragPendingEvent,
   DragAbortEvent,
 } from '../../types';
-import {
-  Accessibility,
-  Announcements,
-  RestoreFocus,
-  ScreenReaderInstructions,
-} from '../Accessibility';
 
 import { defaultData, defaultSensors } from './defaults';
 import {
@@ -89,12 +83,6 @@ import type { MeasuringConfiguration } from './types';
 
 export interface Props {
   id?: string;
-  accessibility?: {
-    announcements?: Announcements;
-    container?: Element;
-    restoreFocus?: boolean;
-    screenReaderInstructions?: ScreenReaderInstructions;
-  };
   autoScroll?: boolean | AutoScrollOptions;
   cancelDrop?: CancelDrop;
   children?: React.ReactNode;
@@ -137,7 +125,6 @@ enum Status {
 
 export const DndContext = memo(function DndContext({
   id,
-  accessibility,
   autoScroll = true,
   children,
   sensors = defaultSensors,
@@ -176,6 +163,7 @@ export const DndContext = memo(function DndContext({
   const activeRef = useRef<UniqueIdentifier | null>(null);
   const [activeSensor, setActiveSensor] = useState<SensorInstance | null>(null);
   const [activatorEvent, setActivatorEvent] = useState<Event | null>(null);
+  // @ts-ignore
   const latestProps = useLatestValue(props, Object.values(props));
   const draggableDescribedById = useUniqueId(`DndDescribedBy`, id);
   const enabledDroppableContainers = useMemo(
@@ -431,7 +419,7 @@ export const DndContext = memo(function DndContext({
             const { cancelDrop } = latestProps.current;
 
             event = {
-              activatorEvent,
+              activatorEvent: activatorEvent,
               active: active,
               collisions,
               delta: scrollAdjustedTranslate,
@@ -488,6 +476,7 @@ export const DndContext = memo(function DndContext({
           // No active draggable
           !activeDraggableNode ||
           // Event has already been captured
+          // @ts-ignore
           event.dndKit ||
           event.defaultPrevented
         ) {
@@ -504,6 +493,7 @@ export const DndContext = memo(function DndContext({
         );
 
         if (shouldActivate === true) {
+          // @ts-ignore
           event.dndKit = {
             capturedBy: sensor.sensor,
           };
@@ -732,12 +722,7 @@ export const DndContext = memo(function DndContext({
             {children}
           </ActiveDraggableContext.Provider>
         </PublicContext.Provider>
-        <RestoreFocus disabled={accessibility?.restoreFocus === false} />
       </InternalContext.Provider>
-      <Accessibility
-        {...accessibility}
-        hiddenTextDescribedById={draggableDescribedById}
-      />
     </DndMonitorContext.Provider>
   );
 

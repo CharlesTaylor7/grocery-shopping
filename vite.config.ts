@@ -41,7 +41,7 @@ export default defineConfig({
         minify: false,
         manualChunks(id: string) {
           // Handle vendored dnd-kit packages
-          const dndMarker = "/vendor/dnd-kit/packages/";
+          const dndMarker = "/vendor/dnd-kit/src/";
           const dndIdx = id.lastIndexOf(dndMarker);
 
           if (dndIdx !== -1) {

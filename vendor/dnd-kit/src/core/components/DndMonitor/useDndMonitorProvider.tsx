@@ -1,12 +1,12 @@
-import {useCallback, useState} from 'react';
+import { useCallback, useState } from 'react';
 
-import type {DndMonitorListener, DndMonitorEvent} from './types';
+import type { DndMonitorListener, DndMonitorEvent } from './types';
 
 export function useDndMonitorProvider() {
   const [listeners] = useState(() => new Set<DndMonitorListener>());
 
   const registerListener = useCallback(
-    (listener) => {
+    (listener: any) => {
       listeners.add(listener);
       return () => listeners.delete(listener);
     },
@@ -14,7 +14,7 @@ export function useDndMonitorProvider() {
   );
 
   const dispatch = useCallback(
-    ({type, event}: DndMonitorEvent) => {
+    ({ type, event }: DndMonitorEvent) => {
       listeners.forEach((listener) => listener[type]?.(event as any));
     },
     [listeners]

@@ -18,11 +18,10 @@ export const CSS = Object.freeze({
         return;
       }
 
-      const {x, y} = transform;
+      const { x, y } = transform;
 
-      return `translate3d(${x ? Math.round(x) : 0}px, ${
-        y ? Math.round(y) : 0
-      }px, 0)`;
+      return `translate3d(${x ? Math.round(x) : 0}px, ${y ? Math.round(y) : 0
+        }px, 0)`;
     },
   },
   Scale: {
@@ -31,11 +30,12 @@ export const CSS = Object.freeze({
         return;
       }
 
-      const {scaleX, scaleY} = transform;
+      const { scaleX, scaleY } = transform;
 
       return `scaleX(${scaleX}) scaleY(${scaleY})`;
     },
   },
+
   Transform: {
     toString(transform: Transform | null) {
       if (!transform) {
@@ -49,7 +49,7 @@ export const CSS = Object.freeze({
     },
   },
   Transition: {
-    toString({property, duration, easing}: Transition) {
+    toString({ property, duration, easing }: Transition) {
       return `${property} ${duration}ms ${easing}`;
     },
   },
