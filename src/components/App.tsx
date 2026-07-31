@@ -12,8 +12,8 @@ export default function App() {
   return (
     <SyncActionProvider mode={SYNC_MODE}>
       <HashRouter>
-        <div className="h-screen flex flex-col p-3" data-theme="dark">
-          <h1 className="w-full bg-base-200 grid grid-cols-3 items-center">
+        <div className="h-screen flex flex-col " data-theme="dark">
+          <h1 className="w-full bg-base-200 p-3 grid grid-cols-3 items-center">
             <div>
               <LoginPrompt />
             </div>
@@ -23,7 +23,7 @@ export default function App() {
             </div>
           </h1>
 
-          <div className="flex-1 overflow-y-scroll overflow-x-hidden">
+          <div className="p-3 flex-1 overflow-y-scroll overflow-x-hidden">
             <Suspense fallback="the suspense is killing me" >
               <RouteTree />
             </Suspense>
