@@ -21,7 +21,14 @@ export default function App() {
             <div className="text-center">
               <button
                 className="btn btn-accent"
-                onClick={() => toast(() => "greetings traveler")}>Click Me </button></div>
+                onClick={() =>
+                  toast(() =>
+                    "now with sentry"
+                  )}
+              >
+                Click Me
+              </button>
+            </div>
             <div className="text-right">
               <Link to="/nav">Nav</Link>
             </div>
