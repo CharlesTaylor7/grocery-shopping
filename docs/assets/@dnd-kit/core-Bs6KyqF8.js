@@ -1,7 +1,7 @@
-import { A as X, C as d, D as x, E as q, O as y, S as _, T as init_hooks_module, a as init_compat, d as _n, h as init_compat_module, j as init_preact_module, l as N, n as LiveRegion, o as $, p as gn, r as useAnnouncement, t as HiddenText, w as h, x as T, y as A } from "./accessibility-B1tMwVlI.js";
+import { A as init_preact_module, C as h, D as y, E as x, S as d, T as q, b as T, f as gn, i as $, k as X, l as _n, m as init_compat_module, n as LiveRegion, r as useAnnouncement, s as N, t as HiddenText, v as A, w as init_hooks_module, x as _ } from "./accessibility-BFPipYZy.js";
 
 //#region node_modules/.pnpm/@dnd-kit+utilities@3.2.2_@preact+compat@18.3.2_preact@10.29.7_/node_modules/@dnd-kit/utilities/dist/utilities.esm.js
-init_compat();
+init_compat_module();
 function useCombinedRefs() {
 	for (var _len = arguments.length, refs = new Array(_len), _key = 0; _key < _len; _key++) refs[_key] = arguments[_key];
 	return T(() => (node) => {
@@ -182,7 +182,7 @@ function findFirstFocusableNode(element) {
 
 //#endregion
 //#region node_modules/.pnpm/@dnd-kit+core@6.3.1_@preact+compat@18.3.2_preact@10.29.7__@preact+compat@18.3.2_preact@10.29.7_/node_modules/@dnd-kit/core/dist/core.esm.js
-init_compat();
+init_compat_module();
 var DndMonitorContext = /*#__PURE__*/ X(null);
 function useDndMonitor(listener) {
 	const registerListener = x(DndMonitorContext);

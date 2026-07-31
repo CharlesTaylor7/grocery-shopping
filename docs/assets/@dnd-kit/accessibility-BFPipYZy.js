@@ -509,6 +509,54 @@ var init_hooks_module = __esmMin((() => {
 
 //#endregion
 //#region node_modules/.pnpm/preact@10.29.7/node_modules/preact/compat/dist/compat.module.js
+var compat_module_exports = /* @__PURE__ */ __exportAll({
+	Children: () => L,
+	Component: () => C$2,
+	Fragment: () => S,
+	PureComponent: () => M,
+	StrictMode: () => S,
+	Suspense: () => P,
+	SuspenseList: () => B,
+	__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED: () => fn,
+	cloneElement: () => mn,
+	createContext: () => X$1,
+	createElement: () => k$2,
+	createFactory: () => sn,
+	createPortal: () => $,
+	createRef: () => M$1,
+	default: () => gn,
+	findDOMNode: () => yn,
+	flushSync: () => bn,
+	forwardRef: () => D,
+	hydrate: () => tn,
+	isElement: () => Sn,
+	isFragment: () => vn,
+	isMemo: () => dn,
+	isValidElement: () => hn,
+	lazy: () => z,
+	memo: () => N,
+	render: () => nn,
+	startTransition: () => x,
+	unmountComponentAtNode: () => pn,
+	unstable_batchedUpdates: () => _n,
+	useCallback: () => q$1,
+	useContext: () => x$1,
+	useDebugValue: () => P$1,
+	useDeferredValue: () => w,
+	useEffect: () => h,
+	useErrorBoundary: () => b,
+	useId: () => g$1,
+	useImperativeHandle: () => F$1,
+	useInsertionEffect: () => I,
+	useLayoutEffect: () => _,
+	useMemo: () => T$1,
+	useReducer: () => y,
+	useRef: () => A$1,
+	useState: () => d,
+	useSyncExternalStore: () => C,
+	useTransition: () => k,
+	version: () => an
+});
 function g(n, t) {
 	for (var e in t) n[e] = t[e];
 	return n;
@@ -928,63 +976,8 @@ var init_compat_module = __esmMin((() => {
 }));
 
 //#endregion
-//#region node_modules/.pnpm/@preact+compat@18.3.2_preact@10.29.7/node_modules/@preact/compat/index.mjs
-var compat_exports = /* @__PURE__ */ __exportAll({
-	Children: () => L,
-	Component: () => C$2,
-	Fragment: () => S,
-	PureComponent: () => M,
-	StrictMode: () => S,
-	Suspense: () => P,
-	SuspenseList: () => B,
-	__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED: () => fn,
-	cloneElement: () => mn,
-	createContext: () => X$1,
-	createElement: () => k$2,
-	createFactory: () => sn,
-	createPortal: () => $,
-	createRef: () => M$1,
-	default: () => gn,
-	findDOMNode: () => yn,
-	flushSync: () => bn,
-	forwardRef: () => D,
-	hydrate: () => tn,
-	isElement: () => Sn,
-	isFragment: () => vn,
-	isMemo: () => dn,
-	isValidElement: () => hn,
-	lazy: () => z,
-	memo: () => N,
-	render: () => nn,
-	startTransition: () => x,
-	unmountComponentAtNode: () => pn,
-	unstable_batchedUpdates: () => _n,
-	useCallback: () => q$1,
-	useContext: () => x$1,
-	useDebugValue: () => P$1,
-	useDeferredValue: () => w,
-	useEffect: () => h,
-	useErrorBoundary: () => b,
-	useId: () => g$1,
-	useImperativeHandle: () => F$1,
-	useInsertionEffect: () => I,
-	useLayoutEffect: () => _,
-	useMemo: () => T$1,
-	useReducer: () => y,
-	useRef: () => A$1,
-	useState: () => d,
-	useSyncExternalStore: () => C,
-	useTransition: () => k,
-	version: () => an
-});
-var init_compat = __esmMin((() => {
-	init_compat_module();
-	init_compat_module();
-}));
-
-//#endregion
 //#region node_modules/.pnpm/@dnd-kit+accessibility@3.1.1_@preact+compat@18.3.2_preact@10.29.7_/node_modules/@dnd-kit/accessibility/dist/accessibility.esm.js
-init_compat();
+init_compat_module();
 var hiddenStyles = { display: "none" };
 function HiddenText(_ref) {
 	let { id, value } = _ref;
@@ -1027,4 +1020,4 @@ function useAnnouncement() {
 }
 
 //#endregion
-export { X$1 as A, d as C, x$1 as D, q$1 as E, k$2 as M, l$1 as N, y as O, _ as S, init_hooks_module as T, nn as _, init_compat as a, P$1 as b, I as c, _n as d, bn as f, mn as g, init_compat_module as h, compat_exports as i, init_preact_module as j, S as k, N as l, hn as m, LiveRegion as n, $ as o, gn as p, useAnnouncement as r, D as s, HiddenText as t, P as u, pn as v, h as w, T$1 as x, A$1 as y };
+export { init_preact_module as A, h as C, y as D, x$1 as E, l$1 as M, S as O, d as S, q$1 as T, pn as _, D as a, T$1 as b, P as c, compat_module_exports as d, gn as f, nn as g, mn as h, $ as i, k$2 as j, X$1 as k, _n as l, init_compat_module as m, LiveRegion as n, I as o, hn as p, useAnnouncement as r, N as s, HiddenText as t, bn as u, A$1 as v, init_hooks_module as w, _ as x, P$1 as y };

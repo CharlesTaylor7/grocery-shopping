@@ -1,9 +1,9 @@
 import { i as __toCommonJS, t as __commonJSMin } from "./rolldown-runtime-DgArcLmv.js";
-import { a as init_compat, i as compat_exports } from "./@dnd-kit/accessibility-B1tMwVlI.js";
+import { d as compat_module_exports, m as init_compat_module } from "./@dnd-kit/accessibility-BFPipYZy.js";
 
 //#region node_modules/.pnpm/use-sync-external-store@1.6.0_@preact+compat@18.3.2_preact@10.29.7_/node_modules/use-sync-external-store/cjs/use-sync-external-store-shim.production.js
 var require_use_sync_external_store_shim_production = /* @__PURE__ */ __commonJSMin(((exports) => {
-	var React = (init_compat(), __toCommonJS(compat_exports));
+	var React = (init_compat_module(), __toCommonJS(compat_module_exports));
 	function is(x, y) {
 		return x === y && (0 !== x || 1 / x === 1 / y) || x !== x && y !== y;
 	}

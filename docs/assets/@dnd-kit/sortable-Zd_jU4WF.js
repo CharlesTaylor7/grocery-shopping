@@ -1,8 +1,8 @@
-import { C as d, D as x, T as init_hooks_module, a as init_compat, h as init_compat_module, p as gn, w as h, x as T, y as A } from "./accessibility-B1tMwVlI.js";
-import { a as getClientRect, c as useDroppable, d as CSS, f as isKeyboardEvent, h as useUniqueId, m as useIsomorphicLayoutEffect, n as KeyboardCode, o as useDndContext, p as useCombinedRefs, s as useDraggable } from "./core-zvKwXjFl.js";
+import { C as h, E as x, S as d, b as T, f as gn, m as init_compat_module, v as A, w as init_hooks_module } from "./accessibility-BFPipYZy.js";
+import { a as getClientRect, c as useDroppable, d as CSS, f as isKeyboardEvent, h as useUniqueId, m as useIsomorphicLayoutEffect, n as KeyboardCode, o as useDndContext, p as useCombinedRefs, s as useDraggable } from "./core-Bs6KyqF8.js";
 
 //#region node_modules/.pnpm/@dnd-kit+sortable@10.0.0_@dnd-kit+core@6.3.1_@preact+compat@18.3.2_preact@10.29.7__@pre_bb61d69a95dd54e21d61620a911642ba/node_modules/@dnd-kit/sortable/dist/sortable.esm.js
-init_compat();
+init_compat_module();
 function arrayMove(array, from, to) {
 	const newArray = array.slice();
 	newArray.splice(to < 0 ? newArray.length + to : to, 0, newArray.splice(from, 1)[0]);

@@ -1,4 +1,4 @@
-import { N as l, _ as nn, h as init_compat_module, j as init_preact_module, v as pn } from "./@dnd-kit/accessibility-B1tMwVlI.js";
+import { A as init_preact_module, M as l, _ as pn, g as nn, m as init_compat_module } from "./@dnd-kit/accessibility-BFPipYZy.js";
 
 //#region node_modules/.pnpm/preact@10.29.7/node_modules/preact/compat/client.mjs
 init_compat_module();

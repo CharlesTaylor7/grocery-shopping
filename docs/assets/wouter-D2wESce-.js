@@ -1,9 +1,9 @@
-import { A as X, D as x, M as k, S as _, T as init_hooks_module, a as init_compat, c as I, g as mn, h as init_compat_module, j as init_preact_module, k as S, m as hn, s as D, w as h, x as T, y as A } from "./@dnd-kit/accessibility-B1tMwVlI.js";
+import { A as init_preact_module, C as h, E as x, O as S, a as D, b as T, h as mn, j as k, k as X, m as init_compat_module, o as I, p as hn, v as A, w as init_hooks_module, x as _ } from "./@dnd-kit/accessibility-BFPipYZy.js";
 import { t as parse } from "./regexparam-BItrLycJ.js";
-import { t as require_shim } from "./use-sync-external-store-DUvvr42q.js";
+import { t as require_shim } from "./use-sync-external-store-CBhWIRob.js";
 
 //#region node_modules/.pnpm/wouter@3.10.0_@preact+compat@18.3.2_preact@10.29.7_/node_modules/wouter/src/use-sync-external-store.js
-init_compat();
+init_compat_module();
 var import_shim = require_shim();
 
 //#endregion

@@ -1,7 +1,7 @@
-import { a as init_compat, h as init_compat_module, p as gn } from "./@dnd-kit/accessibility-B1tMwVlI.js";
+import { f as gn, m as init_compat_module } from "./@dnd-kit/accessibility-BFPipYZy.js";
 
 //#region node_modules/.pnpm/sonner@2.0.7_@preact+compat@18.3.2_preact@10.29.7__@preact+compat@18.3.2_preact@10.29.7_/node_modules/sonner/dist/index.mjs
-init_compat();
+init_compat_module();
 function __insertCSS(code) {
 	if (!code || typeof document == "undefined") return;
 	let head = document.head || document.getElementsByTagName("head")[0];

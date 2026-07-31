@@ -1,7 +1,7 @@
-import { A as X, D as x, E as q, M as k, O as y, T as init_hooks_module, a as init_compat, b as P, h as init_compat_module, j as init_preact_module, p as gn, w as h, y as A } from "./@dnd-kit/accessibility-B1tMwVlI.js";
+import { A as init_preact_module, C as h, D as y, E as x, T as q, f as gn, j as k, k as X, m as init_compat_module, v as A, w as init_hooks_module, y as P } from "./@dnd-kit/accessibility-BFPipYZy.js";
 
 //#region node_modules/.pnpm/jotai@2.20.2_@babel+core@7.29.7_@babel+template@7.29.7_@preact+compat@18.3.2_preact@10.29.7__@types+react@19.2.17/node_modules/jotai/esm/vanilla/internals.mjs
-init_compat();
+init_compat_module();
 function hasInitialValue(atom) {
 	return "init" in atom;
 }
