@@ -1,12 +1,21 @@
 // oxlint-disable
 import { useSyncExternalStore } from "react";
+import { flushSync } from "react-dom";
 
 // array of callback subscribed to hash updates
 const listeners = {
   v: [],
 };
 
-const onHashChange = () => listeners.v.forEach((cb) => cb());
+const onHashChange = () => {
+  document.startViewTransition(() =>
+    flushSync(() =>
+      listeners.v.forEach((cb) =>
+        cb()
+      )
+    )
+  );
+}
 
 // we subscribe to `hashchange` only once when needed to guarantee that
 // all listeners are called synchronously

@@ -1,4 +1,5 @@
 // oxlint-disable
+import "./monkey-patch.js";
 import { parse as parsePattern } from "regexparam";
 
 import {
