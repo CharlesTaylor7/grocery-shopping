@@ -32,8 +32,8 @@ const subscribeToHashUpdates = (callback) => {
 // leading '#' is ignored, leading '/' is optional
 const currentHashLocation = () => "/" + location.hash.replace(/^#?\/?/, "");
 
-export const navigate = (to, { state = null, replace = false } = {}) => {
-  console.log(to);
+const hashNavigate = (to, { state = null, replace = false } = {}) => {
+  console.log("hashNavigate", { to });
   const oldURL = location.href;
 
   const [hash, search] = to.replace(/^#?\/?/, "").split("?");
@@ -63,7 +63,7 @@ export const useHashLocation = () => [
     subscribeToHashUpdates,
     currentHashLocation,
   ),
-  navigate,
+  hashNavigate,
 ];
 
 useHashLocation.hrefs = (href) => "#" + href;

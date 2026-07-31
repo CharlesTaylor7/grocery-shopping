@@ -13,7 +13,7 @@ const _relativePath = (base, path) =>
 const baseDefaults = (base = "") => (base === "/" ? "" : base);
 
 export const absolutePath = (to, base) =>
-  to[0] === "~" ? to.slice(1) : baseDefaults(base) + to;
+  to[0] === "/" ? to : baseDefaults(base) + to;
 
 export const relativePath = (base = "", path) =>
   _relativePath(unescape(baseDefaults(base)), unescape(path));

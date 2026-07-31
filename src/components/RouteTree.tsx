@@ -8,11 +8,17 @@ import Trip from "@/pages/trip";
 import TripList from "@/pages/trip/[id].tsx";
 import Nav from "@/pages/nav.tsx";
 import AuthGuard from "@/components/AuthGuard";
-import { Link, Redirect, Route, Switch, useLocation } from "wouter";
+import { Redirect, Route, Switch } from "wouter";
+// begin test code
+import { useEffect } from "react";
+import { useNavigate } from "wouter";
 
-function CurrentLocation() {
-  const [location] = useLocation();
-  return location;
+function TestNavigate() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    navigate("store");
+  }, [navigate]);
+  return null;
 }
 
 export default function RouteTree() {
@@ -20,15 +26,7 @@ export default function RouteTree() {
     <Route path="/" component={Index} />
     <Route path="nav" component={Nav} />
 
-    <Route nest path="dummy">
-      <Route path="/foo">
-        Foo
-      </Route>
-
-      <CurrentLocation />
-      <Link to="foo" className="underline"> Link</Link>
-
-    </Route>
+    <Route path="dummy" component={TestNavigate} />
 
     <Route nest path="auth" >
       <Route path="/" >

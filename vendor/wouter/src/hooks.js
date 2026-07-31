@@ -40,9 +40,8 @@ export function useNavigate() {
   const router = useRouter();
   const [_, navigate] = router.hook(router);
   return useEvent((to, opts) => {
-    console.log("to", to);
     const target = absolutePath(to, router.base)
-    console.log("target", to);
+    console.log("useNavigate()", { to, target, base: router.base, opts });
     navigate(target, opts)
   })
 }
@@ -64,6 +63,7 @@ export function useLocationFromRouter(router) {
     relativePath(router.base, location),
     useEvent((to, opts) => {
       const target = absolutePath(to, router.base)
+      console.log("useLocationFromRouter", { to, target, opts, base: router.base });
       navigate(target, opts)
     })
   ];
