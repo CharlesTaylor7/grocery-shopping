@@ -37,37 +37,37 @@ export default defineConfig({
           ],
         }),
       ],
-      // output: {
-      //   minify: false,
-      //   manualChunks(id: string) {
-      //     // Handle vendored dnd-kit packages
-      //     const dndMarker = "/vendor/dnd-kit/src/";
-      //     const dndIdx = id.lastIndexOf(dndMarker);
-      //
-      //     if (dndIdx !== -1) {
-      //       const pkgPath = id.slice(dndIdx + dndMarker.length);
-      //       const pkgName = pkgPath.split("/")[0];
-      //
-      //       return `@dnd-kit/${pkgName}`;
-      //     }
-      //
-      //     // Handle node_modules packages
-      //     const marker = "/node_modules/";
-      //     const idx = id.lastIndexOf(marker);
-      //
-      //     if (idx === -1) return;
-      //
-      //     const pkgPath = id.slice(idx + marker.length);
-      //     const parts = pkgPath.split("/");
-      //
-      //     if (parts[0].startsWith("@")) {
-      //       return `${parts[0]}/${parts[1]}`;
-      //     }
-      //
-      //     return parts[0];
-      //   },
-      // },
-      //
+      output: {
+        minify: false,
+        manualChunks(id: string) {
+          // Handle vendored packages
+          const vendorMarker = "/vendor/";
+          const vendorIdx = id.lastIndexOf(vendorMarker);
+
+          if (vendorIdx !== -1) {
+            const pkgPath = id.slice(vendorIdx + vendorMarker.length);
+            const pkgName = pkgPath.split("/")[0];
+
+            return pkgName;
+          }
+
+          // Handle node_modules packages
+          const marker = "/node_modules/";
+          const idx = id.lastIndexOf(marker);
+
+          if (idx === -1) return;
+
+          const pkgPath = id.slice(idx + marker.length);
+          const parts = pkgPath.split("/");
+
+          if (parts[0].startsWith("@")) {
+            return `${parts[0]}/${parts[1]}`;
+          }
+
+          return parts[0];
+        },
+      },
+
     },
   },
 });
