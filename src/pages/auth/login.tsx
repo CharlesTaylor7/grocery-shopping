@@ -1,7 +1,7 @@
 import { authClient } from "@/auth";
 import { toast } from "@/toast";
 import { useRef, } from "react";
-import { lastVisitedUrl } from "@/redirect.ts";
+import { lastVisitedUrl } from "@/last-visited-url";
 import { useNavigate } from "wouter";
 
 export default function Login() {

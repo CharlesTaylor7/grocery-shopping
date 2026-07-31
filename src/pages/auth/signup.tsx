@@ -1,7 +1,7 @@
 import { authClient } from "@/auth";
 import { toast } from "@/toast";
-import { lastVisitedUrl } from "@/redirect";
-import {useNavigate} from "wouter";
+import { lastVisitedUrl } from "@/last-visited-url";
+import { useNavigate } from "wouter";
 
 export default function Signup() {
   const navigate = useNavigate();
