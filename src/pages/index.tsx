@@ -1,6 +1,6 @@
-import { authClient } from "@/client/auth.ts";
+import { authClient } from "@/auth.ts";
 import { useEffect } from "react";
-import { lastVisitedUrl } from "@/client/redirect";
+import { lastVisitedUrl } from "@/redirect";
 import {useNavigate} from "wouter";
 
 

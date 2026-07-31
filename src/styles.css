@@ -2,10 +2,8 @@
 @import "tailwindcss" source(none);
 
 /* Manually whitelist only the folders you want scanned */
-@source "./src/components";
-@source "./src/routes";
-@source "./src/islands";
-@source "./src/pages";
+@source "./components";
+@source "./pages";
 @plugin "daisyui" ;
 /* { */
 /*   /* themes: dark --default; */ */

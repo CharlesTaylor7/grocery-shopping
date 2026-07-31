@@ -1,7 +1,7 @@
 // greets signed in user
 // allows signout
 // prompts for signup or login
-import { authClient } from "@/client/auth";
+import { authClient } from "@/auth";
 import { Link, useLocation, useNavigate } from "wouter";
 
 export default function LoginPrompt() {

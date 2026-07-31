@@ -1,8 +1,8 @@
-import Toaster from "@/islands/Toaster";
-import LoginPrompt from "@/islands/LoginPrompt";
-import SyncActionProvider from "@/islands/SyncActionProvider";
-import { SYNC_MODE } from "@/client/config";
-import LastVisitSave from "@/islands/LastVisitSave";
+import Toaster from "@/components/Toaster";
+import LoginPrompt from "@/components/LoginPrompt";
+import SyncActionProvider from "@/components/SyncActionProvider";
+import { SYNC_MODE } from "@/config";
+import LastVisitSave from "@/components/LastVisitSave";
 import { Suspense } from "react";
 import { Link, } from "wouter";
 import HashRouter from "@/components/HashRouter";

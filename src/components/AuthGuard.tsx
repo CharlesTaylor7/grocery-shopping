@@ -1,6 +1,6 @@
-import { authClient } from "@/client/auth";
+import { authClient } from "@/auth";
 import { useEffect, type ReactNode, } from "react";
-import { AUTH_GUARD } from "@/client/config";
+import { AUTH_GUARD } from "@/config";
 import {useNavigate} from "wouter";
 
 export default function AuthGuard(props: { children: ReactNode }) {

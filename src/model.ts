@@ -1,7 +1,7 @@
-import type { Action, Op, TableName } from "@/shared/types.ts";
-import { DataClient } from "@/client/neon.ts";
-import { promisify, openIndexedDB } from "@/client/indexed-db.ts";
-import { pushToPostgrest } from "@/client/sync.ts";
+import type { Action, Op, TableName } from "@/types";
+import { DataClient } from "@/neon.ts";
+import { promisify, openIndexedDB } from "@/indexed-db.ts";
+import { pushToPostgrest } from "@/sync.ts";
 import { atom } from 'jotai';
 
 interface SyncOptions {

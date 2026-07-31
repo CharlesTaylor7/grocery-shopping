@@ -1,12 +1,12 @@
-import type { StoreItem } from "@/shared/types.ts";
-import { dataClientAtom } from "@/client/neon.ts";
-import { openIndexedDB, promisify } from "@/client/indexed-db.ts";
-import { type Action } from "@/shared/types";
+import type { StoreItem } from "@/types";
+import { dataClientAtom } from "@/neon.ts";
+import { openIndexedDB, promisify } from "@/indexed-db.ts";
+import { type Action } from "@/types";
 import { flushSync } from "react-dom";
 import { v4 as newId } from "uuid";
 import { atom, } from "jotai";
 import { atomWithImmer } from "jotai-immer"
-import { syncAtom } from "@/client/model";
+import { syncAtom } from "@/model";
 
 
 export interface GotItem extends StoreItem {

@@ -1,4 +1,4 @@
-import { NEON_AUTH_URL } from "@/client/config";
+import { NEON_AUTH_URL } from "@/config";
 
 // TODO:
 export async function getAccessToken(): Promise<string | null> {

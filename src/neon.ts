@@ -1,7 +1,7 @@
 
-import { NEON_DATA_URL } from "@/client/config.ts";
+import { NEON_DATA_URL } from "@/config.ts";
 import { atom } from "jotai";
-import { authClient } from "@/client/auth";
+import { authClient } from "@/auth";
 
 
 

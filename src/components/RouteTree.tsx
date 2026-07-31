@@ -1,12 +1,12 @@
-import Index from "@/routes/index.tsx";
-import Login from "@/routes/auth/login";
-import Signup from "@/routes/auth/signup";
-import PasswordReset from "@/routes/auth/password-reset";
+import Index from "@/pages/index.tsx";
+import Login from "@/pages/auth/login";
+import Signup from "@/pages/auth/signup";
+import PasswordReset from "@/pages/auth/password-reset";
 import Store from "@/pages/store/Store";
 import StoreList from "@/pages/store-list/StoreList";
-import Trip from "@/routes/trip";
-import TripList from "@/routes/trip/[id].tsx";
-import Nav from "@/routes/nav.tsx";
+import Trip from "@/pages/trip";
+import TripList from "@/pages/trip/[id].tsx";
+import Nav from "@/pages/nav.tsx";
 import AuthGuard from "@/components/AuthGuard";
 import { Link, Redirect, Route, Switch, useLocation } from "wouter";
 

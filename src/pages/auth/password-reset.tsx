@@ -1,4 +1,4 @@
-import { authClient } from "@/client/auth";
+import { authClient } from "@/auth";
 import {useNavigate} from "wouter";
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "wouter";

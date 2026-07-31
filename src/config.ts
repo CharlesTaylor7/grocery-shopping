@@ -1,4 +1,4 @@
-import type { SyncMode } from '@/islands/SyncActionProvider';
+import type { SyncMode } from '@/components/SyncActionProvider';
 
 export const NEON_AUTH_URL: string =
   "https://ep-red-morning-awzkc1lp.neonauth.c-12.us-east-1.aws.neon.tech/neondb/auth";

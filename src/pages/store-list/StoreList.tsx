@@ -1,11 +1,11 @@
-import type { Store, Action } from "@/shared/types.ts";
+import type { Store, Action } from "@/types";
 import { useEffect, useState } from "react";
-import { openIndexedDB } from "@/client/indexed-db.ts";
+import { openIndexedDB } from "@/indexed-db.ts";
 import { Link } from "wouter";
 import { v4 as newId } from 'uuid';
 import { useAtomValue } from 'jotai'
-import { syncAtom } from "@/client/model";
-import { DataClient, dataClientAtom } from "@/client/neon";
+import { syncAtom } from "@/model";
+import { DataClient, dataClientAtom } from "@/neon";
 
 export default function StoreList() {
   const [stores, setStores] = useState<Store[]>([]);

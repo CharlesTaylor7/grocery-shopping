@@ -1,4 +1,4 @@
-import { migrate, VERSION } from "@/client/migrate.ts";
+import { migrate, VERSION } from "@/migrate.ts";
 
 export function openIndexedDB(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {

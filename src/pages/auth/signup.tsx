@@ -1,6 +1,6 @@
-import { authClient } from "@/client/auth";
-import { toast } from "@/client/toast";
-import { lastVisitedUrl } from "@/client/redirect";
+import { authClient } from "@/auth";
+import { toast } from "@/toast";
+import { lastVisitedUrl } from "@/redirect";
 import {useNavigate} from "wouter";
 
 export default function Signup() {

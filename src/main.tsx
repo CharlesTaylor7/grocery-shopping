@@ -1,9 +1,9 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "@/components/App";
-import "@/client/styles.css";
-import { ENABLE_SERVICE_WORKER } from "@/client/config";
-import "@/client/auth";
+import "@/styles.css";
+import { ENABLE_SERVICE_WORKER } from "@/config";
+import "@/auth";
 
 if (ENABLE_SERVICE_WORKER) {
   navigator.serviceWorker
