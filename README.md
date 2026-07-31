@@ -2,7 +2,8 @@
 
 ### Dashboard
 
-- https://console.neon.tech/app/projects/<ID>
+- Neon: https://console.neon.tech/app/projects/lucky-brook-13737442
+- Sentry: https://chuck-dv.sentry.io/onboarding/setup-docs/?product=error-monitoring
 
 ### Docs
 
