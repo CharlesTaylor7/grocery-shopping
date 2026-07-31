@@ -56,7 +56,7 @@ export function useDroppableMeasuring(
     },
     [disabledRef]
   );
-  const timeoutId = useRef<NodeJS.Timeout | null>(null);
+  const timeoutId = useRef<number | null>(null);
   const droppableRects = useLazyMemo<RectMap>(
     (previousValue) => {
       if (disabled && !dragging) {

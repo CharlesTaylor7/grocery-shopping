@@ -70,7 +70,7 @@ export class AbstractPointerSensor implements SensorInstance {
   private document: Document;
   private activated: boolean = false;
   private initialCoordinates: Coordinates;
-  private timeoutId: NodeJS.Timeout | null = null;
+  private timeoutId: number | null = null;
   private listeners: Listeners;
   private documentListeners: Listeners;
   private windowListeners: Listeners;

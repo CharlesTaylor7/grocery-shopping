@@ -43,7 +43,7 @@ export function useDroppable({
   const previous = useRef({disabled});
   const resizeObserverConnected = useRef(false);
   const rect = useRef<ClientRect | null>(null);
-  const callbackId = useRef<NodeJS.Timeout | null>(null);
+  const callbackId = useRef<number | null>(null);
   const {
     disabled: resizeObserverDisabled,
     updateMeasurementsFor,
