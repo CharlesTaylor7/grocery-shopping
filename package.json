@@ -13,6 +13,7 @@
     "typecheck": "tsc --noEmit "
   },
   "dependencies": {
+    "@sentry/browser": "^10.69.0",
     "immer": "^11.1.15",
     "jotai": "^2.20.2",
     "jotai-immer": "^0.4.3",

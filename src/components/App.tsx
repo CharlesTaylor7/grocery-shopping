@@ -23,7 +23,9 @@ export default function App() {
                 className="btn btn-accent"
                 onClick={() =>
                   toast(() =>
-                    "now with sentry"
+                    <div className="p-3 bg-base-300 rounded-full">
+                      greetings traveler
+                    </div>
                   )}
               >
                 Click Me

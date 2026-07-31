@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import { NEON_AUTH_URL } from "@/config";
 
 // TODO:
@@ -39,10 +40,11 @@ class AuthClient {
       headers: this.headers,
       credentials: "include",
     })
-    console.log(response.statusText);
-    const b = await response.json()
-    console.log(b);
-    return b.token;
+    console.log(response.status);
+    Sentry.logger.info(response.statusText)
+    const body = await response.text()
+    Sentry.logger.info(body)
+    return JSON.parse(body).token;
   }
 
   // TODO: use session storage
