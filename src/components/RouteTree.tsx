@@ -8,12 +8,27 @@ import Trip from "@/routes/trip";
 import TripList from "@/routes/trip/[id].tsx";
 import Nav from "@/routes/nav.tsx";
 import AuthGuard from "@/components/AuthGuard";
-import { Redirect, Route, Switch } from "wouter";
+import { Link, Redirect, Route, Switch, useLocation } from "wouter";
+
+function CurrentLocation() {
+  const [location] = useLocation();
+  return location;
+}
 
 export default function RouteTree() {
   return <>
     <Route path="/" component={Index} />
     <Route path="nav" component={Nav} />
+
+    <Route nest path="dummy">
+      <Route path="/foo">
+        Foo
+      </Route>
+
+      <CurrentLocation />
+      <Link to="foo" className="underline"> Link</Link>
+
+    </Route>
 
     <Route nest path="auth" >
       <Route path="/" >
@@ -36,3 +51,4 @@ export default function RouteTree() {
     </AuthGuard>
   </>
 }
+

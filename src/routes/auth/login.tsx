@@ -1,10 +1,11 @@
 import { authClient } from "@/client/auth";
 import { toast } from "@/client/toast";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { lastVisitedUrl } from "@/client/redirect.ts";
 import useNavigate from "@/useNavigate";
 
 export default function Login() {
+  const [count, setCount] = useState(0);
   const navigate = useNavigate();
   const formRef = useRef<HTMLFormElement>(null);
   async function handleSubmit(event: Event) {
@@ -20,7 +21,10 @@ export default function Login() {
     try {
       await authClient.loginWithEmail(payload);
 
-      navigate(lastVisitedUrl());
+      const url = lastVisitedUrl();
+      setCount(i => i + 1)
+      console.log(count, url);
+      navigate(url);
     } catch (e) {
       console.error(e);
       toast(() => {
