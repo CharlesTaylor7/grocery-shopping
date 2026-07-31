@@ -7,7 +7,7 @@ import Input from "@/components/Input";
 import { useAtom, useSetAtom, useAtomValue } from 'jotai';
 
 import { appendNewItemAtom, focusIndexAtom, gotItemsAtom, handleCheckboxAtom, handleDragEndAtom, handleDragStartAtom, handleKeydownAtom, handleTextboxAtom, loadStoreAtom, needItemsAtom, storeAtom } from "./actions";
-import {useNavigate} from "wouter";
+import { useNavigate } from "wouter";
 
 
 export default function Store() {
@@ -40,7 +40,12 @@ export default function Store() {
   // render
   return (
     <div>
-      <h2 className="text-center underline">{store.name}</h2>
+      <h2
+        id={storeId}
+        className="text-center underline"
+      >
+        {store.name}
+      </h2>
 
       <div>
         <DndContext

@@ -82,15 +82,19 @@ export default function StoreList() {
       <button type="button" className="btn btn-primary" onClick={onNewStore}>
         + New Store
       </button>
-      <ul>
-        {stores.map((s) => (
-          <li key={s.id}>
-            <Link to={`/store/${s.id}`} className="underline cursor-pointer">
+      <div className="flex flex-col p-2 px-2 ">
+        {stores.filter(s => s.name).map((s) => (
+          <Link
+            className="py-2 underline cursor-pointer"
+            key={s.id}
+            to={`/store/${s.id}`}
+          >
+            <h2 id={s.id}>
               {s.name}
-            </Link>
-          </li>
+            </h2>
+          </Link>
         ))}
-      </ul>
+      </div>
     </>
   );
 }
