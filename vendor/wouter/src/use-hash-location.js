@@ -33,6 +33,7 @@ const subscribeToHashUpdates = (callback) => {
 const currentHashLocation = () => "/" + location.hash.replace(/^#?\/?/, "");
 
 export const navigate = (to, { state = null, replace = false } = {}) => {
+  console.log(to);
   const oldURL = location.href;
 
   const [hash, search] = to.replace(/^#?\/?/, "").split("?");

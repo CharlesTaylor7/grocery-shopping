@@ -29,34 +29,11 @@ export type AroundNavHandler = (
 // the object returned from `useRouter`
 export interface RouterObject {
   readonly hook: BaseLocationHook;
-  readonly searchHook: BaseSearchHook;
+  readonly hrefs: HrefsFormatter;
+  readonly parser: Parser;
   readonly base: Path;
   readonly ownBase: Path;
-  readonly parser: Parser;
-  readonly ssrPath?: Path;
-  readonly ssrSearch?: SearchString;
-  readonly ssrContext?: SsrContext;
-  readonly hrefs: HrefsFormatter;
-  readonly aroundNav: AroundNavHandler;
 }
 
-// state captured during SSR render
-export type SsrContext = {
-  // if a redirect was encountered, this will be populated with the path
-  redirectTo?: Path;
-  // HTTP status code to set for SSR response
-  statusCode?: number;
-};
-
-// basic options to construct a router
-export type RouterOptions = {
-  hook?: BaseLocationHook;
-  searchHook?: BaseSearchHook;
-  base?: Path;
-  parser?: Parser;
-  ssrPath?: Path;
-  ssrSearch?: SearchString;
-  ssrContext?: SsrContext;
-  hrefs?: HrefsFormatter;
-  aroundNav?: AroundNavHandler;
-};
+// configure by providing a hook
+export type RouterOptions = Pick<RouterObject, "hook">;

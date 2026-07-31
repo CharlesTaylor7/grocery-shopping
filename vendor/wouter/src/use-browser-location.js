@@ -31,7 +31,7 @@ export const useLocationProperty = (fn) =>
 
 const currentSearch = () => location.search;
 
-export const useSearch = () =>
+export const useBrowserSearch = () =>
   useLocationProperty(
     currentSearch,
     currentSearch
