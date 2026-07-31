@@ -2,10 +2,32 @@ import preact from "@preact/preset-vite";
 import { defineConfig } from "vite";
 import tailwindcss from "@tailwindcss/vite";
 import alias from "@rollup/plugin-alias";
+import { execSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 
-// https://vite.dev/config/
-export default defineConfig({
-  plugins: [preact({ reactAliasesEnabled: false }), tailwindcss()],
+function getCommitSHA() {
+  return execSync("git rev-parse --short HEAD").toString().trim()
+}
+
+function readReleaseVersion() {
+  return readFileSync("release.txt", "utf8").trim();
+}
+export default defineConfig(({ command }) => ({
+  define: {
+    __RELEASE_VERSION__:
+      command === "build"
+        ? JSON.stringify(readReleaseVersion())
+        : "dev",
+
+    __COMMIT_SHA__:
+      command === "build"
+        ? JSON.stringify(getCommitSHA())
+        : "dev"
+  },
+  plugins: [
+    preact({ reactAliasesEnabled: false }),
+    tailwindcss()
+  ],
   base: "/grocery-shopping/",
   resolve: {
     tsconfigPaths: true,
@@ -73,4 +95,4 @@ export default defineConfig({
       },
     },
   },
-});
+}));
