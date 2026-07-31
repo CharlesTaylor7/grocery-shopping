@@ -25,6 +25,7 @@ export default defineConfig({
   build: {
     outDir: "docs",
     copyPublicDir: true,
+    cssMinify: false,
     rolldownOptions: {
       plugins: [
         alias({
@@ -36,7 +37,6 @@ export default defineConfig({
           ],
         }),
       ],
-
       // output: {
       //   minify: false,
       //   manualChunks(id: string) {

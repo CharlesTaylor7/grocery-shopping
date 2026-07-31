@@ -27,12 +27,10 @@
     "@preact/preset-vite": "^2.10.6",
     "@rollup/plugin-alias": "^6.0.0",
     "@tailwindcss/vite": "^4.2.2",
-    "@types/node": "^24.13.2",
     "daisyui": "^5.5.19",
     "oxfmt": "^0.60.0",
     "oxlint": "^1.71.0",
     "tailwindcss": "^4.3.3",
-    "tsdown": "^0.22.14",
     "typescript": "6.0.2",
     "vite": "^8.1.1"
   },

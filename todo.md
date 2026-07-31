@@ -15,6 +15,7 @@
 - [ ] timestamps for when an "item was last bought"
 - [ ] debounce checked off
 - [ ] Login doesn't work from PWA
+- [ ] trim daisuui themes, to keep bundle size down
 
 # UI
 - [x] bigger checkbox click area
