@@ -72,11 +72,15 @@ var AuthClient = class {
 	}
 	async getJWT() {
 		const url = `${NEON_AUTH_URL}/token`;
-		return (await (await fetch(url, {
+		const response = await fetch(url, {
 			method: "GET",
 			headers: this.headers,
 			credentials: "include"
-		})).json()).token;
+		});
+		console.log(response.statusText);
+		const b = await response.json();
+		console.log(b);
+		return b.token;
 	}
 	async getSession() {
 		const url = `${NEON_AUTH_URL}/get-session`;
@@ -381,7 +385,7 @@ var syncAtom = atom(SyncModel.new({ useIndexedDB: false }));
 //#endregion
 //#region src/sync-worker.ts?worker
 function WorkerWrapper(options) {
-	return new Worker("/grocery-shopping/assets/sync-worker-CELXdEYH.js", {
+	return new Worker("/grocery-shopping/assets/sync-worker-Dwa6BdNJ.js", {
 		type: "module",
 		name: options?.name
 	});
