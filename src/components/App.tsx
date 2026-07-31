@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import { Link, } from "wouter";
 import HashRouter from "@/components/HashRouter";
 import RouteTree from "@/components/RouteTree";
+import { toast } from "@/toast";
 
 export default function App() {
   return (
@@ -17,7 +18,10 @@ export default function App() {
             <div>
               <LoginPrompt />
             </div>
-            <div className="text-center"></div>
+            <div className="text-center">
+              <button
+                className="btn btn-accent"
+                onClick={() => toast(() => "greetings traveler")}>Click Me </button></div>
             <div className="text-right">
               <Link to="/nav">Nav</Link>
             </div>
