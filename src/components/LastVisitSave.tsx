@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useLocation } from "wouter";
 
 export default function LastVisitSave() {
-  const [location] = useLocation();
+  const location = useLocation();
   useEffect(() => {
     console.log(location);
     const route = location

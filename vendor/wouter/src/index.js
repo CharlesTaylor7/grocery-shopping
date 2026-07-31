@@ -24,14 +24,20 @@ import { absolutePath, relativePath, sanitizeSearch } from "./paths.js";
 
 // BEGIN PUBLIC API
 export function useLocation() {
-  const [location] = useLocationFromRouter(useRouter());
-  return location
+  const router = useRouter();
+  const [location] = router.hook(router);
+  return relativePath(router.base, location);
 }
 
 export function useNavigate() {
-  const [_, navigate] = useLocationFromRouter(useRouter());
-  return navigate;
+  const router = useRouter();
+  const [_, navigate] = router.hook(router);
+  return useEvent((to, opts) => {
+    const target = absolutePath(to, router.base)
+    navigate(target, opts)
+  })
 }
+
 
 export {
   useBrowserLocation,
@@ -59,8 +65,6 @@ const defaultRouter = {
   base: "",
   // customizes how `href` props are transformed for <Link />
   hrefs: (x) => x,
-  // wraps navigate calls, useful for view transitions
-  aroundNav: (n, t, o) => n(t, o),
 };
 
 const RouterCtx = createContext(defaultRouter);
@@ -92,11 +96,13 @@ const useLocationFromRouter = (router) => {
   // (This is achieved via `useEvent`.)
   return [
     relativePath(router.base, location),
-    useEvent((to, opts) =>
-      router.aroundNav(navigate, absolutePath(to, router.base), opts)
-    ),
+    useEvent((to, opts) => {
+      const target = absolutePath(to, router.base)
+      navigate(target, opts)
+    })
   ];
 };
+
 
 export const useSearch = () => {
   const router = useRouter();
