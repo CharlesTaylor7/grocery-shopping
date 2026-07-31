@@ -37,6 +37,10 @@ export default defineConfig({
           ],
         }),
       ],
+      optimization: {
+        inlineConst: false,
+        pifeForModuleWrappers: false,
+      },
       output: {
         minify: false,
         manualChunks(id: string) {
@@ -67,7 +71,6 @@ export default defineConfig({
           return parts[0];
         },
       },
-
     },
   },
 });

@@ -51,6 +51,8 @@ function Toaster() {
 var NEON_AUTH_URL = "https://ep-red-morning-awzkc1lp.neonauth.c-12.us-east-1.aws.neon.tech/neondb/auth";
 var NEON_DATA_URL = "https://ep-red-morning-awzkc1lp.apirest.c-12.us-east-1.aws.neon.tech/neondb/rest/v1";
 var SYNC_MODE = "main-loop";
+var ENABLE_SERVICE_WORKER = false;
+var AUTH_GUARD = false;
 
 //#endregion
 //#region src/auth.ts
@@ -240,6 +242,7 @@ var dataClientAtom = atom(DataClient.new());
 
 //#endregion
 //#region src/migrate.ts
+var VERSION = 7;
 function migrate(event) {
 	const db = event.target.result;
 	if (event.oldVersion < 1) db.createObjectStore("actions", { keyPath: "uuid" });
@@ -289,7 +292,7 @@ function migrate(event) {
 //#region src/indexed-db.ts
 function openIndexedDB() {
 	return new Promise((resolve, reject) => {
-		const request = indexedDB.open("groceries", 7);
+		const request = indexedDB.open("groceries", VERSION);
 		request.onerror = (event) => {
 			reject(event);
 		};
@@ -1063,9 +1066,9 @@ function AuthGuard(props) {
 	const session = authClient.useSession();
 	const navigate = useNavigate();
 	h(() => {
-		if (false && !session.isPending && !session.data) navigate("/auth/login");
+		if (AUTH_GUARD && !session.isPending && !session.data) navigate("/auth/login");
 	}, [navigate, session]);
-	if (!false || session.data) return props.children;
+	if (!AUTH_GUARD || session.data) return props.children;
 	if (session.isPending) return "Logging in...";
 	return "Redirecting...";
 }
@@ -1176,7 +1179,7 @@ function App() {
 
 //#endregion
 //#region src/main.tsx
-if (false) navigator.serviceWorker.register("/grocery-shopping/service-worker.js").catch(console.error);
+if (ENABLE_SERVICE_WORKER) navigator.serviceWorker.register("/grocery-shopping/service-worker.js").catch(console.error);
 createRoot(document.getElementById("root")).render(/* @__PURE__ */ u(S, { children: /* @__PURE__ */ u(App, {}) }));
 
 //#endregion

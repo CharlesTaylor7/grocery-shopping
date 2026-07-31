@@ -39,7 +39,9 @@ class AuthClient {
       headers: this.headers,
       credentials: "include",
     })
+    console.log(response.statusText);
     const b = await response.json()
+    console.log(b);
     return b.token;
   }
 
