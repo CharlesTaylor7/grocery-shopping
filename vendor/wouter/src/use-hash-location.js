@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "./react-deps.js";
+import { useSyncExternalStore } from "react";
 
 // array of callback subscribed to hash updates
 const listeners = {

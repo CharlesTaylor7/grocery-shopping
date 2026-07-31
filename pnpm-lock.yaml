@@ -26,15 +26,15 @@ importers:
       react-dom:
         specifier: npm:@preact/compat@^18.3.2
         version: '@preact/compat@18.3.2(preact@10.29.7)'
+      regexparam:
+        specifier: ^3.0.0
+        version: 3.0.0
       sonner:
         specifier: ^2.0.7
         version: 2.0.7(@preact/compat@18.3.2(preact@10.29.7))(@preact/compat@18.3.2(preact@10.29.7))
       uuid:
         specifier: ^14.0.1
         version: 14.0.1
-      wouter:
-        specifier: ^3.10.0
-        version: 3.10.0(@preact/compat@18.3.2(preact@10.29.7))
     devDependencies:
       '@preact/preset-vite':
         specifier: ^2.10.6
@@ -998,9 +998,6 @@ packages:
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
-  mitt@3.0.1:
-    resolution: {integrity: sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==}
-
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
 
@@ -1134,11 +1131,6 @@ packages:
     peerDependencies:
       browserslist: '>= 4.21.0'
 
-  use-sync-external-store@1.6.0:
-    resolution: {integrity: sha512-Pp6GSwGP/NrPIrxVFAIkOQeyw8lFenOHijQWkUTrDvrF4ALqylP2C/KCkeS9dpUM3KvYRQhna5vt7IL95+ZQ9w==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-
   uuid@14.0.1:
     resolution: {integrity: sha512-6ZxzVpzDXDa3bJWaHilVayA+BH/1zmxCJoVgvmqJnid/gPoKHxUrS/aC/T6LGQtNHT+XHG9fXPJB4d+IrU30Ew==}
     hasBin: true
@@ -1190,11 +1182,6 @@ packages:
         optional: true
       yaml:
         optional: true
-
-  wouter@3.10.0:
-    resolution: {integrity: sha512-zTfddD80zc2/J5l8JKcdvzOK6AwP0kpyHEI3DxRN2bn8U1oJPnrSVm8v+X3WwDamvLAOxTO7ZvkxkpRWlyeJ1Q==}
-    peerDependencies:
-      react: '>=16.8.0'
 
   yallist@3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
@@ -1898,8 +1885,6 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  mitt@3.0.1: {}
-
   ms@2.1.3: {}
 
   nanoid@3.3.16: {}
@@ -2040,10 +2025,6 @@ snapshots:
       escalade: 3.2.0
       picocolors: 1.1.1
 
-  use-sync-external-store@1.6.0(@preact/compat@18.3.2(preact@10.29.7)):
-    dependencies:
-      react: '@preact/compat@18.3.2(preact@10.29.7)'
-
   uuid@14.0.1: {}
 
   vite-prerender-plugin@0.5.13(vite@8.1.5(@types/node@24.13.3)(jiti@2.7.0)):
@@ -2067,13 +2048,6 @@ snapshots:
       '@types/node': 24.13.3
       fsevents: 2.3.3
       jiti: 2.7.0
-
-  wouter@3.10.0(@preact/compat@18.3.2(preact@10.29.7)):
-    dependencies:
-      mitt: 3.0.1
-      react: '@preact/compat@18.3.2(preact@10.29.7)'
-      regexparam: 3.0.0
-      use-sync-external-store: 1.6.0(@preact/compat@18.3.2(preact@10.29.7))
 
   yallist@3.1.1: {}
 

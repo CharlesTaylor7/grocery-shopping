@@ -2,7 +2,7 @@ import { authClient } from "@/client/auth";
 import { toast } from "@/client/toast";
 import { useRef, useState } from "react";
 import { lastVisitedUrl } from "@/client/redirect.ts";
-import useNavigate from "@/useNavigate";
+import {useNavigate} from "wouter";
 
 export default function Login() {
   const [count, setCount] = useState(0);

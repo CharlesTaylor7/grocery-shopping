@@ -1,3 +1,4 @@
+// oxlint-disable
 import { parse as parsePattern } from "regexparam";
 
 import {
@@ -15,10 +16,24 @@ import {
   Fragment,
   forwardRef,
   useIsomorphicLayoutEffect,
-  useEvent,
   useMemo,
-} from "./react-deps.js";
+} from "react";
 import { absolutePath, relativePath, sanitizeSearch } from "./paths.js";
+
+
+// BEGIN PUBLIC API
+export function useLocation() {
+  const [location] = useLocationFromRouter(useRouter());
+  return location
+}
+
+export function useNavigate() {
+  const [_, navigate] = useLocationFromRouter(useRouter());
+  return navigate;
+}
+
+// END PUBLIC API
+
 
 /*
  * Router and router context. Router is a lightweight object that represents the current
@@ -79,8 +94,6 @@ const useLocationFromRouter = (router) => {
   ];
 };
 
-export const useLocation = () => useLocationFromRouter(useRouter());
-
 export const useSearch = () => {
   const router = useRouter();
   return sanitizeSearch(router.searchHook(router));
@@ -104,33 +117,33 @@ export const matchRoute = (parser, route, path, loose) => {
 
   return $base !== undefined
     ? [
-        true,
+      true,
 
-        (() => {
-          // for regex paths, `keys` will always be false
+      (() => {
+        // for regex paths, `keys` will always be false
 
-          // an object with parameters matched, e.g. { foo: "bar" } for "/:foo"
-          // we "zip" two arrays here to construct the object
-          // ["foo"], ["bar"] → { foo: "bar" }
-          const groups =
-            keys !== false
-              ? Object.fromEntries(keys.map((key, i) => [key, matches[i]]))
-              : result.groups;
+        // an object with parameters matched, e.g. { foo: "bar" } for "/:foo"
+        // we "zip" two arrays here to construct the object
+        // ["foo"], ["bar"] → { foo: "bar" }
+        const groups =
+          keys !== false
+            ? Object.fromEntries(keys.map((key, i) => [key, matches[i]]))
+            : result.groups;
 
-          // convert the array to an instance of object
-          // this makes it easier to integrate with the existing param implementation
-          let obj = { ...matches };
+        // convert the array to an instance of object
+        // this makes it easier to integrate with the existing param implementation
+        let obj = { ...matches };
 
-          // merge named capture groups with matches array
-          groups && Object.assign(obj, groups);
+        // merge named capture groups with matches array
+        groups && Object.assign(obj, groups);
 
-          return obj;
-        })(),
+        return obj;
+      })(),
 
-        // the third value if only present when parser is in "loose" mode,
-        // so that we can extract the base path for nested routes
-        ...(loose ? [$base] : []),
-      ]
+      // the third value if only present when parser is in "loose" mode,
+      // so that we can extract the base path for nested routes
+      ...(loose ? [$base] : []),
+    ]
     : [false, null];
 };
 
@@ -182,7 +195,7 @@ export const Router = ({ children, ...props }) => {
     const option =
       k === "base"
         ? /* base is special case, it is appended to the parent's base */
-          parent[k] + (props[k] ?? "")
+        parent[k] + (props[k] ?? "")
         : props[k] ?? parent[k];
 
     if (prev === next && option !== next[k]) {
@@ -213,7 +226,7 @@ const useCachedParams = (value) => {
   return (prev.current =
     // Update cache if number of params changed or any value changed
     Object.keys(value).length !== Object.keys(curr).length ||
-    Object.entries(value).some(([k, v]) => v !== curr[k])
+      Object.entries(value).some(([k, v]) => v !== curr[k])
       ? value // Return new value if there are changes
       : curr); // Return cached value if nothing changed
 };
@@ -311,21 +324,21 @@ export const Link = forwardRef((props, ref) => {
   return asChild && isValidElement(children)
     ? cloneElement(children, { onClick, href })
     : h("a", {
-        ...restProps,
-        onClick,
-        href,
-        // `className` can be a function to apply the class if this link is active
-        className: cls?.call ? cls(currentPath === targetPath) : cls,
-        children,
-        ref,
-      });
+      ...restProps,
+      onClick,
+      href,
+      // `className` can be a function to apply the class if this link is active
+      className: cls?.call ? cls(currentPath === targetPath) : cls,
+      children,
+      ref,
+    });
 });
 
 const flattenChildren = (children) =>
   Array.isArray(children)
     ? children.flatMap((c) =>
-        flattenChildren(c && c.type === Fragment ? c.props.children : c)
-      )
+      flattenChildren(c && c.type === Fragment ? c.props.children : c)
+    )
     : [children];
 
 export const Switch = ({ children, location }) => {

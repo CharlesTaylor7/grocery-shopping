@@ -34,6 +34,9 @@
       "@/*": [
         "./src/*"
       ],
+      "wouter": [
+        "./vendor/wouter/src/"
+      ],
       "@dnd-kit/*": [
         "./vendor/dnd-kit/src/*"
       ],

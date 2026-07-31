@@ -1,7 +1,7 @@
 import { authClient } from "@/client/auth.ts";
 import { useEffect } from "react";
 import { lastVisitedUrl } from "@/client/redirect";
-import useNavigate from "@/useNavigate";
+import {useNavigate} from "wouter";
 
 
 export default function Index() {

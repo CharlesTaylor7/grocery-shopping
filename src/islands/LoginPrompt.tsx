@@ -2,10 +2,11 @@
 // allows signout
 // prompts for signup or login
 import { authClient } from "@/client/auth";
-import { Link, useLocation } from "wouter";
+import { Link, useLocation, useNavigate } from "wouter";
 
 export default function LoginPrompt() {
-  const [location, navigate] = useLocation();
+  const location = useLocation();
+  const navigate = useNavigate();
   const session = authClient.useSession();
   function logout() {
     authClient.signOut();

@@ -7,7 +7,7 @@ import Input from "@/components/Input";
 import { useAtom, useSetAtom, useAtomValue } from 'jotai';
 
 import { appendNewItemAtom, focusIndexAtom, gotItemsAtom, handleCheckboxAtom, handleDragEndAtom, handleDragStartAtom, handleKeydownAtom, handleTextboxAtom, loadStoreAtom, needItemsAtom, storeAtom } from "./actions";
-import useNavigate from "@/useNavigate";
+import {useNavigate} from "wouter";
 
 
 export default function Store() {

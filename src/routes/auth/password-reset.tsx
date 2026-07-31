@@ -1,5 +1,5 @@
 import { authClient } from "@/client/auth";
-import useNavigate from "@/useNavigate";
+import {useNavigate} from "wouter";
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "wouter";
 

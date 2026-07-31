@@ -62,12 +62,7 @@
     "url": "git+https://github.com/molefrog/wouter.git"
   },
   "license": "Unlicense",
-  "peerDependencies": {
-    "react": ">=16.8.0"
-  },
   "dependencies": {
-    "mitt": "^3.0.1",
-    "regexparam": "^3.0.0",
-    "use-sync-external-store": "^1.0.0"
+    "regexparam": "^3.0.0"
   }
 }

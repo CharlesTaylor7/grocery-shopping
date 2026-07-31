@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from "./react-deps.js";
+import { useSyncExternalStore } from "react";
 
 /**
  * History API docs @see https://developer.mozilla.org/en-US/docs/Web/API/History
@@ -74,7 +74,7 @@ if (typeof history !== "undefined" && typeof window[patchKey] === "undefined") {
     // TODO: we should be using unstable_batchedUpdates to avoid multiple re-renders,
     // however that will require an additional peer dependency on react-dom.
     // See: https://github.com/reactwg/react-18/discussions/86#discussioncomment-1567149
-    history[type] = function () {
+    history[type] = function() {
       const result = original.apply(this, arguments);
       const event = new Event(type);
       event.arguments = arguments;

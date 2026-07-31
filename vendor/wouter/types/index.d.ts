@@ -71,22 +71,22 @@ export interface RouteProps<
   RoutePath extends PathPattern = PathPattern
 > {
   children?:
-    | ((
-        params: T extends DefaultParams
-          ? T
-          : RoutePath extends string
-          ? StringRouteParams<RoutePath>
-          : RegexRouteParams
-      ) => ReactNode)
-    | ReactNode;
+  | ((
+    params: T extends DefaultParams
+      ? T
+      : RoutePath extends string
+      ? StringRouteParams<RoutePath>
+      : RegexRouteParams
+  ) => ReactNode)
+  | ReactNode;
   path?: RoutePath;
   component?: JSXElementConstructor<
     RouteComponentProps<
       T extends DefaultParams
-        ? T
-        : RoutePath extends string
-        ? StringRouteParams<RoutePath>
-        : RegexRouteParams
+      ? T
+      : RoutePath extends string
+      ? StringRouteParams<RoutePath>
+      : RegexRouteParams
     >
   >;
   nest?: boolean;
@@ -129,10 +129,10 @@ type HTMLLinkAttributes = Omit<
 
 export type LinkProps<H extends BaseLocationHook = BrowserLocationHook> =
   NavigationalProps<H> &
-    AsChildProps<
-      { children: ReactElement; onClick?: MouseEventHandler },
-      HTMLLinkAttributes & RefAttributes<HTMLAnchorElement>
-    >;
+  AsChildProps<
+    { children: ReactElement; onClick?: MouseEventHandler },
+    HTMLLinkAttributes & RefAttributes<HTMLAnchorElement>
+  >;
 
 export function Link<H extends BaseLocationHook = BrowserLocationHook>(
   props: LinkProps<H>,
@@ -172,15 +172,14 @@ export function useRoute<
   pattern: RoutePath
 ): Match<
   T extends DefaultParams
-    ? T
-    : RoutePath extends string
-    ? StringRouteParams<RoutePath>
-    : RegexRouteParams
+  ? T
+  : RoutePath extends string
+  ? StringRouteParams<RoutePath>
+  : RegexRouteParams
 >;
 
-export function useLocation<
-  H extends BaseLocationHook = BrowserLocationHook
->(): HookReturnValue<H>;
+export function useLocation(): string;
+export function useNavigate(): (to: string) => void;
 
 export function useSearch<
   H extends BaseSearchHook = BrowserSearchHook
@@ -218,10 +217,10 @@ export function matchRoute<
   loose?: boolean
 ): Match<
   T extends DefaultParams
-    ? T
-    : RoutePath extends string
-    ? StringRouteParams<RoutePath>
-    : RegexRouteParams
+  ? T
+  : RoutePath extends string
+  ? StringRouteParams<RoutePath>
+  : RegexRouteParams
 >;
 
 // tslint:enable:no-unnecessary-generics
