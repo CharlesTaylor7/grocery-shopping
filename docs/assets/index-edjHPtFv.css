@@ -1287,8 +1287,16 @@
     overflow-y: scroll;
   }
 
+  .rounded-full {
+    border-radius: 3.40282e38px;
+  }
+
   .bg-base-200 {
     background-color: var(--color-base-200);
+  }
+
+  .bg-base-300 {
+    background-color: var(--color-base-300);
   }
 
   .p-2 {

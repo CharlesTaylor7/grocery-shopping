@@ -1,6 +1,8 @@
 import { C as h, D as S, S as d, a as PointerSensor, b as A, c as useSensor, i as DndContext, l as CSS, m as bn, n as SortableContext, o as closestCenter, p as P, r as verticalListSortingStrategy, s as useSensors, t as useSortable, u } from "./dnd-kit-8Wt4G7bK.js";
 import { t as createRoot } from "./preact-B4lw9r7u.js";
 import { n as toast$1, t as Toaster$1 } from "./sonner-CjpyPqcO.js";
+import { t as init } from "./@sentry/browser-BsaWfxAA.js";
+import { t as info } from "./@sentry/core-D0Q1u8BA.js";
 import { a as Switch, c as useParams, i as Router, l as useSearchParams, n as Redirect, o as useLocation, r as Route, s as useNavigate, t as Link, u as useHashLocation } from "./wouter-Cljq2E-q.js";
 import { a as atom, i as useSetAtom, n as useAtom, o as createStore, r as useAtomValue, t as Provider } from "./jotai-NDHPqWcD.js";
 import { t as v4 } from "./uuid-BtdgrrNB.js";
@@ -77,10 +79,11 @@ var AuthClient = class {
 			headers: this.headers,
 			credentials: "include"
 		});
-		console.log(response.statusText);
-		const b = await response.json();
-		console.log(b);
-		return b.token;
+		console.log(response.status);
+		info(response.statusText);
+		const body = await response.text();
+		info(body);
+		return JSON.parse(body).token;
 	}
 	async getSession() {
 		const url = `${NEON_AUTH_URL}/get-session`;
@@ -385,7 +388,7 @@ var syncAtom = atom(SyncModel.new({ useIndexedDB: false }));
 //#endregion
 //#region src/sync-worker.ts?worker
 function WorkerWrapper(options) {
-	return new Worker("/grocery-shopping/assets/sync-worker-Dwa6BdNJ.js", {
+	return new Worker("/grocery-shopping/assets/sync-worker-tKjf15bB.js", {
 		type: "module",
 		name: options?.name
 	});
@@ -1154,7 +1157,10 @@ function App() {
 						className: "text-center",
 						children: /* @__PURE__ */ u("button", {
 							className: "btn btn-accent",
-							onClick: () => toast(() => "now with sentry"),
+							onClick: () => toast(() => /* @__PURE__ */ u("div", {
+								className: "p-3 bg-base-300 rounded-full",
+								children: "greetings traveler"
+							})),
 							children: "Click Me"
 						})
 					}),
@@ -1183,6 +1189,7 @@ function App() {
 
 //#endregion
 //#region src/main.tsx
+init();
 if (ENABLE_SERVICE_WORKER) navigator.serviceWorker.register("/grocery-shopping/service-worker.js").catch(console.error);
 createRoot(document.getElementById("root")).render(/* @__PURE__ */ u(S, { children: /* @__PURE__ */ u(App, {}) }));
 
