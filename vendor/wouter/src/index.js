@@ -15,9 +15,9 @@ import {
   createElement as h,
   Fragment,
   forwardRef,
-  useIsomorphicLayoutEffect,
   useMemo,
 } from "react";
+import { useEvent } from "./hooks.js";
 import { absolutePath, relativePath, sanitizeSearch } from "./paths.js";
 
 
@@ -32,8 +32,16 @@ export function useNavigate() {
   return navigate;
 }
 
-// END PUBLIC API
+export {
+  useBrowserLocation,
+  useBrowserSearch,
+}
+export {
+  useHashLocation,
+} from "./use-hash-location.js";
 
+
+// END PUBLIC API
 
 /*
  * Router and router context. Router is a lightweight object that represents the current
@@ -48,11 +56,6 @@ const defaultRouter = {
   searchHook: useBrowserSearch,
   parser: parsePattern,
   base: "",
-  // this option is used to override the current location during SSR
-  ssrPath: undefined,
-  ssrSearch: undefined,
-  // optional context to track render state during SSR
-  ssrContext: undefined,
   // customizes how `href` props are transformed for <Link />
   hrefs: (x) => x,
   // wraps navigate calls, useful for view transitions
@@ -162,15 +165,6 @@ export const Router = ({ children, ...props }) => {
 
   // holds to the context value: the router object
   let value = parent;
-
-  // when `ssrPath` contains a `?` character, we can extract the search from it.
-  // also, ensure ssrSearch is always defined when ssrPath is provided, so that
-  // useSearch behavior matches usePathname (proper SSR hydration when client
-  // renders <Router> without props after server rendered with ssrPath/ssrSearch)
-  const [path, search = props.ssrSearch ?? ""] =
-    props.ssrPath?.split("?") ?? [];
-  if (path) (props.ssrSearch = search), (props.ssrPath = path);
-
   // hooks can define their own `href` formatter (e.g. for hash location)
   props.hrefs = props.hrefs ?? props.hook?.hrefs;
 
@@ -372,16 +366,12 @@ export const Redirect = (props) => {
   const router = useRouter();
   const [, navigate] = useLocationFromRouter(router);
   const redirect = useEvent(() => navigate(to || href, props));
-  const { ssrContext } = router;
 
   // redirect is guaranteed to be stable since it is returned from useEvent
-  useIsomorphicLayoutEffect(() => {
+  useLayoutEffect(() => {
     redirect();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (ssrContext) {
-    ssrContext.redirectTo = to;
-  }
 
   return null;
 };

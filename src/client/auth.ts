@@ -31,6 +31,7 @@ class AuthClient {
     };
   }
 
+  // TODO: use session storage
   async getJWT(): Promise<string> {
     const url = `${NEON_AUTH_URL}/token`;
     const response = await fetch(url, {
@@ -42,6 +43,7 @@ class AuthClient {
     return b.token;
   }
 
+  // TODO: use session storage
   async getSession() {
     const url = `${NEON_AUTH_URL}/get-session`;
     const response = await fetch(url, {

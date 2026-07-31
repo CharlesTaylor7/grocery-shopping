@@ -1,3 +1,4 @@
+// oxlint-disable
 import { useSyncExternalStore } from "react";
 
 // array of callback subscribed to hash updates
@@ -47,11 +48,10 @@ export const navigate = (to, { state = null, replace = false } = {}) => {
   dispatchEvent(event);
 };
 
-export const useHashLocation = ({ ssrPath = "/" } = {}) => [
+export const useHashLocation = () => [
   useSyncExternalStore(
     subscribeToHashUpdates,
     currentHashLocation,
-    () => ssrPath
   ),
   navigate,
 ];

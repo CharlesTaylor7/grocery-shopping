@@ -4,13 +4,14 @@ import SyncActionProvider from "@/islands/SyncActionProvider";
 import { SYNC_MODE } from "@/client/config";
 import LastVisitSave from "@/islands/LastVisitSave";
 import { Suspense } from "react";
-import { Link, Router } from "wouter";
+import { Link, } from "wouter";
+import HashRouter from "@/components/HashRouter";
 import RouteTree from "@/components/RouteTree";
 
 export default function App() {
   return (
     <SyncActionProvider mode={SYNC_MODE}>
-      <Router>
+      <HashRouter>
         <div className="h-screen flex flex-col" data-theme="dark">
           <h1 className="w-full p-3 bg-base-200 grid grid-cols-3 items-center">
             <div>
@@ -31,7 +32,7 @@ export default function App() {
             <Toaster />
           </div>
         </div>
-      </Router>
+      </HashRouter>
     </SyncActionProvider>
   );
 }

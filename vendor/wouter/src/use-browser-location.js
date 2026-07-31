@@ -1,3 +1,4 @@
+// oxlint-disable
 import { useSyncExternalStore } from "react";
 
 /**
@@ -25,29 +26,23 @@ const subscribeToLocationUpdates = (callback) => {
   };
 };
 
-export const useLocationProperty = (fn, ssrFn) =>
-  useSyncExternalStore(subscribeToLocationUpdates, fn, ssrFn);
+export const useLocationProperty = (fn) =>
+  useSyncExternalStore(subscribeToLocationUpdates, fn);
 
 const currentSearch = () => location.search;
 
-export const useSearch = ({ ssrSearch } = {}) =>
+export const useSearch = () =>
   useLocationProperty(
     currentSearch,
-    // != null checks for both null and undefined, but allows empty string ""
-    // This allows proper hydration: server renders with ssrSearch="?foo",
-    // client hydrates with just <Router /> and reads from location.search
-    ssrSearch != null ? () => ssrSearch : currentSearch
+    currentSearch
   );
 
 const currentPathname = () => location.pathname;
 
-export const usePathname = ({ ssrPath } = {}) =>
+export const usePathname = ({ } = {}) =>
   useLocationProperty(
     currentPathname,
-    // != null checks for both null and undefined, but allows empty string ""
-    // This allows proper hydration: server renders with ssrPath="/foo",
-    // client hydrates with just <Router /> and reads from location.pathname
-    ssrPath != null ? () => ssrPath : currentPathname
+    currentPathname
   );
 
 const currentHistoryState = () => history.state;
