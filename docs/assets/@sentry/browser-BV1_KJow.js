@@ -1541,11 +1541,6 @@ var getRootSpan = INTERNAL_getSegmentSpan;
 function INTERNAL_getSegmentSpan(span) {
 	return span[ROOT_SPAN_FIELD] || span;
 }
-function getActiveSpan() {
-	const acs = getAsyncContextStrategy(getMainCarrier());
-	if (acs.getActiveSpan) return acs.getActiveSpan();
-	return _getSpanForScope(getCurrentScope());
-}
 function showSpanDropWarning() {
 	if (!hasShownSpanDropWarning) {
 		consoleSandbox(() => {
@@ -2231,6 +2226,11 @@ function hintIsScopeContext(hint) {
 function captureException(exception, hint) {
 	return getCurrentScope().captureException(exception, parseEventHintOrCaptureContext(hint));
 }
+function captureMessage(message, captureContext) {
+	const level = typeof captureContext === "string" ? captureContext : void 0;
+	const hint = typeof captureContext !== "string" ? { captureContext } : void 0;
+	return getCurrentScope().captureMessage(message, level, hint);
+}
 function captureEvent(event, hint) {
 	return getCurrentScope().captureEvent(event, hint);
 }
@@ -2369,48 +2369,6 @@ function defineIntegration(fn) {
 }
 
 //#endregion
-//#region node_modules/.pnpm/@sentry+core@10.69.0/node_modules/@sentry/core/build/esm/utils/timestampSequence.js
-var SEQUENCE_ATTR_KEY = "sentry.timestamp.sequence";
-var _sequenceNumber = 0;
-var _previousTimestampMs;
-function getSequenceAttribute(timestampInSeconds) {
-	const nowMs = Math.floor(timestampInSeconds * 1e3);
-	if (_previousTimestampMs !== void 0 && nowMs !== _previousTimestampMs) _sequenceNumber = 0;
-	const value = _sequenceNumber;
-	_sequenceNumber++;
-	_previousTimestampMs = nowMs;
-	return {
-		key: SEQUENCE_ATTR_KEY,
-		value: {
-			value,
-			type: "integer"
-		}
-	};
-}
-
-//#endregion
-//#region node_modules/.pnpm/@sentry+core@10.69.0/node_modules/@sentry/core/build/esm/utils/trace-info.js
-function _getTraceInfoFromScope(client, scope) {
-	if (!scope) return [void 0, void 0];
-	return withScope(scope, () => {
-		const span = getActiveSpan();
-		const traceContext = span ? spanToTraceContext(span) : getTraceContextFromScope(scope);
-		return [span ? getDynamicSamplingContextFromSpan(span) : getDynamicSamplingContextFromScope(client, scope), traceContext];
-	});
-}
-
-//#endregion
-//#region node_modules/.pnpm/@sentry+core@10.69.0/node_modules/@sentry/core/build/esm/logs/constants.js
-var SEVERITY_TEXT_TO_SEVERITY_NUMBER = {
-	trace: 1,
-	debug: 5,
-	info: 9,
-	warn: 13,
-	error: 17,
-	fatal: 21
-};
-
-//#endregion
 //#region node_modules/.pnpm/@sentry+core@10.69.0/node_modules/@sentry/core/build/esm/utils/env.js
 function isBrowserBundle() {
 	return typeof __SENTRY_BROWSER_BUNDLE__ !== "undefined" && !!__SENTRY_BROWSER_BUNDLE__;
@@ -2463,82 +2421,6 @@ function createLogEnvelope(logs, metadata, tunnel, dsn, inferUserData) {
 
 //#endregion
 //#region node_modules/.pnpm/@sentry+core@10.69.0/node_modules/@sentry/core/build/esm/logs/internal.js
-var MAX_LOG_BUFFER_SIZE = 100;
-function setLogAttribute(logAttributes, key, value, setEvenIfPresent = true) {
-	if (value && (!logAttributes[key] || setEvenIfPresent)) logAttributes[key] = value;
-}
-function _INTERNAL_captureSerializedLog(client, serializedLog) {
-	const bufferMap = _getBufferMap$1();
-	const logBuffer = _INTERNAL_getLogBuffer(client);
-	if (logBuffer === void 0) bufferMap.set(client, [serializedLog]);
-	else if (logBuffer.length >= MAX_LOG_BUFFER_SIZE) {
-		_INTERNAL_flushLogsBuffer(client, logBuffer);
-		bufferMap.set(client, [serializedLog]);
-	} else bufferMap.set(client, [...logBuffer, serializedLog]);
-}
-function _INTERNAL_captureLog(beforeLog, currentScope = getCurrentScope(), captureSerializedLog = _INTERNAL_captureSerializedLog) {
-	const client = currentScope?.getClient() ?? getClient();
-	if (!client) {
-		DEBUG_BUILD$2 && debug.warn("No client available to capture log.");
-		return;
-	}
-	const { release, environment, enableLogs = false, beforeSendLog } = client.getOptions();
-	if (!enableLogs) {
-		DEBUG_BUILD$2 && debug.warn("logging option not enabled, log will not be captured.");
-		return;
-	}
-	const [, traceContext] = _getTraceInfoFromScope(client, currentScope);
-	const processedLogAttributes = { ...beforeLog.attributes };
-	const { user: { id, email, username }, attributes: scopeAttributes = {} } = getCombinedScopeData(getIsolationScope(), currentScope);
-	setLogAttribute(processedLogAttributes, "user.id", id, false);
-	setLogAttribute(processedLogAttributes, "user.email", email, false);
-	setLogAttribute(processedLogAttributes, "user.name", username, false);
-	setLogAttribute(processedLogAttributes, "sentry.release", release);
-	setLogAttribute(processedLogAttributes, "sentry.environment", environment);
-	const { name, version } = client.getSdkMetadata()?.sdk ?? {};
-	setLogAttribute(processedLogAttributes, "sentry.sdk.name", name);
-	setLogAttribute(processedLogAttributes, "sentry.sdk.version", version);
-	const replay = client.getIntegrationByName("Replay");
-	const replayId = replay?.getReplayId(true);
-	setLogAttribute(processedLogAttributes, "sentry.replay_id", replayId);
-	if (replayId && replay?.getRecordingMode() === "buffer") setLogAttribute(processedLogAttributes, "sentry._internal.replay_is_buffering", true);
-	const beforeLogMessage = beforeLog.message;
-	if (isParameterizedString(beforeLogMessage)) {
-		const { __sentry_template_string__, __sentry_template_values__ = [] } = beforeLogMessage;
-		if (__sentry_template_values__?.length) processedLogAttributes["sentry.message.template"] = __sentry_template_string__;
-		__sentry_template_values__.forEach((param, index) => {
-			processedLogAttributes[`sentry.message.parameter.${index}`] = param;
-		});
-	}
-	setLogAttribute(processedLogAttributes, "sentry.trace.parent_span_id", _getSpanForScope(currentScope)?.spanContext().spanId);
-	const processedLog = {
-		...beforeLog,
-		attributes: processedLogAttributes
-	};
-	client.emit("beforeCaptureLog", processedLog);
-	const log = beforeSendLog ? consoleSandbox(() => beforeSendLog(processedLog)) : processedLog;
-	if (!log) {
-		client.recordDroppedEvent("before_send", "log_item", 1);
-		DEBUG_BUILD$2 && debug.warn("beforeSendLog returned null, log will not be captured.");
-		return;
-	}
-	const { level, message, attributes: logAttributes = {}, severityNumber } = log;
-	const timestamp = timestampInSeconds();
-	const sequenceAttr = getSequenceAttribute(timestamp);
-	captureSerializedLog(client, {
-		timestamp,
-		level,
-		body: _removeLoneSurrogates(String(message)),
-		trace_id: traceContext?.trace_id,
-		severity_number: severityNumber ?? SEVERITY_TEXT_TO_SEVERITY_NUMBER[level],
-		attributes: sanitizeLogAttributes({
-			...serializeAttributes(scopeAttributes),
-			...serializeAttributes(logAttributes, true),
-			[sequenceAttr.key]: sequenceAttr.value
-		})
-	});
-	client.emit("afterCaptureLog", log);
-}
 function _INTERNAL_flushLogsBuffer(client, maybeLogBuffer) {
 	const logBuffer = maybeLogBuffer ?? _INTERNAL_getLogBuffer(client) ?? [];
 	if (logBuffer.length === 0) return;
@@ -2553,25 +2435,6 @@ function _INTERNAL_getLogBuffer(client) {
 }
 function _getBufferMap$1() {
 	return getGlobalSingleton("clientToLogBufferMap", () => /* @__PURE__ */ new WeakMap());
-}
-function sanitizeLogAttributes(attributes) {
-	const sanitized = {};
-	for (const [key, attr] of Object.entries(attributes)) {
-		const sanitizedKey = _removeLoneSurrogates(key);
-		if (attr.type === "string") sanitized[sanitizedKey] = {
-			...attr,
-			value: _removeLoneSurrogates(attr.value)
-		};
-		else sanitized[sanitizedKey] = attr;
-	}
-	return sanitized;
-}
-function _removeLoneSurrogates(str) {
-	const strObj = Object(str);
-	const isWellFormed = strObj["isWellFormed"];
-	const toWellFormed = strObj["toWellFormed"];
-	if (typeof isWellFormed === "function" && typeof toWellFormed === "function") return isWellFormed.call(str) ? str : toWellFormed.call(str);
-	return str;
 }
 
 //#endregion
@@ -5482,4 +5345,4 @@ function init(options = {}) {
 }
 
 //#endregion
-export { _INTERNAL_captureLog as n, init as t };
+export { captureMessage as n, init as t };

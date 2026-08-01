@@ -1,8 +1,7 @@
 import { C as h, D as S, S as d, a as PointerSensor, b as A, c as useSensor, i as DndContext, l as CSS, m as bn, n as SortableContext, o as closestCenter, p as P, r as verticalListSortingStrategy, s as useSensors, t as useSortable, u } from "./dnd-kit-8Wt4G7bK.js";
 import { t as createRoot } from "./preact-B4lw9r7u.js";
 import { n as toast$1, t as Toaster$1 } from "./sonner-CjpyPqcO.js";
-import { t as init } from "./@sentry/browser-BsaWfxAA.js";
-import { t as info } from "./@sentry/core-D0Q1u8BA.js";
+import { n as captureMessage, t as init } from "./@sentry/browser-BV1_KJow.js";
 import { a as Switch, c as useParams, i as Router, l as useSearchParams, n as Redirect, o as useLocation, r as Route, s as useNavigate, t as Link, u as useHashLocation } from "./wouter-Cljq2E-q.js";
 import { a as atom, i as useSetAtom, n as useAtom, o as createStore, r as useAtomValue, t as Provider } from "./jotai-NDHPqWcD.js";
 import { t as v4 } from "./uuid-BtdgrrNB.js";
@@ -81,9 +80,9 @@ var AuthClient = class {
 			credentials: "include"
 		});
 		console.log(response.status);
-		info(response.statusText);
+		captureMessage(`status: ${response.status}`);
 		const body = await response.text();
-		info(body);
+		captureMessage(body);
 		return JSON.parse(body).token;
 	}
 	async getSession() {
@@ -389,7 +388,7 @@ var syncAtom = atom(SyncModel.new({ useIndexedDB: false }));
 //#endregion
 //#region src/sync-worker.ts?worker
 function WorkerWrapper(options) {
-	return new Worker("/grocery-shopping/assets/sync-worker-tKjf15bB.js", {
+	return new Worker("/grocery-shopping/assets/sync-worker-BOoBJ550.js", {
 		type: "module",
 		name: options?.name
 	});
@@ -651,7 +650,7 @@ function PasswordReset() {
 //#endregion
 //#region src/pages/Version.tsx
 function Version() {
-	return /* @__PURE__ */ u("ul", { children: [/* @__PURE__ */ u("li", { children: ["Version: ", "2026-07-31_0"] }), /* @__PURE__ */ u("li", { children: ["Git Commit: ", "3e768d5"] })] });
+	return /* @__PURE__ */ u("ul", { children: [/* @__PURE__ */ u("li", { children: ["Version: ", "2026-07-31_1"] }), /* @__PURE__ */ u("li", { children: ["Git Commit: ", "6f0c068"] })] });
 }
 
 //#endregion
@@ -1062,15 +1061,23 @@ function Trip() {
 function Nav() {
 	return /* @__PURE__ */ u("nav", { children: /* @__PURE__ */ u("ul", {
 		className: "flex flex-col gap-3 p-4",
-		children: [/* @__PURE__ */ u("li", { children: /* @__PURE__ */ u(Link, {
-			className: "underline",
-			to: "/store",
-			children: "Stores"
-		}) }), /* @__PURE__ */ u("li", { children: /* @__PURE__ */ u(Link, {
-			className: "underline",
-			to: "/trip",
-			children: "Trips"
-		}) })]
+		children: [
+			/* @__PURE__ */ u("li", { children: /* @__PURE__ */ u(Link, {
+				className: "underline",
+				to: "/store",
+				children: "Stores"
+			}) }),
+			/* @__PURE__ */ u("li", { children: /* @__PURE__ */ u(Link, {
+				className: "underline",
+				to: "/trip",
+				children: "Trips"
+			}) }),
+			/* @__PURE__ */ u("li", { children: /* @__PURE__ */ u(Link, {
+				className: "underline",
+				to: "/version",
+				children: "Version"
+			}) })
+		]
 	}) });
 }
 
@@ -1191,8 +1198,8 @@ function App() {
 //#region src/main.tsx
 init({
 	dsn: SENTRY_DSN,
-	release: "2026-07-31_0",
-	initialScope: { tags: { git_commit: "3e768d5" } }
+	release: "2026-07-31_1",
+	initialScope: { tags: { git_commit: "6f0c068" } }
 });
 if (ENABLE_SERVICE_WORKER) navigator.serviceWorker.register("/grocery-shopping/service-worker.js").catch(console.error);
 createRoot(document.getElementById("root")).render(/* @__PURE__ */ u(S, { children: /* @__PURE__ */ u(App, {}) }));
