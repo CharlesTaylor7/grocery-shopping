@@ -1,4 +1,4 @@
-import { C as h, E as y, O as X, T as x, b as A, h as gn, k, w as q, x as P } from "./dnd-kit-8Wt4G7bK.js";
+import { C as x, D as k, E as X, S as q, _ as P, d as gn, g as A, w as y, x as h } from "./@dnd-kit/accessibility-BA1htokQ.js";
 
 //#region node_modules/.pnpm/jotai@2.20.2_@babel+core@7.29.7_@babel+template@7.29.7_@preact+compat@18.3.2_preact@10.29.7__@types+react@19.2.17/node_modules/jotai/esm/vanilla/internals.mjs
 function hasInitialValue(atom) {

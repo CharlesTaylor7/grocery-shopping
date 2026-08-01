@@ -1,11 +1,13 @@
-import { C as h, D as S, S as d, a as PointerSensor, b as A, c as useSensor, i as DndContext, l as CSS, m as bn, n as SortableContext, o as closestCenter, p as P, r as verticalListSortingStrategy, s as useSensors, t as useSortable, u } from "./dnd-kit-8Wt4G7bK.js";
-import { t as createRoot } from "./preact-B4lw9r7u.js";
-import { n as toast$1, t as Toaster$1 } from "./sonner-CjpyPqcO.js";
+import { T as S, b as d, c as P, g as A, u as bn, x as h } from "./@dnd-kit/accessibility-BA1htokQ.js";
+import { n as createRoot, t as u } from "./preact-C_gNdZ0k.js";
+import { n as toast$1, t as Toaster$1 } from "./sonner-D_UVs8uJ.js";
 import { n as captureMessage, t as init } from "./@sentry/browser-BV1_KJow.js";
-import { a as Switch, c as useParams, i as Router, l as useSearchParams, n as Redirect, o as useLocation, r as Route, s as useNavigate, t as Link, u as useHashLocation } from "./wouter-Cljq2E-q.js";
-import { a as atom, i as useSetAtom, n as useAtom, o as createStore, r as useAtomValue, t as Provider } from "./jotai-NDHPqWcD.js";
+import { a as Switch, c as useParams, i as Router, l as useSearchParams, n as Redirect, o as useLocation, r as Route, s as useNavigate, t as Link, u as useHashLocation } from "./wouter-ByZHtXYD.js";
+import { a as atom, i as useSetAtom, n as useAtom, o as createStore, r as useAtomValue, t as Provider } from "./jotai-7nMQKjkk.js";
+import { d as CSS, i as closestCenter, l as useSensor, r as PointerSensor, t as DndContext, u as useSensors } from "./@dnd-kit/core-DUUonhBk.js";
+import { n as useSortable, r as verticalListSortingStrategy, t as SortableContext } from "./@dnd-kit/sortable-zYN-0ANI.js";
 import { t as v4 } from "./uuid-BtdgrrNB.js";
-import { t as atomWithImmer } from "./jotai-immer-CWhJIYQw.js";
+import { t as atomWithImmer } from "./jotai-immer-DalfPxh2.js";
 
 //#region \0vite/modulepreload-polyfill.js
 (function polyfill() {
@@ -650,7 +652,7 @@ function PasswordReset() {
 //#endregion
 //#region src/pages/Version.tsx
 function Version() {
-	return /* @__PURE__ */ u("ul", { children: [/* @__PURE__ */ u("li", { children: ["Version: ", "2026-07-31_1"] }), /* @__PURE__ */ u("li", { children: ["Git Commit: ", "6f0c068"] })] });
+	return /* @__PURE__ */ u("ul", { children: [/* @__PURE__ */ u("li", { children: ["Version: ", "2026-07-31_2"] }), /* @__PURE__ */ u("li", { children: ["Git Commit: ", "322f72d"] })] });
 }
 
 //#endregion
@@ -1198,8 +1200,8 @@ function App() {
 //#region src/main.tsx
 init({
 	dsn: SENTRY_DSN,
-	release: "2026-07-31_1",
-	initialScope: { tags: { git_commit: "6f0c068" } }
+	release: "2026-07-31_2",
+	initialScope: { tags: { git_commit: "322f72d" } }
 });
 if (ENABLE_SERVICE_WORKER) navigator.serviceWorker.register("/grocery-shopping/service-worker.js").catch(console.error);
 createRoot(document.getElementById("root")).render(/* @__PURE__ */ u(S, { children: /* @__PURE__ */ u(App, {}) }));

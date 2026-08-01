@@ -1,4 +1,4 @@
-import { D as S, O as X, T as x, _ as mn, b as A, d as C, f as I, g as hn, k, m as bn } from "./dnd-kit-8Wt4G7bK.js";
+import { C as x, D as k, E as X, T as S, a as C, f as hn, g as A, o as I, p as mn, u as bn } from "./@dnd-kit/accessibility-BA1htokQ.js";
 import { t as parse } from "./regexparam-BItrLycJ.js";
 
 //#region vendor/wouter/src/use-browser-location.js

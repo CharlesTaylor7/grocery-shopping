@@ -1,4 +1,4 @@
-import { h as gn } from "./dnd-kit-8Wt4G7bK.js";
+import { d as gn } from "./@dnd-kit/accessibility-BA1htokQ.js";
 
 //#region node_modules/.pnpm/sonner@2.0.7_@preact+compat@18.3.2_preact@10.29.7__@preact+compat@18.3.2_preact@10.29.7_/node_modules/sonner/dist/index.mjs
 function __insertCSS(code) {
