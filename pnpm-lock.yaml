@@ -47,6 +47,9 @@ importers:
       sonner:
         specifier: ^2.0.7
         version: 2.0.7(@preact/compat@18.3.2(preact@10.29.7))(@preact/compat@18.3.2(preact@10.29.7))
+      temporal-polyfill:
+        specifier: ^1.0.2
+        version: 1.0.2
       uuid:
         specifier: ^14.0.1
         version: 14.0.1
@@ -1171,6 +1174,15 @@ packages:
     resolution: {integrity: sha512-uxc/zpqFg6x7C8vOE7lh6Lbda8eEL9zmVm/PLeTPBRhh1xCgdWaQ+J1CUieGpIfm2HdtsUpRv+HshiasBMcc6A==}
     engines: {node: '>=6'}
 
+  temporal-polyfill@1.0.2:
+    resolution: {integrity: sha512-pTyp/7kfStJQbJ8YOHmcJItkxvOGCZHu3PaVgLvLnxFS7O12EPiWLElnRre/rw77z4TGZX/gvdqMXWn6ispQvA==}
+
+  temporal-spec@1.0.1:
+    resolution: {integrity: sha512-wxVoanmDeavXie1vu2JaQ3WIc3JZnWAOYFBsJyATaVsXsycKYUflGsyBmrRSnoCpZJpwPyr38VpgSUlQ8CbFxg==}
+
+  temporal-utils@1.0.1:
+    resolution: {integrity: sha512-HAixuesxFQIUaQk3ptX2jhfO/FsOkgVkDDMawvp6n/fkB1q6BKfs3lURw9I+pK/2e2e/q/vrLrxmeqauBoyGMQ==}
+
   tinyglobby@0.2.17:
     resolution: {integrity: sha512-wXR/dYpcqKmfWpEdZjiKJOwCNFndD0DMnrW/cYjVGttEkBfVgcLFHoNrlj47mjOVic9yyNu65alsgF4NQyTa2g==}
     engines: {node: '>=12.0.0'}
@@ -2127,6 +2139,15 @@ snapshots:
   tailwindcss@4.3.3: {}
 
   tapable@2.3.3: {}
+
+  temporal-polyfill@1.0.2:
+    dependencies:
+      temporal-spec: 1.0.1
+      temporal-utils: 1.0.1
+
+  temporal-spec@1.0.1: {}
+
+  temporal-utils@1.0.1: {}
 
   tinyglobby@0.2.17:
     dependencies:

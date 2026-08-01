@@ -8,17 +8,22 @@ import { useAtom, useSetAtom, useAtomValue, atom } from 'jotai';
 
 import { appendNewItemAtom, focusIndexAtom, GotItem, gotItemsAtom, handleCheckboxAtom, handleDragEndAtom, handleDragStartAtom, handleKeydownAtom, handleTextboxAtom, loadStoreAtom, needItemsAtom, storeAtom } from "./actions";
 import { useNavigate } from "wouter";
-import { StoreItem } from "@/types";
+import { Temporal } from "temporal-polyfill";
 
 const nowAtom = atom(new Date());
 
 function ago(item: GotItem, now: Date): string {
-  const delta = now.valueOf() - item.last_got_at.valueOf()
-  const seconds = delta / 1000
-  const minutes = seconds / 60;
-  const hours = minutes / 60;
-  const days = hours / 24;
-  return `${Math.ceil(days)}d ago`
+  if (typeof item.last_got_at !== 'object') return '';
+  const x = item.last_got_at;
+  const y = now;
+  const a = new Temporal.PlainDate(x.getFullYear(), x.getMonth(), x.getDate());
+
+  const b = new Temporal.PlainDate(y.getFullYear(), y.getMonth(), y.getDate());
+  const duration = b.since(a);
+  console.log({ x, y, a, b, duration });
+
+  if (duration.days === 0) return 'today';
+  return `${duration.days}d ago`
 }
 export default function Store() {
   // stateful hooks
@@ -54,78 +59,78 @@ export default function Store() {
     <div>
       <h2
         id={storeId}
-        className="text-center underline"
+        className="text-center underline w-100"
       >
         {store.name}
       </h2>
 
-      <div>
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={need.map(item => item.id)}
-            strategy={verticalListSortingStrategy}>
-            {need.map((item, index) => (
-              <Sortable id={item.id} key={item.id}>
-                <div id={item.id} className="flex flex-row m-2">
-                  <input
-                    data-id={item.id}
-                    tabIndex={-1}
-                    type="checkbox"
-                    className="checkbox p-2"
-                    checked={item.got}
-                    onChange={handleCheckbox}
-                  />
-                  <Input
-                    data-id={item.id}
-                    focus={index === focusIndex}
-                    type="text"
-                    className="w-80 mx-4 outline-hidden"
-                    onFocus={() => setFocusIndex(index)}
-                    onKeyDown={handleKeydown}
-                    value={item.description}
-                    onChange={handleTextbox}
-                  />
-                  {/* grip bars */}
-                  <Grip id={item.id} />
-                </div>
-              </Sortable>
-            ))}
-          </SortableContext>
-        </DndContext>
-        {gots.length ? <h3 className="my-3">GOT</h3> : null}
-        <div>
-          {gots.map(item => (
-            <div id={item.id} key={item.id} className="flex flex-row m-2">
-              <input
-                data-id={item.id}
-                tabIndex={-1}
-                type="checkbox"
-                className="checkbox p-2"
-                checked={item.got}
-                onChange={handleCheckbox}
-              />
-              <input
-                data-id={item.id}
-                type="text"
-                className="w-80 mx-4 outline-hidden"
-                value={item.description}
-                readOnly
-              />
-              <div className="italic">
-                {ago(item, now)}
+      <h3 className="my-3 text-xl">Need</h3>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={need.map(item => item.id)}
+          strategy={verticalListSortingStrategy}>
+          {need.map((item, index) => (
+            <Sortable id={item.id} key={item.id}>
+              <div id={item.id} className="flex flex-row m-2">
+                <input
+                  data-id={item.id}
+                  tabIndex={-1}
+                  type="checkbox"
+                  className="checkbox p-2"
+                  checked={item.got}
+                  onChange={handleCheckbox}
+                />
+                <Input
+                  data-id={item.id}
+                  focus={index === focusIndex}
+                  type="text"
+                  className="w-80 mx-4 outline-hidden"
+                  onFocus={() => setFocusIndex(index)}
+                  onKeyDown={handleKeydown}
+                  value={item.description}
+                  onChange={handleTextbox}
+                />
+                {/* grip bars */}
+                <Grip id={item.id} />
               </div>
-            </div>
+            </Sortable>
           ))}
-        </div>
-      </div>
-      <button type="button" className="btn btn-ghost w-screen" onClick={addNewItem}>
+        </SortableContext>
+      </DndContext>
+
+      <button type="button" className="btn btn-ghost w-100" onClick={addNewItem}>
         +
       </button>
+      {gots.length ? <h3 className="my-3 text-xl">Got</h3> : null}
+      <div>
+        {gots.map(item => (
+          <div id={item.id} key={item.id} className="flex flex-row m-2">
+            <input
+              data-id={item.id}
+              tabIndex={-1}
+              type="checkbox"
+              className="checkbox p-2"
+              checked={item.got}
+              onChange={handleCheckbox}
+            />
+            <input
+              data-id={item.id}
+              type="text"
+              className="w-80 mx-4 outline-hidden"
+              value={item.description}
+              readOnly
+            />
+            <div className="italic">
+              {ago(item, now)}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
