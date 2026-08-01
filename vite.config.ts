@@ -17,12 +17,12 @@ export default defineConfig(({ command }) => ({
     __RELEASE_VERSION__:
       command === "build"
         ? JSON.stringify(readReleaseVersion())
-        : "dev",
+        : '"dev"',
 
     __COMMIT_SHA__:
       command === "build"
         ? JSON.stringify(getCommitSHA())
-        : "dev"
+        : '"dev"'
   },
   plugins: [
     preact({ reactAliasesEnabled: false }),
