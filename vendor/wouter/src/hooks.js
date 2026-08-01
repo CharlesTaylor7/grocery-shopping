@@ -1,8 +1,8 @@
-import { parse as parsePattern } from "regexparam";
-import { createContext, useContext, useRef } from "react";
+import { parse as parsePattern } from "regexparam"
+import { useRef, createContext, useContext, useMemo } from "react";
 import { useEvent } from "./use-event-polyfill";
-import { useBrowserLocation } from "./use-browser-location";
-import { absolutePath, relativePath } from "./paths";
+import { useBrowserSearch, useBrowserLocation } from "./use-browser-location";
+import { sanitizeSearch, absolutePath, relativePath } from "./paths";
 
 export const defaultRouter = {
   hook: useBrowserLocation,
