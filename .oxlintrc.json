@@ -19,7 +19,7 @@
       {
         "name": "location",
         "message": "Use wouter's useLocation()"
-      },
+      }
     ],
     "no-restricted-properties": [
       "error",

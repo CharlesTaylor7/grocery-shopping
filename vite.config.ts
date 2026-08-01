@@ -6,7 +6,7 @@ import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 
 function getCommitSHA() {
-  return execSync("git rev-parse --short HEAD").toString().trim()
+  return execSync("git rev-parse --short HEAD").toString().trim();
 }
 
 function readReleaseVersion() {
@@ -14,19 +14,17 @@ function readReleaseVersion() {
 }
 export default defineConfig(({ command }) => ({
   define: {
-    __RELEASE_VERSION__:
-      command === "build"
-        ? JSON.stringify(readReleaseVersion())
-        : '"dev"',
+    __RELEASE_VERSION__: command === "build"
+      ? JSON.stringify(readReleaseVersion())
+      : '"dev"',
 
-    __COMMIT_SHA__:
-      command === "build"
-        ? JSON.stringify(getCommitSHA())
-        : '"dev"'
+    __COMMIT_SHA__: command === "build"
+      ? JSON.stringify(getCommitSHA())
+      : '"dev"',
   },
   plugins: [
     preact({ reactAliasesEnabled: false }),
-    tailwindcss()
+    tailwindcss(),
   ],
   base: "/grocery-shopping/",
   resolve: {
