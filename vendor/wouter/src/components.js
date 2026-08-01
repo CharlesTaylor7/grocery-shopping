@@ -15,6 +15,7 @@ import {
   useLocationFromRouter,
   useParams,
   useRouter,
+  useLayoutEffect,
 } from "./hooks.js";
 
 export function Router({ children, ...props }) {
