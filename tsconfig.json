@@ -37,9 +37,6 @@
       "wouter": [
         "./vendor/wouter/src/"
       ],
-      "@dnd-kit/*": [
-        "./vendor/dnd-kit/src/*"
-      ],
       "react": [
         "./node_modules/preact/compat/"
       ],
