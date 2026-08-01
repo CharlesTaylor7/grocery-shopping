@@ -4,12 +4,22 @@ import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from 
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import Input from "@/components/Input";
-import { useAtom, useSetAtom, useAtomValue } from 'jotai';
+import { useAtom, useSetAtom, useAtomValue, atom } from 'jotai';
 
-import { appendNewItemAtom, focusIndexAtom, gotItemsAtom, handleCheckboxAtom, handleDragEndAtom, handleDragStartAtom, handleKeydownAtom, handleTextboxAtom, loadStoreAtom, needItemsAtom, storeAtom } from "./actions";
+import { appendNewItemAtom, focusIndexAtom, GotItem, gotItemsAtom, handleCheckboxAtom, handleDragEndAtom, handleDragStartAtom, handleKeydownAtom, handleTextboxAtom, loadStoreAtom, needItemsAtom, storeAtom } from "./actions";
 import { useNavigate } from "wouter";
+import { StoreItem } from "@/types";
 
+const nowAtom = atom(new Date());
 
+function ago(item: GotItem, now: Date): string {
+  const delta = now.valueOf() - item.last_got_at.valueOf()
+  const seconds = delta / 1000
+  const minutes = seconds / 60;
+  const hours = minutes / 60;
+  const days = hours / 24;
+  return `${Math.ceil(days)}d ago`
+}
 export default function Store() {
   // stateful hooks
   const params = useParams();
@@ -17,6 +27,7 @@ export default function Store() {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
   const navigate = useNavigate();
+  const now = useAtomValue(nowAtom);
   const load = useSetAtom(loadStoreAtom);
   const store = useAtomValue(storeAtom);
   const handleDragStart = useSetAtom(handleDragStartAtom);
@@ -28,6 +39,7 @@ export default function Store() {
   const handleTextbox = useSetAtom(handleTextboxAtom);
   const handleCheckbox = useSetAtom(handleCheckboxAtom);
   const addNewItem = useSetAtom(appendNewItemAtom);
+
   // effects
   useEffect(() => {
     if (!storeId) {
@@ -104,6 +116,9 @@ export default function Store() {
                 value={item.description}
                 readOnly
               />
+              <div className="italic">
+                {ago(item, now)}
+              </div>
             </div>
           ))}
         </div>
