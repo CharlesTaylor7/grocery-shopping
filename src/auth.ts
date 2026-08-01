@@ -41,9 +41,9 @@ class AuthClient {
       credentials: "include",
     })
     console.log(response.status);
-    Sentry.logger.info(response.statusText)
+    Sentry.captureMessage(`status: ${response.status}`)
     const body = await response.text()
-    Sentry.logger.info(body)
+    Sentry.captureMessage(body)
     return JSON.parse(body).token;
   }
 

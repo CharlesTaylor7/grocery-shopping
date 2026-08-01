@@ -10,6 +10,9 @@ export default function Nav() {
         <li>
           <Link className="underline" to="/trip">Trips</Link>
         </li>
+        <li>
+          <Link className="underline" to="/version">Version</Link>
+        </li>
       </ul>
     </nav>
   );
