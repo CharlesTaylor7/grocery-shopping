@@ -13,7 +13,7 @@ import { Temporal } from "temporal-polyfill";
 const nowAtom = atom(new Date());
 
 function ago(item: GotItem, now: Date): string {
-  if (typeof item.last_got_at !== 'object') return '';
+  if (typeof item.last_got_at !== 'object') return '?';
   const x = item.last_got_at;
   const y = now;
   const a = new Temporal.PlainDate(x.getFullYear(), x.getMonth(), x.getDate());
@@ -89,7 +89,7 @@ export default function Store() {
                   data-id={item.id}
                   focus={index === focusIndex}
                   type="text"
-                  className="w-80 mx-4 outline-hidden"
+                  className="w-80 ml-4 outline-hidden"
                   onFocus={() => setFocusIndex(index)}
                   onKeyDown={handleKeydown}
                   value={item.description}
@@ -146,7 +146,7 @@ function Grip(props: GripProps) {
     <div
       {...listeners}
       {...attributes}
-      className={`px-2 ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
+      className={`px-4 ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
       style={{
         touchAction: "none"
       }}
