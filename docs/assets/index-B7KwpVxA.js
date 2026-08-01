@@ -652,7 +652,7 @@ function PasswordReset() {
 //#endregion
 //#region src/pages/Version.tsx
 function Version() {
-	return /* @__PURE__ */ u("ul", { children: [/* @__PURE__ */ u("li", { children: ["Version: ", "2026-07-31_2"] }), /* @__PURE__ */ u("li", { children: ["Git Commit: ", "322f72d"] })] });
+	return /* @__PURE__ */ u("ul", { children: [/* @__PURE__ */ u("li", { children: ["Version: ", "2026-08-01_0"] }), /* @__PURE__ */ u("li", { children: ["Git Commit: ", "20d9dc4"] })] });
 }
 
 //#endregion
@@ -848,10 +848,16 @@ var handleTextboxAtom = atom(null, (_get, set, event) => {
 
 //#endregion
 //#region src/pages/store/Store.tsx
+var nowAtom = atom(/* @__PURE__ */ new Date());
+function ago(item, now) {
+	const days = (now.valueOf() - item.last_got_at.valueOf()) / 1e3 / 60 / 60 / 24;
+	return `${Math.ceil(days)}d ago`;
+}
 function Store() {
 	const storeId = useParams().id;
 	const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 	const navigate = useNavigate();
+	const now = useAtomValue(nowAtom);
 	const load = useSetAtom(loadStoreAtom);
 	const store = useAtomValue(storeAtom);
 	const handleDragStart = useSetAtom(handleDragStartAtom);
@@ -926,20 +932,27 @@ function Store() {
 			/* @__PURE__ */ u("div", { children: gots.map((item) => /* @__PURE__ */ u("div", {
 				id: item.id,
 				className: "flex flex-row m-2",
-				children: [/* @__PURE__ */ u("input", {
-					"data-id": item.id,
-					tabIndex: -1,
-					type: "checkbox",
-					className: "checkbox p-2",
-					checked: item.got,
-					onChange: handleCheckbox
-				}), /* @__PURE__ */ u("input", {
-					"data-id": item.id,
-					type: "text",
-					className: "w-80 mx-4 outline-hidden",
-					value: item.description,
-					readOnly: true
-				})]
+				children: [
+					/* @__PURE__ */ u("input", {
+						"data-id": item.id,
+						tabIndex: -1,
+						type: "checkbox",
+						className: "checkbox p-2",
+						checked: item.got,
+						onChange: handleCheckbox
+					}),
+					/* @__PURE__ */ u("input", {
+						"data-id": item.id,
+						type: "text",
+						className: "w-80 mx-4 outline-hidden",
+						value: item.description,
+						readOnly: true
+					}),
+					/* @__PURE__ */ u("div", {
+						className: "italic",
+						children: ago(item, now)
+					})
+				]
 			}, item.id)) })
 		] }),
 		/* @__PURE__ */ u("button", {
@@ -1200,8 +1213,8 @@ function App() {
 //#region src/main.tsx
 init({
 	dsn: SENTRY_DSN,
-	release: "2026-07-31_2",
-	initialScope: { tags: { git_commit: "322f72d" } }
+	release: "2026-08-01_0",
+	initialScope: { tags: { git_commit: "20d9dc4" } }
 });
 if (ENABLE_SERVICE_WORKER) navigator.serviceWorker.register("/grocery-shopping/service-worker.js").catch(console.error);
 createRoot(document.getElementById("root")).render(/* @__PURE__ */ u(S, { children: /* @__PURE__ */ u(App, {}) }));

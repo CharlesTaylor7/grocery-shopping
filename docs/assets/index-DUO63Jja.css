@@ -1327,6 +1327,10 @@
     text-align: right;
   }
 
+  .italic {
+    font-style: italic;
+  }
+
   .underline {
     text-decoration-line: underline;
   }
