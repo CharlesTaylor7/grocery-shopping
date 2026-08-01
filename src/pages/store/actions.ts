@@ -6,7 +6,7 @@ import { flushSync } from "react-dom";
 import { v4 as newId } from "uuid";
 import { atom } from "jotai";
 import { atomWithImmer } from "jotai-immer";
-import { syncAtom } from "@/model";
+import { syncAtom as syncModelAtom } from "@/model";
 
 export interface GotItem extends StoreItem {
   got: true;
@@ -112,11 +112,15 @@ const applyActionAtom = atom(null, (_get, set, action: Action) => {
   }
 });
 
-export const applyAndSyncAtom = atom(null, (get, set, action: Action) => {
+export const applyAndSyncAtom = atom(null, (_get, set, action: Action) => {
+  set(applyActionAtom, action);
+  set(syncActionAtom, action);
+});
+
+const syncActionAtom = atom(null, (get, _set, action: Action) => {
   // @ts-ignore
   action.entity.store_id = get(storeAtom).id;
-  set(applyActionAtom, action);
-  get(syncAtom).then((sync) => sync.send(action));
+  get(syncModelAtom).then((sync) => sync.send(action))
 });
 
 export const appendNewItemAtom = atom(null, (get, set) => {
@@ -194,30 +198,95 @@ export const handleDragEndAtom = atom(null, (get, set, event: any) => {
   const oldIndex = items.findIndex((i) => i.id === active.id);
   const newIndex = items.findIndex((i) => i.id === over.id);
 
-  let newOrder;
+
   if (newIndex === 0) {
-    newOrder = items[0].order - 1000;
+
+    const order = items[0].order - 1000;
+    set(applyAndSyncAtom, {
+      op: "edit",
+      table: "store_items",
+      entity: { id: activeItem.id, order },
+    });
+
+    return
   } else if (newIndex === items.length - 1) {
-    newOrder = items[items.length - 1].order + 1000;
-  } else if (newIndex > oldIndex) {
-    const adjacentItem = items[newIndex + 1];
-    newOrder = Math.floor((items[newIndex].order + adjacentItem.order) / 2);
-    if (newOrder == adjacentItem.order) console.warn("panick");
-  } else {
-    const adjacentItem = items[newIndex - 1];
-    newOrder = Math.floor((items[newIndex].order + adjacentItem.order) / 2);
-    if (newOrder == adjacentItem.order) console.warn("panick");
+
+    const order = items[items.length - 1].order + 1000;
+
+    set(applyAndSyncAtom, {
+      op: "edit",
+      table: "store_items",
+      entity: { id: activeItem.id, order },
+    });
+
+    return
   }
 
-  set(applyAndSyncAtom, {
-    op: "edit",
-    table: "store_items",
-    entity: {
-      id: activeItem.id,
-      order: newOrder,
-    },
-  });
+
+  // batch
+  const edits: DndEdit[] = []
+
+  if (newIndex > oldIndex) {
+    const adjacentIndex = newIndex + 1;
+    const targetOrder = items[newIndex].order;
+    const adjacentOrder = items[adjacentIndex].order;
+    let order = Math.ceil((targetOrder + adjacentOrder) / 2);
+    edits.push({ id: activeItem.id, order });
+
+    if (order === adjacentOrder) {
+      for (let i = adjacentIndex; i < items.length; i++) {
+        if (items[i].order - order < 1000) {
+          order += 1000;
+          edits.push({ id: items[i].id, order });
+        }
+        else break;
+      }
+
+    }
+  }
+
+  if (newIndex < oldIndex) {
+    const adjacentIndex = newIndex - 1;
+    const targetOrder = items[newIndex].order;
+    const adjacentOrder = items[adjacentIndex].order;
+    let order = Math.floor((targetOrder + adjacentOrder) / 2);
+    edits.push({ id: activeItem.id, order });
+
+    if (order === adjacentOrder) {
+      for (let i = adjacentIndex; i >= 0; i--) {
+        if (order - items[i].order < 1000) {
+          order -= 1000;
+          edits.push({ id: items[i].id, order });
+        }
+        else break;
+      }
+    }
+  }
+
+  set(batchDndUpdateAtom, edits);
 });
+
+interface DndEdit {
+  id: string,
+  order: number
+}
+const batchDndUpdateAtom = atom(null, (get, set, edits: DndEdit[]) => {
+  // make all edits first 
+  set(storeItemsAtom, draft => {
+    for (const edit of edits) {
+      draft[edit.id].order = edit.order;
+    }
+  });
+  // then send all events to backend
+  for (const edit of edits) {
+    set(syncActionAtom, {
+      op: "edit",
+      table: "store_items",
+      entity: edit,
+    });
+  }
+});
+
 
 type ChangeEvent = React.ChangeEvent<HTMLInputElement>;
 export const handleCheckboxAtom = atom(

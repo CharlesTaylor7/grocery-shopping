@@ -121,7 +121,6 @@ export default function Store() {
                   onFocus={() => setFocusIndex(index)}
                   onKeyDown={handleKeydown}
                   value={item.description}
-                  onChange={handleTextbox}
                 />
                 {/* grip bars */}
                 <Grip id={item.id} />

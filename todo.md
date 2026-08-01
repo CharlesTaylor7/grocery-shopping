@@ -1,11 +1,5 @@
-# bugs
-
-- [ ] handle rebalancing dnd order keys
 
 # Features
-
-- [ ] timestamps for when an "item was last bought"
-- [ ] '{n}d ago'
 - [ ] start a trip from a store
 - [ ] update a trip list
 - [ ] select multiple stores for a trip
