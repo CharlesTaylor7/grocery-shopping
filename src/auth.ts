@@ -7,20 +7,19 @@ export async function getAccessToken(): Promise<string | null> {
 }
 
 interface Session {
-  isPending: boolean,
+  isPending: boolean;
   data?: {
-    session: {},
-    user: { name: string }
-  }
-  error?: {
-  }
+    session: {};
+    user: { name: string };
+  };
+  error?: {};
 }
 
 class AuthClient {
   private headers: Headers;
   constructor() {
     this.headers = new Headers({
-      'Content-Type': "application/json",
+      "Content-Type": "application/json",
     });
   }
 
@@ -28,7 +27,7 @@ class AuthClient {
   useSession(): Session {
     return {
       isPending: false,
-      error: "Not implemented"
+      error: "Not implemented",
     };
   }
 
@@ -39,11 +38,11 @@ class AuthClient {
       method: "GET",
       headers: this.headers,
       credentials: "include",
-    })
+    });
     console.log(response.status);
-    Sentry.captureMessage(`status: ${response.status}`)
-    const body = await response.text()
-    Sentry.captureMessage(body)
+    Sentry.captureMessage(`status: ${response.status}`);
+    const body = await response.text();
+    Sentry.captureMessage(body);
     return JSON.parse(body).token;
   }
 
@@ -54,84 +53,81 @@ class AuthClient {
       method: "GET",
       headers: this.headers,
       credentials: "include",
-    })
-    return await response.json()
+    });
+    return await response.json();
   }
 
-  async loginWithEmail(args: { email: string, password: string }) {
+  async loginWithEmail(args: { email: string; password: string }) {
     const url = `${NEON_AUTH_URL}/sign-in/email`;
 
-    const response = await fetch(url,
-      {
-        method: "POST",
-        headers: this.headers,
-        credentials: "include",
-        body: JSON.stringify({
-          email: args.email,
-          password: args.password,
-          rememberMe: true,
-        })
-      });
+    const response = await fetch(url, {
+      method: "POST",
+      headers: this.headers,
+      credentials: "include",
+      body: JSON.stringify({
+        email: args.email,
+        password: args.password,
+        rememberMe: true,
+      }),
+    });
 
     return response.statusText;
   }
 
-  async signupWithEmail(args: { name: string, email: string, password: string }) {
+  async signupWithEmail(
+    args: { name: string; email: string; password: string },
+  ) {
     const url = `${NEON_AUTH_URL}/sign-up/email`;
 
-    const response = await fetch(url,
-      {
-        method: "POST",
-        headers: this.headers,
-        credentials: "include",
-        body: JSON.stringify({
-          name: args.name,
-          email: args.email,
-          password: args.password,
-        })
-      });
+    const response = await fetch(url, {
+      method: "POST",
+      headers: this.headers,
+      credentials: "include",
+      body: JSON.stringify({
+        name: args.name,
+        email: args.email,
+        password: args.password,
+      }),
+    });
     return response.statusText;
   }
 
-  async resetPassword(args: { newPassword: string, token: string }) {
+  async resetPassword(args: { newPassword: string; token: string }) {
     const url = `${NEON_AUTH_URL}/sign-out`;
-    const response = await fetch(url,
-      {
-        method: "POST",
-        headers: this.headers,
-        credentials: "include",
-        body: JSON.stringify({
-          newPassword: args.newPassword,
-          token: args.token,
-        })
-      });
+    const response = await fetch(url, {
+      method: "POST",
+      headers: this.headers,
+      credentials: "include",
+      body: JSON.stringify({
+        newPassword: args.newPassword,
+        token: args.token,
+      }),
+    });
     return response.statusText;
   }
 
   async requestPasswordReset(args: { email: string }) {
     const url = `${NEON_AUTH_URL}/request-password-reset`;
-    const response = await fetch(url,
-      {
-        method: "POST",
-        headers: this.headers,
-        credentials: "include",
-        body: JSON.stringify({
-          email: args.email,
-          redirectTo: "/grocery-shopping/#/auth/password-reset",
-        })
-      });
+    const response = await fetch(url, {
+      method: "POST",
+      headers: this.headers,
+      credentials: "include",
+      body: JSON.stringify({
+        email: args.email,
+        redirectTo: "/grocery-shopping/#/auth/password-reset",
+      }),
+    });
     return response.statusText;
   }
 
   async signOut() {
     const url = `${NEON_AUTH_URL}/sign-out`;
-    const response = await fetch(url,
-      {
-        method: "POST",
-        headers: this.headers,
-        credentials: "include",
-        body: JSON.stringify({})
-      });
+    const response = await fetch(url, {
+      method: "POST",
+      headers: this.headers,
+      credentials: "include",
+      body: JSON.stringify({}),
+    });
     return response.statusText;
   }
 }

@@ -22,4 +22,3 @@ export function promisify<T = unknown>(request: IDBRequest<T>): Promise<T> {
     request.onerror = reject;
   });
 }
-

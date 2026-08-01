@@ -27,7 +27,10 @@ export default function Signup() {
   }
 
   return (
-    <form className="flex flex-col gap-2 items-start p-2" onSubmit={handleSubmit}>
+    <form
+      className="flex flex-col gap-2 items-start p-2"
+      onSubmit={handleSubmit}
+    >
       <input type="text" placeholder="Username" name="username" required />
       <input type="email" placeholder="Email" name="email" required />
 

@@ -2,7 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "@/components/App";
 import { ENABLE_SERVICE_WORKER, SENTRY_DSN } from "@/config";
-import * as Sentry from "@sentry/browser"
+import * as Sentry from "@sentry/browser";
 import "@/styles.css";
 
 if (import.meta.env.PROD) {
@@ -13,8 +13,8 @@ if (import.meta.env.PROD) {
       tags: {
         git_commit: __COMMIT_SHA__,
       },
-    }
-  })
+    },
+  });
 }
 
 if (ENABLE_SERVICE_WORKER) {

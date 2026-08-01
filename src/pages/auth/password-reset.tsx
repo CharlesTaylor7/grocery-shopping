@@ -1,5 +1,5 @@
 import { authClient } from "@/auth";
-import {useNavigate} from "wouter";
+import { useNavigate } from "wouter";
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "wouter";
 
@@ -25,12 +25,21 @@ export default function PasswordReset() {
     await authClient.resetPassword(payload);
 
     navigate("/auth/login");
-  };
+  }
 
   return (
-    <form ref={formRef} className="flex flex-col gap-2 items-start p-2" onSubmit={handleSubmit}>
+    <form
+      ref={formRef}
+      className="flex flex-col gap-2 items-start p-2"
+      onSubmit={handleSubmit}
+    >
       <div>
-        <input type="password" placeholder="New Password" name="password" required />
+        <input
+          type="password"
+          placeholder="New Password"
+          name="password"
+          required
+        />
       </div>
       <button type="submit" className="btn btn-primary">
         Confirm

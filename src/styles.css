@@ -4,8 +4,9 @@
 /* Manually whitelist only the folders you want scanned */
 @source "./components";
 @source "./pages";
-@plugin "daisyui" ;
+@plugin "daisyui";
 /* { */
-/*   /* themes: dark --default; */ */
-/*   /* include: button, colors, checkbox; */ */
-/* } */
+/*   /* themes: dark --default; */
+*/
+  /*   /* include: button, colors, checkbox; */ */
+  /* } */

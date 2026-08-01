@@ -4,5 +4,5 @@ export default function Version() {
       <li>Version: {__RELEASE_VERSION__}</li>
       <li>Git Commit: {__COMMIT_SHA__}</li>
     </ul>
-  )
+  );
 }

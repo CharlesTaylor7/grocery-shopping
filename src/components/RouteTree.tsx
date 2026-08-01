@@ -12,31 +12,31 @@ import AuthGuard from "@/components/AuthGuard";
 import { Redirect, Route, Switch } from "wouter";
 
 export default function RouteTree() {
-  return <>
-    <Route path="/" component={Index} />
-    <Route path="nav" component={Nav} />
-    <Route path="version" component={Version} />
+  return (
+    <>
+      <Route path="/" component={Index} />
+      <Route path="nav" component={Nav} />
+      <Route path="version" component={Version} />
 
-
-    <Route nest path="auth" >
-      <Route path="/" >
-        <Redirect to="/login" />
+      <Route nest path="auth">
+        <Route path="/">
+          <Redirect to="/login" />
+        </Route>
+        <Route path="login" component={Login} />
+        <Route path="signup" component={Signup} />
+        <Route path="password-reset" component={PasswordReset} />
       </Route>
-      <Route path="login" component={Login} />
-      <Route path="signup" component={Signup} />
-      <Route path="password-reset" component={PasswordReset} />
-    </Route>
 
-    <AuthGuard>
-      <Switch>
-        <Route path="/store/:id" component={Store} />
-        <Route path="/store" component={StoreList} />
-      </Switch>
-      <Switch>
-        <Route path="/trip/:id" component={Trip} />
-        <Route path="/trip" component={TripList} />
-      </Switch>
-    </AuthGuard>
-  </>
+      <AuthGuard>
+        <Switch>
+          <Route path="/store/:id" component={Store} />
+          <Route path="/store" component={StoreList} />
+        </Switch>
+        <Switch>
+          <Route path="/trip/:id" component={Trip} />
+          <Route path="/trip" component={TripList} />
+        </Switch>
+      </AuthGuard>
+    </>
+  );
 }
-

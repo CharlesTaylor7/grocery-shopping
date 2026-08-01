@@ -8,17 +8,17 @@ const db = await openIndexedDB();
 
 const syncArgs = { db, client, log };
 
-// token is passed on app startup 
+// token is passed on app startup
 // todo: everytime a new message is synced
 // todo: everytime the session auto-renews
-// todo: on logout 
+// todo: on logout
 onmessage = (msg) => {
   const token = msg.data;
   if (token) {
     client.authHeader = `Bearer ${token}`;
     processQueue();
   } else {
-    client.authHeader = '';
+    client.authHeader = "";
   }
 };
 

@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { lastVisitedUrl } from "@/last-visited-url";
 import { useNavigate } from "wouter";
 
-
 export default function Index() {
   const session = authClient.useSession();
   const navigate = useNavigate();

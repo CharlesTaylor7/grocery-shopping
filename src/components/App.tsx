@@ -4,7 +4,7 @@ import SyncActionProvider from "@/components/SyncActionProvider";
 import { SYNC_MODE } from "@/config";
 import LastVisitSave from "@/components/LastVisitSave";
 import { Suspense } from "react";
-import { Link, } from "wouter";
+import { Link } from "wouter";
 import HashRouter from "@/components/HashRouter";
 import RouteTree from "@/components/RouteTree";
 import { toast } from "@/toast";
@@ -22,11 +22,11 @@ export default function App() {
               <button
                 className="btn btn-accent"
                 onClick={() =>
-                  toast(() =>
+                  toast(() => (
                     <div className="p-3 bg-base-300 rounded-full">
                       greetings traveler
                     </div>
-                  )}
+                  ))}
               >
                 Click Me
               </button>
@@ -37,7 +37,7 @@ export default function App() {
           </h1>
 
           <div className="p-3 flex-1 overflow-y-scroll overflow-x-hidden">
-            <Suspense fallback="the suspense is killing me" >
+            <Suspense fallback="the suspense is killing me">
               <RouteTree />
             </Suspense>
 
@@ -49,5 +49,3 @@ export default function App() {
     </SyncActionProvider>
   );
 }
-
-

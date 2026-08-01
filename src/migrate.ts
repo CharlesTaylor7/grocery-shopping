@@ -22,31 +22,37 @@ export function migrate(event: IDBVersionChangeEvent): IDBDatabase {
 
   if (event.oldVersion < 4) {
     db.deleteObjectStore("actions");
-    db.createObjectStore("actions", { keyPath: "idb_key", autoIncrement: true }).createIndex(
-      "actions_entity_id",
-      ["entity", "id"],
-    );
+    db.createObjectStore("actions", { keyPath: "idb_key", autoIncrement: true })
+      .createIndex(
+        "actions_entity_id",
+        ["entity", "id"],
+      );
   }
 
   if (event.oldVersion < 5) {
     db.deleteObjectStore("actions");
-    db.createObjectStore("actions", { keyPath: "idb_key", autoIncrement: true }).createIndex(
-      "actions_entity_id",
-      ["entity.id"],
-    );
+    db.createObjectStore("actions", { keyPath: "idb_key", autoIncrement: true })
+      .createIndex(
+        "actions_entity_id",
+        ["entity.id"],
+      );
   }
 
   if (event.oldVersion < 6) {
     db.deleteObjectStore("actions");
-    db.createObjectStore("actions", { keyPath: "idb_key", autoIncrement: true }).createIndex(
-      "actions_entity_id",
-      "entity.id",
-    );
+    db.createObjectStore("actions", { keyPath: "idb_key", autoIncrement: true })
+      .createIndex(
+        "actions_entity_id",
+        "entity.id",
+      );
   }
 
   if (event.oldVersion < 7) {
     db.deleteObjectStore("actions");
-    const actions = db.createObjectStore("actions", { keyPath: "idb_key", autoIncrement: true });
+    const actions = db.createObjectStore("actions", {
+      keyPath: "idb_key",
+      autoIncrement: true,
+    });
     actions
       .createIndex(
         "actions_entity_id",
@@ -60,7 +66,7 @@ export function migrate(event: IDBVersionChangeEvent): IDBDatabase {
   }
   // unreleased
   if (event.oldVersion < 8) {
-    // not used 
+    // not used
     db.deleteObjectStore("stores");
   }
 

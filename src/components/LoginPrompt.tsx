@@ -23,7 +23,9 @@ export default function LoginPrompt() {
         </button>
       </div>
     );
-  } else if (session.isPending || location.startsWith("/auth") || location.endsWith("/")) {
+  } else if (
+    session.isPending || location.startsWith("/auth") || location.endsWith("/")
+  ) {
     return null;
   } else {
     return (

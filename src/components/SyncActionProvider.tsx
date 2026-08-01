@@ -5,13 +5,12 @@ import { DataClient } from "@/neon.ts";
 import { syncNextAction } from "@/sync.ts";
 import { openIndexedDB } from "@/indexed-db.ts";
 import SyncWorker from "@/sync-worker.ts?worker";
-import { createStore, Provider, } from "jotai";
+import { createStore, Provider } from "jotai";
 
-
-export type SyncMode = "immediate" | "offline-sim" | "main-loop" | "web-worker"
+export type SyncMode = "immediate" | "offline-sim" | "main-loop" | "web-worker";
 
 interface Props {
-  mode: SyncMode
+  mode: SyncMode;
   children: ReactNode;
 }
 
@@ -25,17 +24,21 @@ export default function SyncActionProvider(props: Props) {
   useEffect(() => {
     if (props.mode === "web-worker") {
       return runOnWorkerThread();
-    } else if (props.mode === 'main-loop') {
+    } else if (props.mode === "main-loop") {
       return runOnMainThread();
     }
 
-    store.set(syncAtom, SyncModel.new({ useIndexedDB: props.mode !== "immediate" }));
-
+    store.set(
+      syncAtom,
+      SyncModel.new({ useIndexedDB: props.mode !== "immediate" }),
+    );
   }, [props.mode, store]);
 
-  return <Provider store={store}>
-    {props.children}
-  </Provider>;
+  return (
+    <Provider store={store}>
+      {props.children}
+    </Provider>
+  );
 }
 
 type EffectCleanup = () => void;
@@ -57,7 +60,6 @@ function runOnMainThread(): EffectCleanup {
   worker.run();
   return () => worker.terminate();
 }
-
 
 class MainThreadWorker {
   private terminated: boolean = false;

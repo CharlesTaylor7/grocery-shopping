@@ -39,7 +39,10 @@ export function syncNextAction({ db, client, log }: Args): Promise<boolean> {
   });
 }
 
-export async function pushToPostgrest(client: DataClient, action: Action): Promise<unknown> {
+export async function pushToPostgrest(
+  client: DataClient,
+  action: Action,
+): Promise<unknown> {
   switch (action.op) {
     case "new": {
       const { table, entity } = action;

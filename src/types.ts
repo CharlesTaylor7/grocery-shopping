@@ -53,18 +53,13 @@ export type Action<TName extends TableName = TableName, TOp extends Op = Op> = {
 
 export type Entity<TName extends TableName = TableName> = TName extends "stores"
   ? Store
-  : TName extends "trips"
-  ? Trip
-  : TName extends "store_items"
-  ? StoreItem
-  : TName extends "trip_items"
-  ? TripItem
+  : TName extends "trips" ? Trip
+  : TName extends "store_items" ? StoreItem
+  : TName extends "trip_items" ? TripItem
   : never;
 
-export type EntityFields<TOp extends Op = Op, TEntity extends HasId = HasId> = TOp extends "new"
-  ? TEntity
-  : TOp extends "edit"
-  ? HasId & Partial<TEntity>
-  : TOp extends "delete"
-  ? HasId & Partial<TEntity>
-  : never;
+export type EntityFields<TOp extends Op = Op, TEntity extends HasId = HasId> =
+  TOp extends "new" ? TEntity
+    : TOp extends "edit" ? HasId & Partial<TEntity>
+    : TOp extends "delete" ? HasId & Partial<TEntity>
+    : never;

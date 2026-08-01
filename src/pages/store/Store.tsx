@@ -1,35 +1,62 @@
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode, useEffect } from "react";
 import { useParams } from "wouter";
-import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
-import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import {
+  closestCenter,
+  DndContext,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import Input from "@/components/Input";
-import { useAtom, useSetAtom, useAtomValue, atom } from 'jotai';
+import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 
-import { appendNewItemAtom, focusIndexAtom, GotItem, gotItemsAtom, handleCheckboxAtom, handleDragEndAtom, handleDragStartAtom, handleKeydownAtom, handleTextboxAtom, loadStoreAtom, needItemsAtom, storeAtom } from "./actions";
+import {
+  appendNewItemAtom,
+  focusIndexAtom,
+  GotItem,
+  gotItemsAtom,
+  handleCheckboxAtom,
+  handleDragEndAtom,
+  handleDragStartAtom,
+  handleKeydownAtom,
+  handleTextboxAtom,
+  loadStoreAtom,
+  needItemsAtom,
+  storeAtom,
+} from "./actions";
 import { useNavigate } from "wouter";
 import { Temporal } from "temporal-polyfill";
 
-const nowAtom = atom(new Date());
+const nowAtom = atom(toPlainDate(new Date()));
 
-function ago(item: GotItem, now: Date): string {
-  if (typeof item.last_got_at !== 'object') return '?';
-  const x = item.last_got_at;
-  const y = now;
-  const a = new Temporal.PlainDate(x.getFullYear(), x.getMonth(), x.getDate());
+function toPlainDate(date: Date): Temporal.PlainDate {
+  return new Temporal.PlainDate(
+    date.getFullYear(),
+    date.getMonth() + 1,
+    date.getDate(),
+  );
+}
 
-  const b = new Temporal.PlainDate(y.getFullYear(), y.getMonth(), y.getDate());
-  const duration = b.since(a);
-  console.log({ x, y, a, b, duration });
+function ago(item: GotItem, now: Temporal.PlainDate): string {
+  if (typeof item.last_got_at !== "object") return "?";
+  const duration = now.since(toPlainDate(item.last_got_at));
 
-  if (duration.days === 0) return 'today';
-  return `${duration.days}d ago`
+  if (duration.days === 0) return "today";
+  return `${duration.days}d ago`;
 }
 export default function Store() {
   // stateful hooks
   const params = useParams();
   const storeId = params.id;
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+  );
 
   const navigate = useNavigate();
   const now = useAtomValue(nowAtom);
@@ -49,7 +76,7 @@ export default function Store() {
   useEffect(() => {
     if (!storeId) {
       navigate("/store");
-      return
+      return;
     }
     load(storeId);
   }, [load, storeId, navigate]);
@@ -72,8 +99,9 @@ export default function Store() {
         onDragEnd={handleDragEnd}
       >
         <SortableContext
-          items={need.map(item => item.id)}
-          strategy={verticalListSortingStrategy}>
+          items={need.map((item) => item.id)}
+          strategy={verticalListSortingStrategy}
+        >
           {need.map((item, index) => (
             <Sortable id={item.id} key={item.id}>
               <div id={item.id} className="flex flex-row m-2">
@@ -103,12 +131,16 @@ export default function Store() {
         </SortableContext>
       </DndContext>
 
-      <button type="button" className="btn btn-ghost w-100" onClick={addNewItem}>
+      <button
+        type="button"
+        className="btn btn-ghost w-100"
+        onClick={addNewItem}
+      >
         +
       </button>
       {gots.length ? <h3 className="my-3 text-xl">Got</h3> : null}
       <div>
-        {gots.map(item => (
+        {gots.map((item) => (
           <div id={item.id} key={item.id} className="flex flex-row m-2">
             <input
               data-id={item.id}
@@ -148,7 +180,7 @@ function Grip(props: GripProps) {
       {...attributes}
       className={`px-4 ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
       style={{
-        touchAction: "none"
+        touchAction: "none",
       }}
     >
       <img src="/grocery-shopping/grip-bars.svg" />

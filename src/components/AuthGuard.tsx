@@ -1,11 +1,11 @@
 import { authClient } from "@/auth";
-import { useEffect, type ReactNode, } from "react";
+import { type ReactNode, useEffect } from "react";
 import { AUTH_GUARD } from "@/config";
-import {useNavigate} from "wouter";
+import { useNavigate } from "wouter";
 
 export default function AuthGuard(props: { children: ReactNode }) {
   const session = authClient.useSession();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   useEffect(() => {
     if (AUTH_GUARD && !session.isPending && !session.data) {
       navigate("/auth/login");
