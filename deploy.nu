@@ -18,7 +18,7 @@ print $"Building release: ($release)"
 
 pnpm run build
 
-jj ci -m "Build"
+jj ci -m $"Build: ($release)"
 jj bookmark set -r @- main
 
 ## builds with deployment of docs folder
