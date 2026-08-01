@@ -50,6 +50,7 @@ function Toaster() {
 
 //#endregion
 //#region src/config.ts
+var SENTRY_DSN = "https://fa9d710195c2565a103aad3fd04bed54@o4511832287674368.ingest.us.sentry.io/4511832294817792";
 var NEON_AUTH_URL = "https://ep-red-morning-awzkc1lp.neonauth.c-12.us-east-1.aws.neon.tech/neondb/auth";
 var NEON_DATA_URL = "https://ep-red-morning-awzkc1lp.apirest.c-12.us-east-1.aws.neon.tech/neondb/rest/v1";
 var SYNC_MODE = "main-loop";
@@ -648,6 +649,12 @@ function PasswordReset() {
 }
 
 //#endregion
+//#region src/pages/Version.tsx
+function Version() {
+	return /* @__PURE__ */ u("ul", { children: [/* @__PURE__ */ u("li", { children: ["Version: ", "2026-07-31_0"] }), /* @__PURE__ */ u("li", { children: ["Git Commit: ", "3e768d5"] })] });
+}
+
+//#endregion
 //#region src/components/Input.tsx
 function Input({ focus, ...props }) {
 	const ref = A(null);
@@ -1082,13 +1089,6 @@ function AuthGuard(props) {
 
 //#endregion
 //#region src/components/RouteTree.tsx
-function TestNavigate() {
-	const navigate = useNavigate();
-	h(() => {
-		navigate("store");
-	}, [navigate]);
-	return null;
-}
 function RouteTree() {
 	return /* @__PURE__ */ u(S, { children: [
 		/* @__PURE__ */ u(Route, {
@@ -1100,8 +1100,8 @@ function RouteTree() {
 			component: Nav
 		}),
 		/* @__PURE__ */ u(Route, {
-			path: "dummy",
-			component: TestNavigate
+			path: "version",
+			component: Version
 		}),
 		/* @__PURE__ */ u(Route, {
 			nest: true,
@@ -1189,7 +1189,11 @@ function App() {
 
 //#endregion
 //#region src/main.tsx
-init();
+init({
+	dsn: SENTRY_DSN,
+	release: "2026-07-31_0",
+	initialScope: { tags: { git_commit: "3e768d5" } }
+});
 if (ENABLE_SERVICE_WORKER) navigator.serviceWorker.register("/grocery-shopping/service-worker.js").catch(console.error);
 createRoot(document.getElementById("root")).render(/* @__PURE__ */ u(S, { children: /* @__PURE__ */ u(App, {}) }));
 
