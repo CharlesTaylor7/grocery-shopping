@@ -1,5 +1,5 @@
-import { parse as parsePattern } from "regexparam"
-import { useRef, createContext, useContext } from "react";
+import { parse as parsePattern } from "regexparam";
+import { createContext, useContext, useRef } from "react";
 import { useEvent } from "./use-event-polyfill";
 import { useBrowserLocation } from "./use-browser-location";
 import { absolutePath, relativePath } from "./paths";
@@ -10,7 +10,6 @@ export const defaultRouter = {
   base: "",
   hrefs: (x) => x,
 };
-
 
 // context hooks
 export const RouterCtx = createContext(defaultRouter);
@@ -28,7 +27,6 @@ export const ParamsCtx = createContext(Params0);
 
 export const useParams = () => useContext(ParamsCtx);
 
-
 // router hooks
 export function useLocation() {
   const router = useRouter();
@@ -40,17 +38,16 @@ export function useNavigate() {
   const router = useRouter();
   const [_, navigate] = router.hook(router);
   return useEvent((to, opts) => {
-    const target = absolutePath(to, router.base)
+    const target = absolutePath(to, router.base);
     console.log("useNavigate()", { to, target, base: router.base, opts });
-    navigate(target, opts)
-  })
+    navigate(target, opts);
+  });
 }
 
 export const useSearch = () => {
   const router = useRouter();
   return sanitizeSearch(useBrowserSearch(router));
 };
-
 
 // Internal version of useLocation to avoid redundant useRouter calls
 export function useLocationFromRouter(router) {
@@ -62,18 +59,21 @@ export function useLocationFromRouter(router) {
   return [
     relativePath(router.base, location),
     useEvent((to, opts) => {
-      const target = absolutePath(to, router.base)
-      console.log("useLocationFromRouter", { to, target, opts, base: router.base });
-      navigate(target, opts)
-    })
+      const target = absolutePath(to, router.base);
+      console.log("useLocationFromRouter", {
+        to,
+        target,
+        opts,
+        base: router.base,
+      });
+      navigate(target, opts);
+    }),
   ];
-};
-
+}
 
 export function useRoute(pattern) {
   return matchRoute(useRouter().parser, pattern, useLocation()[0]);
 }
-
 
 // Cache params object between renders if values are shallow equal
 export function useCachedParams(value) {
@@ -88,7 +88,7 @@ export function useCachedParams(value) {
       Object.entries(value).some(([k, v]) => v !== curr[k])
       ? value // Return new value if there are changes
       : curr); // Return cached value if nothing changed
-};
+}
 
 export function useSearchParams() {
   const [location, navigate] = useLocation();
@@ -103,25 +103,23 @@ export function useSearchParams() {
   const setSearchParams = useEvent((nextInit, options) => {
     // oxlint-disable-next-line
     tempSearchParams = new URLSearchParams(
-      typeof nextInit === "function" ? nextInit(tempSearchParams) : nextInit
+      typeof nextInit === "function" ? nextInit(tempSearchParams) : nextInit,
     );
     navigate(
       location + (tempSearchParams.size ? "?" + tempSearchParams : ""),
-      options
+      options,
     );
   });
 
   return [searchParams, setSearchParams];
 }
 
-
 // helpers
 export function matchRoute(parser, route, path, loose) {
   // if the input is a regexp, skip parsing
-  const { pattern, keys } =
-    route instanceof RegExp
-      ? { keys: false, pattern: route }
-      : parser(route || "*", loose);
+  const { pattern, keys } = route instanceof RegExp
+    ? { keys: false, pattern: route }
+    : parser(route || "*", loose);
 
   // array destructuring loses keys, so this is done in two steps
   const result = pattern.exec(path) || [];
@@ -142,10 +140,9 @@ export function matchRoute(parser, route, path, loose) {
         // an object with parameters matched, e.g. { foo: "bar" } for "/:foo"
         // we "zip" two arrays here to construct the object
         // ["foo"], ["bar"] → { foo: "bar" }
-        const groups =
-          keys !== false
-            ? Object.fromEntries(keys.map((key, i) => [key, matches[i]]))
-            : result.groups;
+        const groups = keys !== false
+          ? Object.fromEntries(keys.map((key, i) => [key, matches[i]]))
+          : result.groups;
 
         // convert the array to an instance of object
         // this makes it easier to integrate with the existing param implementation
@@ -164,5 +161,4 @@ export function matchRoute(parser, route, path, loose) {
       ...(loose ? [$base] : []),
     ]
     : [false, null];
-};
-
+}

@@ -1,14 +1,14 @@
 import {
   closestCorners,
-  getScrollableAncestors,
-  getFirstCollision,
-  KeyboardCode,
   type DroppableContainer,
+  getFirstCollision,
+  getScrollableAncestors,
+  KeyboardCode,
   type KeyboardCoordinateGetter,
-} from '@dnd-kit/core';
-import { subtract } from '@dnd-kit/utilities';
+} from "@dnd-kit/core";
+import { subtract } from "@dnd-kit/utilities";
 
-import { hasSortableData } from '../../types';
+import { hasSortableData } from "../../types";
 
 const directions: string[] = [
   KeyboardCode.Down,
@@ -28,7 +28,7 @@ export const sortableKeyboardCoordinates: KeyboardCoordinateGetter = (
       over,
       scrollableAncestors,
     },
-  }
+  },
 ) => {
   if (directions.includes(event.code)) {
     event.preventDefault();
@@ -81,7 +81,7 @@ export const sortableKeyboardCoordinates: KeyboardCoordinateGetter = (
       droppableContainers: filteredContainers,
       pointerCoordinates: null,
     });
-    let closestId = getFirstCollision(collisions, 'id');
+    let closestId = getFirstCollision(collisions, "id");
 
     if (closestId === over?.id && collisions.length > 1) {
       closestId = collisions[1].id;
@@ -96,29 +96,27 @@ export const sortableKeyboardCoordinates: KeyboardCoordinateGetter = (
       if (newNode && newRect && activeDroppable && newDroppable) {
         const newScrollAncestors = getScrollableAncestors(newNode);
         const hasDifferentScrollAncestors = newScrollAncestors.some(
-          (element, index) => scrollableAncestors[index] !== element
+          (element, index) => scrollableAncestors[index] !== element,
         );
         const hasSameContainer = isSameContainer(activeDroppable, newDroppable);
         const isAfterActive = isAfter(activeDroppable, newDroppable);
-        const offset =
-          hasDifferentScrollAncestors || !hasSameContainer
-            ? {
-              x: 0,
-              y: 0,
-            }
-            : {
-              x: isAfterActive ? collisionRect.width - newRect.width : 0,
-              y: isAfterActive ? collisionRect.height - newRect.height : 0,
-            };
+        const offset = hasDifferentScrollAncestors || !hasSameContainer
+          ? {
+            x: 0,
+            y: 0,
+          }
+          : {
+            x: isAfterActive ? collisionRect.width - newRect.width : 0,
+            y: isAfterActive ? collisionRect.height - newRect.height : 0,
+          };
         const rectCoordinates = {
           x: newRect.left,
           y: newRect.top,
         };
 
-        const newCoordinates =
-          offset.x && offset.y
-            ? rectCoordinates
-            : subtract(rectCoordinates, offset);
+        const newCoordinates = offset.x && offset.y
+          ? rectCoordinates
+          : subtract(rectCoordinates, offset);
 
         return newCoordinates;
       }

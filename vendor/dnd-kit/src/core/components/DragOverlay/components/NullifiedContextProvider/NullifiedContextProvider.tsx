@@ -1,8 +1,8 @@
-import React from 'react';
-import type {Transform} from '@dnd-kit/utilities';
+import React from "react";
+import type { Transform } from "@dnd-kit/utilities";
 
-import {InternalContext, defaultInternalContext} from '../../../../store';
-import {ActiveDraggableContext} from '../../../DndContext';
+import { defaultInternalContext, InternalContext } from "../../../../store";
+import { ActiveDraggableContext } from "../../../DndContext";
 
 interface Props {
   children: React.ReactNode;
@@ -15,7 +15,7 @@ const defaultTransform: Transform = {
   scaleY: 1,
 };
 
-export function NullifiedContextProvider({children}: Props) {
+export function NullifiedContextProvider({ children }: Props) {
   return (
     <InternalContext.Provider value={defaultInternalContext}>
       <ActiveDraggableContext.Provider value={defaultTransform}>

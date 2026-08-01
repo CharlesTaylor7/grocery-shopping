@@ -1,22 +1,22 @@
-import { getOwnerDocument } from '@dnd-kit/utilities';
+import { getOwnerDocument } from "@dnd-kit/utilities";
 
-import type { SensorProps } from '../types';
+import type { SensorProps } from "../types";
 import {
   AbstractPointerSensor,
-  PointerEventHandlers,
   AbstractPointerSensorOptions,
-} from '../pointer';
+  PointerEventHandlers,
+} from "../pointer";
 
 const events: PointerEventHandlers = {
-  move: { name: 'mousemove' },
-  end: { name: 'mouseup' },
+  move: { name: "mousemove" },
+  end: { name: "mouseup" },
 };
 
 enum MouseButton {
   RightClick = 2,
 }
 
-export interface MouseSensorOptions extends AbstractPointerSensorOptions { }
+export interface MouseSensorOptions extends AbstractPointerSensorOptions {}
 
 export type MouseSensorProps = SensorProps<MouseSensorOptions>;
 
@@ -27,10 +27,10 @@ export class MouseSensor extends AbstractPointerSensor {
 
   static activators = [
     {
-      eventName: 'onMouseDown' as const,
+      eventName: "onMouseDown" as const,
       handler: (
         event: MouseEvent,
-        { onActivation }: MouseSensorOptions
+        { onActivation }: MouseSensorOptions,
       ) => {
         if (event.button === MouseButton.RightClick) {
           return false;

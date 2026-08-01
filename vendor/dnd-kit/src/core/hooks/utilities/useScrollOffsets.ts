@@ -1,13 +1,13 @@
-import {useState, useCallback, useMemo, useRef, useEffect} from 'react';
-import {add} from '@dnd-kit/utilities';
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { add } from "@dnd-kit/utilities";
 
 import {
   defaultCoordinates,
   getScrollableElement,
   getScrollCoordinates,
   getScrollOffsets,
-} from '../../utilities';
-import type {Coordinates} from '../../types';
+} from "../../utilities";
+import type { Coordinates } from "../../types";
 
 type ScrollCoordinates = Map<HTMLElement | Window, Coordinates>;
 
@@ -33,7 +33,7 @@ export function useScrollOffsets(elements: Element[]): Coordinates {
 
       scrollCoordinates.set(
         scrollingElement,
-        getScrollCoordinates(scrollingElement)
+        getScrollCoordinates(scrollingElement),
       );
 
       return new Map(scrollCoordinates);
@@ -51,7 +51,7 @@ export function useScrollOffsets(elements: Element[]): Coordinates {
           const scrollableElement = getScrollableElement(element);
 
           if (scrollableElement) {
-            scrollableElement.addEventListener('scroll', handleScroll, {
+            scrollableElement.addEventListener("scroll", handleScroll, {
               passive: true,
             });
 
@@ -65,11 +65,11 @@ export function useScrollOffsets(elements: Element[]): Coordinates {
         })
         .filter(
           (
-            entry
+            entry,
           ): entry is [
             HTMLElement | (Window & typeof globalThis),
-            Coordinates
-          ] => entry != null
+            Coordinates,
+          ] => entry != null,
         );
 
       setScrollCoordinates(entries.length ? new Map(entries) : null);
@@ -86,7 +86,7 @@ export function useScrollOffsets(elements: Element[]): Coordinates {
       elements.forEach((element) => {
         const scrollableElement = getScrollableElement(element);
 
-        scrollableElement?.removeEventListener('scroll', handleScroll);
+        scrollableElement?.removeEventListener("scroll", handleScroll);
       });
     }
   }, [handleScroll, elements]);
@@ -95,9 +95,9 @@ export function useScrollOffsets(elements: Element[]): Coordinates {
     if (elements.length) {
       return scrollCoordinates
         ? Array.from(scrollCoordinates.values()).reduce(
-            (acc, coordinates) => add(acc, coordinates),
-            defaultCoordinates
-          )
+          (acc, coordinates) => add(acc, coordinates),
+          defaultCoordinates,
+        )
         : getScrollOffsets(elements);
     }
 

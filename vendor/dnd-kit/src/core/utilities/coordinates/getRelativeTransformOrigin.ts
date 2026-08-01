@@ -1,14 +1,14 @@
-import {getEventCoordinates} from '@dnd-kit/utilities';
-import type {ClientRect} from '../../types';
+import { getEventCoordinates } from "@dnd-kit/utilities";
+import type { ClientRect } from "../../types";
 
 export function getRelativeTransformOrigin(
   event: MouseEvent | TouchEvent | KeyboardEvent,
-  rect: ClientRect
+  rect: ClientRect,
 ) {
   const eventCoordinates = getEventCoordinates(event);
 
   if (!eventCoordinates) {
-    return '0 0';
+    return "0 0";
   }
 
   const transformOrigin = {

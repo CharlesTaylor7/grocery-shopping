@@ -1,9 +1,9 @@
-import {useCallback, useEffect, useRef, useState} from 'react';
-import {useLatestValue, useLazyMemo} from '@dnd-kit/utilities';
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useLatestValue, useLazyMemo } from "@dnd-kit/utilities";
 
-import {Rect} from '../../utilities/rect';
-import type {DroppableContainer, RectMap} from '../../store/types';
-import type {ClientRect, UniqueIdentifier} from '../../types';
+import { Rect } from "../../utilities/rect";
+import type { DroppableContainer, RectMap } from "../../store/types";
+import type { ClientRect, UniqueIdentifier } from "../../types";
 
 interface Arguments {
   dragging: boolean;
@@ -18,7 +18,7 @@ export enum MeasuringStrategy {
 }
 
 export enum MeasuringFrequency {
-  Optimized = 'optimized',
+  Optimized = "optimized",
 }
 
 type MeasuringFunction = (element: HTMLElement) => ClientRect;
@@ -33,10 +33,10 @@ const defaultValue: RectMap = new Map();
 
 export function useDroppableMeasuring(
   containers: DroppableContainer[],
-  {dragging, dependencies, config}: Arguments
+  { dragging, dependencies, config }: Arguments,
 ) {
   const [queue, setQueue] = useState<UniqueIdentifier[] | null>(null);
-  const {frequency, measure, strategy} = config;
+  const { frequency, measure, strategy } = config;
   const containersRef = useRef(containers);
   const disabled = isDisabled();
   const disabledRef = useLatestValue(disabled);
@@ -54,7 +54,7 @@ export function useDroppableMeasuring(
         return value.concat(ids.filter((id) => !value.includes(id)));
       });
     },
-    [disabledRef]
+    [disabledRef],
   );
   const timeoutId = useRef<number | null>(null);
   const droppableRects = useLazyMemo<RectMap>(
@@ -102,7 +102,7 @@ export function useDroppableMeasuring(
 
       return previousValue;
     },
-    [containers, queue, dragging, disabled, measure]
+    [containers, queue, dragging, disabled, measure],
   );
 
   useEffect(() => {
@@ -118,7 +118,7 @@ export function useDroppableMeasuring(
       measureDroppableContainers();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [dragging, disabled]
+    [dragging, disabled],
   );
 
   useEffect(
@@ -128,14 +128,14 @@ export function useDroppableMeasuring(
       }
     },
     //eslint-disable-next-line react-hooks/exhaustive-deps
-    [JSON.stringify(queue)]
+    [JSON.stringify(queue)],
   );
 
   useEffect(
     () => {
       if (
         disabled ||
-        typeof frequency !== 'number' ||
+        typeof frequency !== "number" ||
         timeoutId.current !== null
       ) {
         return;
@@ -147,7 +147,7 @@ export function useDroppableMeasuring(
       }, frequency);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [frequency, disabled, measureDroppableContainers, ...dependencies]
+    [frequency, disabled, measureDroppableContainers, ...dependencies],
   );
 
   return {

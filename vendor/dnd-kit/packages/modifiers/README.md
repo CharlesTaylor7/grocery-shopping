@@ -2,7 +2,8 @@
 
 [![Stable release](https://img.shields.io/npm/v/@dnd-kit/modifiers.svg)](https://npm.im/@dnd-kit/sortable)
 
-Modifiers let you dynamically modify the movement coordinates that are detected by sensors. They can be used for a wide range of use cases, for example:
+Modifiers let you dynamically modify the movement coordinates that are detected
+by sensors. They can be used for a wide range of use cases, for example:
 
 - Restricting motion to a single axis
 - Restricting motion to the draggable node container's bounding rectangle
@@ -19,14 +20,15 @@ npm install @dnd-kit/modifiers
 
 ## Usage
 
-The modifiers repository contains a number of useful modifiers that can be applied on `DndContext` as well as `DragOverlay`.
+The modifiers repository contains a number of useful modifiers that can be
+applied on `DndContext` as well as `DragOverlay`.
 
 ```jsx
-import {DndContext, DragOverlay} from '@dnd-kit';
+import { DndContext, DragOverlay } from "@dnd-kit";
 import {
   restrictToVerticalAxis,
   restrictToWindowEdges,
-} from '@dnd-kit/modifiers';
+} from "@dnd-kit/modifiers";
 
 function App() {
   return (
@@ -38,7 +40,8 @@ function App() {
 }
 ```
 
-As you can see from the example above, `DndContext` and `DragOverlay` can both have different modifiers.
+As you can see from the example above, `DndContext` and `DragOverlay` can both
+have different modifiers.
 
 ## Built-in modifiers
 
@@ -56,7 +59,8 @@ Restrict movement to only the vertical axis.
 
 #### `restrictToWindowEdges`
 
-Restrict movement to the edges of the window. This modifier can be useful to prevent the `DragOverlay` from being moved outside of the bounds of the window.
+Restrict movement to the edges of the window. This modifier can be useful to
+prevent the `DragOverlay` from being moved outside of the bounds of the window.
 
 #### `restrictToParentElement`
 
@@ -64,7 +68,8 @@ Restrict movement to the parent element of the draggable item that is picked up.
 
 #### `restrictToFirstScrollableAncestor`
 
-Restrict movement to the first scrollable ancestor of the draggable item that is picked up.
+Restrict movement to the first scrollable ancestor of the draggable item that is
+picked up.
 
 ### Snap to grid
 
@@ -73,7 +78,7 @@ Restrict movement to the first scrollable ancestor of the draggable item that is
 Function to create modifiers to snap to a given grid size.
 
 ```javascript
-import {createSnapModifier} from '@dnd-kit/modifiers';
+import { createSnapModifier } from "@dnd-kit/modifiers";
 
 const gridSize = 20; // pixels
 const snapToGridModifier = createSnapModifier(gridSize);
@@ -83,11 +88,13 @@ const snapToGridModifier = createSnapModifier(gridSize);
 
 #### `snapCenterToCursor`
 
-Snaps the center of the draggable item to the cursor when it is picked up. Has no effect when using the Keyboard sensor.
+Snaps the center of the draggable item to the cursor when it is picked up. Has
+no effect when using the Keyboard sensor.
 
 ## Building custom modifiers
 
-To build your own custom modifiers, refer to the implementation of the built-in modifiers of this package.
+To build your own custom modifiers, refer to the implementation of the built-in
+modifiers of this package.
 
 For example, here is an implementation to create a modifier to snap to grid:
 
@@ -95,7 +102,7 @@ For example, here is an implementation to create a modifier to snap to grid:
 const gridSize = 20;
 
 function snapToGrid(args) {
-  const {transform} = args;
+  const { transform } = args;
 
   return {
     ...transform,

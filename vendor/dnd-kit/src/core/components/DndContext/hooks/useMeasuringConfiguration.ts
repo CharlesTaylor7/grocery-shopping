@@ -1,11 +1,11 @@
-import {useMemo} from 'react';
-import type {DeepRequired} from '@dnd-kit/utilities';
+import { useMemo } from "react";
+import type { DeepRequired } from "@dnd-kit/utilities";
 
-import {defaultMeasuringConfiguration} from '../defaults';
-import type {MeasuringConfiguration} from '../types';
+import { defaultMeasuringConfiguration } from "../defaults";
+import type { MeasuringConfiguration } from "../types";
 
 export function useMeasuringConfiguration(
-  config: MeasuringConfiguration | undefined
+  config: MeasuringConfiguration | undefined,
 ): DeepRequired<MeasuringConfiguration> {
   return useMemo(
     () => ({
@@ -23,6 +23,6 @@ export function useMeasuringConfiguration(
       },
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [config?.draggable, config?.droppable, config?.dragOverlay]
+    [config?.draggable, config?.droppable, config?.dragOverlay],
   );
 }

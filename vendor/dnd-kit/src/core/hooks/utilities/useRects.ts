@@ -1,22 +1,22 @@
-import {useState} from 'react';
-import {getWindow, useIsomorphicLayoutEffect} from '@dnd-kit/utilities';
+import { useState } from "react";
+import { getWindow, useIsomorphicLayoutEffect } from "@dnd-kit/utilities";
 
-import type {ClientRect} from '../../types';
-import {Rect, getClientRect} from '../../utilities/rect';
-import {isDocumentScrollingElement} from '../../utilities';
+import type { ClientRect } from "../../types";
+import { getClientRect, Rect } from "../../utilities/rect";
+import { isDocumentScrollingElement } from "../../utilities";
 
-import {useResizeObserver} from './useResizeObserver';
-import {useWindowRect} from './useWindowRect';
+import { useResizeObserver } from "./useResizeObserver";
+import { useWindowRect } from "./useWindowRect";
 
 const defaultValue: Rect[] = [];
 
 export function useRects(
   elements: Element[],
-  measure: (element: Element) => ClientRect = getClientRect
+  measure: (element: Element) => ClientRect = getClientRect,
 ): ClientRect[] {
   const [firstElement] = elements;
   const windowRect = useWindowRect(
-    firstElement ? getWindow(firstElement) : null
+    firstElement ? getWindow(firstElement) : null,
   );
   const [rects, setRects] = useState<ClientRect[]>(defaultValue);
 
@@ -34,7 +34,7 @@ export function useRects(
     });
   }
 
-  const resizeObserver = useResizeObserver({callback: measureRects});
+  const resizeObserver = useResizeObserver({ callback: measureRects });
 
   useIsomorphicLayoutEffect(() => {
     resizeObserver?.disconnect();

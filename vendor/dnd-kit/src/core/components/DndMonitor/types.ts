@@ -1,12 +1,12 @@
 import type {
   DragAbortEvent,
-  DragPendingEvent,
-  DragStartEvent,
   DragCancelEvent,
   DragEndEvent,
   DragMoveEvent,
   DragOverEvent,
-} from '../../types';
+  DragPendingEvent,
+  DragStartEvent,
+} from "../../types";
 
 export interface DndMonitorListener {
   onDragAbort?(event: DragAbortEvent): void;
@@ -33,5 +33,5 @@ export interface DndMonitorEvent {
 export type UnregisterListener = () => void;
 
 export type RegisterListener = (
-  listener: DndMonitorListener
+  listener: DndMonitorListener,
 ) => UnregisterListener;

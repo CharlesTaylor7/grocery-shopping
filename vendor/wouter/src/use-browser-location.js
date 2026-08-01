@@ -34,15 +34,15 @@ const currentSearch = () => location.search;
 export const useBrowserSearch = () =>
   useLocationProperty(
     currentSearch,
-    currentSearch
+    currentSearch,
   );
 
 const currentPathname = () => location.pathname;
 
-export const usePathname = ({ } = {}) =>
+export const usePathname = ({} = {}) =>
   useLocationProperty(
     currentPathname,
-    currentPathname
+    currentPathname,
   );
 
 const currentHistoryState = () => history.state;
@@ -55,5 +55,3 @@ export const navigate = (to, { replace = false, state = null } = {}) =>
 // the 2nd argument of the `useBrowserLocation` return value is a function
 // that allows to perform a navigation.
 export const useBrowserLocation = (opts = {}) => [usePathname(opts), navigate];
-
-

@@ -5,16 +5,16 @@ import * as React from "react";
 const useBuiltinInsertionEffect = React["useInsertion" + "Effect"];
 
 export {
+  cloneElement,
+  createContext,
+  createElement,
+  forwardRef,
+  Fragment,
+  isValidElement,
+  useContext,
   useMemo,
   useRef,
   useState,
-  useContext,
-  createContext,
-  isValidElement,
-  cloneElement,
-  createElement,
-  Fragment,
-  forwardRef,
 } from "react";
 
 // To resolve webpack 5 errors, while not presenting problems for native,
@@ -43,8 +43,8 @@ export const useIsomorphicLayoutEffect = canUseDOM
 
 // useInsertionEffect is already a noop on the server.
 // See: https://github.com/facebook/react/blob/main/packages/react-server/src/ReactFizzHooks.js
-export const useInsertionEffect =
-  useBuiltinInsertionEffect || useIsomorphicLayoutEffect;
+export const useInsertionEffect = useBuiltinInsertionEffect ||
+  useIsomorphicLayoutEffect;
 
 // Userland polyfill while we wait for the forthcoming
 // https://github.com/reactjs/rfcs/blob/useevent/text/0000-useevent.md

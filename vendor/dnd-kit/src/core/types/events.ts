@@ -1,9 +1,9 @@
-import type { PointerActivationConstraint } from '../sensors';
-import type { Active, Over } from '../store';
-import type { Collision } from '../utilities/algorithms';
+import type { PointerActivationConstraint } from "../sensors";
+import type { Active, Over } from "../store";
+import type { Collision } from "../utilities/algorithms";
 
-import type { Coordinates, Translate } from './coordinates';
-import type { UniqueIdentifier } from '.';
+import type { Coordinates, Translate } from "./coordinates";
+import type { UniqueIdentifier } from ".";
 
 interface DragEvent {
   activatorEvent: Event | null;
@@ -16,7 +16,7 @@ interface DragEvent {
 /**
  * Fired if a pending drag was aborted before it started.
  * Only meaningful in the context of activation constraints.
- **/
+ */
 export interface DragAbortEvent {
   id: UniqueIdentifier;
 }
@@ -34,12 +34,12 @@ export interface DragPendingEvent {
 }
 
 export interface DragStartEvent
-  extends Pick<DragEvent, 'active' | 'activatorEvent'> { }
+  extends Pick<DragEvent, "active" | "activatorEvent"> {}
 
-export interface DragMoveEvent extends DragEvent { }
+export interface DragMoveEvent extends DragEvent {}
 
-export interface DragOverEvent extends DragMoveEvent { }
+export interface DragOverEvent extends DragMoveEvent {}
 
-export interface DragEndEvent extends DragEvent { }
+export interface DragEndEvent extends DragEvent {}
 
-export interface DragCancelEvent extends DragEndEvent { }
+export interface DragCancelEvent extends DragEndEvent {}

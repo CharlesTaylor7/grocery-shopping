@@ -4,22 +4,22 @@
 
 import {
   AnchorHTMLAttributes,
-  FunctionComponent,
-  RefAttributes,
   ComponentType,
-  ReactNode,
-  ReactElement,
-  MouseEventHandler,
+  FunctionComponent,
   JSXElementConstructor,
+  MouseEventHandler,
+  ReactElement,
+  ReactNode,
+  RefAttributes,
 } from "react";
 
 import {
+  BaseLocationHook,
+  BaseSearchHook,
+  HookNavigationOptions,
+  HookReturnValue,
   Path,
   PathPattern,
-  BaseLocationHook,
-  HookReturnValue,
-  HookNavigationOptions,
-  BaseSearchHook,
 } from "./location-hook.js";
 import {
   BrowserLocationHook,
@@ -51,7 +51,7 @@ export type Params<T extends DefaultParams = DefaultParams> = T;
 
 export type MatchWithParams<T extends DefaultParams = DefaultParams> = [
   true,
-  Params<T>
+  Params<T>,
 ];
 export type NoMatch = [false, null];
 export type Match<T extends DefaultParams = DefaultParams> =
@@ -68,25 +68,21 @@ export interface RouteComponentProps<T extends DefaultParams = DefaultParams> {
 
 export interface RouteProps<
   T extends DefaultParams | undefined = undefined,
-  RoutePath extends PathPattern = PathPattern
+  RoutePath extends PathPattern = PathPattern,
 > {
   children?:
-  | ((
-    params: T extends DefaultParams
-      ? T
-      : RoutePath extends string
-      ? StringRouteParams<RoutePath>
-      : RegexRouteParams
-  ) => ReactNode)
-  | ReactNode;
+    | ((
+      params: T extends DefaultParams ? T
+        : RoutePath extends string ? StringRouteParams<RoutePath>
+        : RegexRouteParams,
+    ) => ReactNode)
+    | ReactNode;
   path?: RoutePath;
   component?: JSXElementConstructor<
     RouteComponentProps<
-      T extends DefaultParams
-      ? T
-      : RoutePath extends string
-      ? StringRouteParams<RoutePath>
-      : RegexRouteParams
+      T extends DefaultParams ? T
+        : RoutePath extends string ? StringRouteParams<RoutePath>
+        : RegexRouteParams
     >
   >;
   nest?: boolean;
@@ -94,7 +90,7 @@ export interface RouteProps<
 
 export function Route<
   T extends DefaultParams | undefined = undefined,
-  RoutePath extends PathPattern = PathPattern
+  RoutePath extends PathPattern = PathPattern,
 >(props: RouteProps<T, RoutePath>): ReturnType<FunctionComponent>;
 
 /*
@@ -102,41 +98,48 @@ export function Route<
  */
 
 export type NavigationalProps<
-  H extends BaseLocationHook = BrowserLocationHook
-> = ({ to: Path; href?: never } | { href: Path; to?: never }) &
-  HookNavigationOptions<H>;
+  H extends BaseLocationHook = BrowserLocationHook,
+> =
+  & ({ to: Path; href?: never } | { href: Path; to?: never })
+  & HookNavigationOptions<H>;
 
 export type RedirectProps<H extends BaseLocationHook = BrowserLocationHook> =
-  NavigationalProps<H> & {
+  & NavigationalProps<H>
+  & {
     children?: never;
   };
 
 export function Redirect<H extends BaseLocationHook = BrowserLocationHook>(
   props: RedirectProps<H>,
-  context?: any
+  context?: any,
 ): null;
 
 type AsChildProps<ComponentProps, DefaultElementProps> =
   | ({ asChild?: false } & DefaultElementProps)
   | ({ asChild: true } & ComponentProps);
 
-type HTMLLinkAttributes = Omit<
-  AnchorHTMLAttributes<HTMLAnchorElement>,
-  "className"
-> & {
-  className?: string | undefined | ((isActive: boolean) => string | undefined);
-};
+type HTMLLinkAttributes =
+  & Omit<
+    AnchorHTMLAttributes<HTMLAnchorElement>,
+    "className"
+  >
+  & {
+    className?:
+      | string
+      | undefined
+      | ((isActive: boolean) => string | undefined);
+  };
 
 export type LinkProps<H extends BaseLocationHook = BrowserLocationHook> =
-  NavigationalProps<H> &
-  AsChildProps<
+  & NavigationalProps<H>
+  & AsChildProps<
     { children: ReactElement; onClick?: MouseEventHandler },
     HTMLLinkAttributes & RefAttributes<HTMLAnchorElement>
   >;
 
 export function Link<H extends BaseLocationHook = BrowserLocationHook>(
   props: LinkProps<H>,
-  context?: any
+  context?: any,
 ): ReturnType<FunctionComponent>;
 
 /*
@@ -167,22 +170,20 @@ export function useRouter(): RouterObject;
 
 export function useRoute<
   T extends DefaultParams | undefined = undefined,
-  RoutePath extends PathPattern = PathPattern
+  RoutePath extends PathPattern = PathPattern,
 >(
-  pattern: RoutePath
+  pattern: RoutePath,
 ): Match<
-  T extends DefaultParams
-  ? T
-  : RoutePath extends string
-  ? StringRouteParams<RoutePath>
-  : RegexRouteParams
+  T extends DefaultParams ? T
+    : RoutePath extends string ? StringRouteParams<RoutePath>
+    : RegexRouteParams
 >;
 
 export function useLocation(): string;
 export function useNavigate(): (to: string) => void;
 
 export function useSearch<
-  H extends BaseSearchHook = BrowserSearchHook
+  H extends BaseSearchHook = BrowserSearchHook,
 >(): ReturnType<H>;
 
 export type URLSearchParamsInit = ConstructorParameters<
@@ -192,15 +193,14 @@ export type SetSearchParams = (
   nextInit:
     | URLSearchParamsInit
     | ((prev: URLSearchParams) => URLSearchParamsInit),
-  options?: { replace?: boolean; state?: any }
+  options?: { replace?: boolean; state?: any },
 ) => void;
 
 export function useSearchParams(): [URLSearchParams, SetSearchParams];
 
 export function useParams<T = undefined>(): T extends string
   ? StringRouteParams<T>
-  : T extends undefined
-  ? DefaultParams
+  : T extends undefined ? DefaultParams
   : T;
 
 /*
@@ -209,18 +209,16 @@ export function useParams<T = undefined>(): T extends string
 
 export function matchRoute<
   T extends DefaultParams | undefined = undefined,
-  RoutePath extends PathPattern = PathPattern
+  RoutePath extends PathPattern = PathPattern,
 >(
   parser: Parser,
   pattern: RoutePath,
   path: string,
-  loose?: boolean
+  loose?: boolean,
 ): Match<
-  T extends DefaultParams
-  ? T
-  : RoutePath extends string
-  ? StringRouteParams<RoutePath>
-  : RegexRouteParams
+  T extends DefaultParams ? T
+    : RoutePath extends string ? StringRouteParams<RoutePath>
+    : RegexRouteParams
 >;
 
 // tslint:enable:no-unnecessary-generics

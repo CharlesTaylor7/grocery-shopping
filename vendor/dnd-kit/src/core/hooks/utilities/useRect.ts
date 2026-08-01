@@ -1,11 +1,11 @@
-import {useState} from 'react';
-import {useIsomorphicLayoutEffect} from '@dnd-kit/utilities';
+import { useState } from "react";
+import { useIsomorphicLayoutEffect } from "@dnd-kit/utilities";
 
-import type {ClientRect} from '../../types';
-import {getClientRect, Rect} from '../../utilities';
+import type { ClientRect } from "../../types";
+import { getClientRect, Rect } from "../../utilities";
 
-import {useMutationObserver} from './useMutationObserver';
-import {useResizeObserver} from './useResizeObserver';
+import { useMutationObserver } from "./useMutationObserver";
+import { useResizeObserver } from "./useResizeObserver";
 
 function defaultMeasure(element: HTMLElement) {
   return new Rect(getClientRect(element), element);
@@ -14,7 +14,7 @@ function defaultMeasure(element: HTMLElement) {
 export function useRect(
   element: HTMLElement | null,
   measure: (element: HTMLElement) => ClientRect = defaultMeasure,
-  fallbackRect?: ClientRect | null
+  fallbackRect?: ClientRect | null,
 ) {
   const [rect, setRect] = useState<ClientRect | null>(null);
 
@@ -23,23 +23,23 @@ export function useRect(
       if (!element) {
         return null;
       }
-  
+
       if (element.isConnected === false) {
         // Fall back to last rect we measured if the element is
         // no longer connected to the DOM.
         return currentRect ?? fallbackRect ?? null;
       }
-  
+
       const newRect = measure(element);
-  
+
       if (JSON.stringify(currentRect) === JSON.stringify(newRect)) {
         return currentRect;
       }
-  
+
       return newRect;
     });
   }
-  
+
   const mutationObserver = useMutationObserver({
     callback(records) {
       if (!element) {
@@ -47,10 +47,10 @@ export function useRect(
       }
 
       for (const record of records) {
-        const {type, target} = record;
+        const { type, target } = record;
 
         if (
-          type === 'childList' &&
+          type === "childList" &&
           target instanceof HTMLElement &&
           target.contains(element)
         ) {
@@ -60,7 +60,7 @@ export function useRect(
       }
     },
   });
-  const resizeObserver = useResizeObserver({callback: measureRect});
+  const resizeObserver = useResizeObserver({ callback: measureRect });
 
   useIsomorphicLayoutEffect(() => {
     measureRect();

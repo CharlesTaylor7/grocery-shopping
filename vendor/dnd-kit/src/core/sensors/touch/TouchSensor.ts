@@ -1,18 +1,18 @@
 import {
   AbstractPointerSensor,
-  PointerSensorProps,
   PointerEventHandlers,
   PointerSensorOptions,
-} from '../pointer';
-import type { SensorProps } from '../types';
+  PointerSensorProps,
+} from "../pointer";
+import type { SensorProps } from "../types";
 
 const events: PointerEventHandlers = {
-  cancel: { name: 'touchcancel' },
-  move: { name: 'touchmove' },
-  end: { name: 'touchend' },
+  cancel: { name: "touchcancel" },
+  move: { name: "touchmove" },
+  end: { name: "touchend" },
 };
 
-export interface TouchSensorOptions extends PointerSensorOptions { }
+export interface TouchSensorOptions extends PointerSensorOptions {}
 
 export type TouchSensorProps = SensorProps<TouchSensorOptions>;
 
@@ -23,10 +23,10 @@ export class TouchSensor extends AbstractPointerSensor {
 
   static activators = [
     {
-      eventName: 'onTouchStart' as const,
+      eventName: "onTouchStart" as const,
       handler: (
         event: TouchEvent,
-        { onActivation }: TouchSensorOptions
+        { onActivation }: TouchSensorOptions,
       ) => {
         const { touches } = event;
 
@@ -56,6 +56,6 @@ export class TouchSensor extends AbstractPointerSensor {
 
     // We create a new handler because the teardown function of another sensor
     // could remove our event listener if we use a referentially equal listener.
-    function noop() { }
+    function noop() {}
   }
 }

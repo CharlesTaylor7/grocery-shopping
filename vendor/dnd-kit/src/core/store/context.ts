@@ -1,9 +1,12 @@
-import { createContext } from 'react';
+import { createContext } from "react";
 
-import { noop } from '../utilities/other';
-import { defaultMeasuringConfiguration } from '../components/DndContext/defaults';
-import { DroppableContainersMap } from './constructors';
-import type { InternalContextDescriptor, PublicContextDescriptor } from './types';
+import { noop } from "../utilities/other";
+import { defaultMeasuringConfiguration } from "../components/DndContext/defaults";
+import { DroppableContainersMap } from "./constructors";
+import type {
+  InternalContextDescriptor,
+  PublicContextDescriptor,
+} from "./types";
 
 export const defaultPublicContext: PublicContextDescriptor = {
   activatorEvent: null,
@@ -37,7 +40,7 @@ export const defaultInternalContext: InternalContextDescriptor = {
   active: null,
   activeNodeRect: null,
   ariaDescribedById: {
-    draggable: '',
+    draggable: "",
   },
   dispatch: noop,
   draggableNodes: new Map(),
@@ -46,9 +49,9 @@ export const defaultInternalContext: InternalContextDescriptor = {
 };
 
 export const InternalContext = createContext<InternalContextDescriptor>(
-  defaultInternalContext
+  defaultInternalContext,
 );
 
 export const PublicContext = createContext<PublicContextDescriptor>(
-  defaultPublicContext
+  defaultPublicContext,
 );

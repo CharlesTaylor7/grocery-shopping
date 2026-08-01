@@ -1,16 +1,16 @@
-import type {ClientRect} from '../../types';
-import {getClientRect} from '../rect/getRect';
-import {getFirstScrollableAncestor} from './getScrollableAncestors';
+import type { ClientRect } from "../../types";
+import { getClientRect } from "../rect/getRect";
+import { getFirstScrollableAncestor } from "./getScrollableAncestors";
 
 export function scrollIntoViewIfNeeded(
   element: HTMLElement | null | undefined,
-  measure: (node: HTMLElement) => ClientRect = getClientRect
+  measure: (node: HTMLElement) => ClientRect = getClientRect,
 ) {
   if (!element) {
     return;
   }
 
-  const {top, left, bottom, right} = measure(element);
+  const { top, left, bottom, right } = measure(element);
   const firstScrollableAncestor = getFirstScrollableAncestor(element);
 
   if (!firstScrollableAncestor) {
@@ -24,8 +24,8 @@ export function scrollIntoViewIfNeeded(
     left >= window.innerWidth
   ) {
     element.scrollIntoView({
-      block: 'center',
-      inline: 'center',
+      block: "center",
+      inline: "center",
     });
   }
 }

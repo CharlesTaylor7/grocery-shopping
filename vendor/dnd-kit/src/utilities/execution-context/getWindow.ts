@@ -1,7 +1,7 @@
-import {isWindow} from '../type-guards/isWindow';
-import {isNode} from '../type-guards/isNode';
+import { isWindow } from "../type-guards/isWindow";
+import { isNode } from "../type-guards/isNode";
 
-export function getWindow(target: Event['target']): typeof window {
+export function getWindow(target: Event["target"]): typeof window {
   if (!target) {
     return window;
   }

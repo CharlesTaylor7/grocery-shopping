@@ -1,5 +1,5 @@
-import type {ClientRect} from '@dnd-kit/core';
-import type {SortingStrategy} from '../types';
+import type { ClientRect } from "@dnd-kit/core";
+import type { SortingStrategy } from "../types";
 
 // To-do: We should be calculating scale transformation
 const defaultScale = {
@@ -30,12 +30,11 @@ export const horizontalListSortingStrategy: SortingStrategy = ({
     }
 
     return {
-      x:
-        activeIndex < overIndex
-          ? newIndexRect.left +
-            newIndexRect.width -
-            (activeNodeRect.left + activeNodeRect.width)
-          : newIndexRect.left - activeNodeRect.left,
+      x: activeIndex < overIndex
+        ? newIndexRect.left +
+          newIndexRect.width -
+          (activeNodeRect.left + activeNodeRect.width)
+        : newIndexRect.left - activeNodeRect.left,
       y: 0,
       ...defaultScale,
     };

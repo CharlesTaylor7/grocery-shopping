@@ -1,14 +1,14 @@
-import type {ClientRect} from '../../types/rect';
+import type { ClientRect } from "../../types/rect";
 import {
   getScrollableAncestors,
   getScrollOffsets,
   getScrollXOffset,
   getScrollYOffset,
-} from '../scroll';
+} from "../scroll";
 
 const properties = [
-  ['x', ['left', 'right'], getScrollXOffset],
-  ['y', ['top', 'bottom'], getScrollYOffset],
+  ["x", ["left", "right"], getScrollXOffset],
+  ["y", ["top", "bottom"], getScrollYOffset],
 ] as const;
 
 export class Rect {
@@ -16,7 +16,7 @@ export class Rect {
     const scrollableAncestors = getScrollableAncestors(element);
     const scrollOffsets = getScrollOffsets(scrollableAncestors);
 
-    this.rect = {...rect};
+    this.rect = { ...rect };
     this.width = rect.width;
     this.height = rect.height;
 
@@ -34,7 +34,7 @@ export class Rect {
       }
     }
 
-    Object.defineProperty(this, 'rect', {enumerable: false});
+    Object.defineProperty(this, "rect", { enumerable: false });
   }
 
   private rect: ClientRect;

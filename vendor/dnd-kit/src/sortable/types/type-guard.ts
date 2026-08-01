@@ -1,18 +1,18 @@
 import type {
   Active,
   Data,
-  DroppableContainer,
   DraggableNode,
+  DroppableContainer,
   Over,
-} from '@dnd-kit/core';
+} from "@dnd-kit/core";
 
-import type {SortableData} from './data';
+import type { SortableData } from "./data";
 
 export function hasSortableData<
-  T extends Active | Over | DraggableNode | DroppableContainer
+  T extends Active | Over | DraggableNode | DroppableContainer,
 >(
-  entry: T | null | undefined
-): entry is T & {data: {current: Data<SortableData>}} {
+  entry: T | null | undefined,
+): entry is T & { data: { current: Data<SortableData> } } {
   if (!entry) {
     return false;
   }
@@ -21,11 +21,11 @@ export function hasSortableData<
 
   if (
     data &&
-    'sortable' in data &&
-    typeof data.sortable === 'object' &&
-    'containerId' in data.sortable &&
-    'items' in data.sortable &&
-    'index' in data.sortable
+    "sortable" in data &&
+    typeof data.sortable === "object" &&
+    "containerId" in data.sortable &&
+    "items" in data.sortable &&
+    "index" in data.sortable
   ) {
     return true;
   }

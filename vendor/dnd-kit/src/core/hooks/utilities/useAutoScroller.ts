@@ -1,9 +1,9 @@
-import {useCallback, useEffect, useMemo, useRef} from 'react';
-import {useInterval, useLazyMemo, usePrevious} from '@dnd-kit/utilities';
+import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useInterval, useLazyMemo, usePrevious } from "@dnd-kit/utilities";
 
-import {getScrollDirectionAndSpeed} from '../../utilities';
-import {Direction} from '../../types';
-import type {Coordinates, ClientRect} from '../../types';
+import { getScrollDirectionAndSpeed } from "../../utilities";
+import { Direction } from "../../types";
+import type { ClientRect, Coordinates } from "../../types";
 
 export type ScrollAncestorSortingFn = (ancestors: Element[]) => Element[];
 
@@ -21,9 +21,9 @@ export interface Options {
   layoutShiftCompensation?:
     | boolean
     | {
-        x: boolean;
-        y: boolean;
-      };
+      x: boolean;
+      y: boolean;
+    };
   order?: TraversalOrder;
   threshold?: {
     x: number;
@@ -66,20 +66,20 @@ export function useAutoScroller({
   delta,
   threshold,
 }: Arguments) {
-  const scrollIntent = useScrollIntent({delta, disabled: !enabled});
+  const scrollIntent = useScrollIntent({ delta, disabled: !enabled });
   const [setAutoScrollInterval, clearAutoScrollInterval] = useInterval();
-  const scrollSpeed = useRef<Coordinates>({x: 0, y: 0});
-  const scrollDirection = useRef<ScrollDirection>({x: 0, y: 0});
+  const scrollSpeed = useRef<Coordinates>({ x: 0, y: 0 });
+  const scrollDirection = useRef<ScrollDirection>({ x: 0, y: 0 });
   const rect = useMemo(() => {
     switch (activator) {
       case AutoScrollActivator.Pointer:
         return pointerCoordinates
           ? {
-              top: pointerCoordinates.y,
-              bottom: pointerCoordinates.y,
-              left: pointerCoordinates.x,
-              right: pointerCoordinates.x,
-            }
+            top: pointerCoordinates.y,
+            bottom: pointerCoordinates.y,
+            left: pointerCoordinates.x,
+            right: pointerCoordinates.x,
+          }
           : null;
       case AutoScrollActivator.DraggableRect:
         return draggingRect;
@@ -103,7 +103,7 @@ export function useAutoScroller({
       order === TraversalOrder.TreeOrder
         ? [...scrollableAncestors].reverse()
         : scrollableAncestors,
-    [order, scrollableAncestors]
+    [order, scrollableAncestors],
   );
 
   useEffect(
@@ -125,15 +125,15 @@ export function useAutoScroller({
           continue;
         }
 
-        const {direction, speed} = getScrollDirectionAndSpeed(
+        const { direction, speed } = getScrollDirectionAndSpeed(
           scrollContainer,
           scrollContainerRect,
           rect,
           acceleration,
-          threshold
+          threshold,
         );
 
-        for (const axis of ['x', 'y'] as const) {
+        for (const axis of ["x", "y"] as const) {
           if (!scrollIntent[axis][direction[axis] as Direction]) {
             speed[axis] = 0;
             direction[axis] = 0;
@@ -153,8 +153,8 @@ export function useAutoScroller({
         }
       }
 
-      scrollSpeed.current = {x: 0, y: 0};
-      scrollDirection.current = {x: 0, y: 0};
+      scrollSpeed.current = { x: 0, y: 0 };
+      scrollDirection.current = { x: 0, y: 0 };
       clearAutoScrollInterval();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -175,7 +175,7 @@ export function useAutoScroller({
       scrollableAncestorRects,
       // eslint-disable-next-line react-hooks/exhaustive-deps
       JSON.stringify(threshold),
-    ]
+    ],
   );
 }
 
@@ -185,8 +185,8 @@ interface ScrollIntent {
 }
 
 const defaultScrollIntent: ScrollIntent = {
-  x: {[Direction.Backward]: false, [Direction.Forward]: false},
-  y: {[Direction.Backward]: false, [Direction.Forward]: false},
+  x: { [Direction.Backward]: false, [Direction.Forward]: false },
+  y: { [Direction.Backward]: false, [Direction.Forward]: false },
 };
 
 function useScrollIntent({
@@ -213,19 +213,19 @@ function useScrollIntent({
       // Keep track of the user intent to scroll in each direction for both axis
       return {
         x: {
-          [Direction.Backward]:
-            previousIntent.x[Direction.Backward] || direction.x === -1,
-          [Direction.Forward]:
-            previousIntent.x[Direction.Forward] || direction.x === 1,
+          [Direction.Backward]: previousIntent.x[Direction.Backward] ||
+            direction.x === -1,
+          [Direction.Forward]: previousIntent.x[Direction.Forward] ||
+            direction.x === 1,
         },
         y: {
-          [Direction.Backward]:
-            previousIntent.y[Direction.Backward] || direction.y === -1,
-          [Direction.Forward]:
-            previousIntent.y[Direction.Forward] || direction.y === 1,
+          [Direction.Backward]: previousIntent.y[Direction.Backward] ||
+            direction.y === -1,
+          [Direction.Forward]: previousIntent.y[Direction.Forward] ||
+            direction.y === 1,
         },
       };
     },
-    [disabled, delta, previousDelta]
+    [disabled, delta, previousDelta],
   );
 }

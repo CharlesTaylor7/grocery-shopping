@@ -1,12 +1,12 @@
 import {
-  isWindow,
-  isHTMLElement,
   isDocument,
+  isHTMLElement,
   isNode,
   isSVGElement,
-} from '../type-guards';
+  isWindow,
+} from "../type-guards";
 
-export function getOwnerDocument(target: Event['target']): Document {
+export function getOwnerDocument(target: Event["target"]): Document {
   if (!target) {
     return document;
   }

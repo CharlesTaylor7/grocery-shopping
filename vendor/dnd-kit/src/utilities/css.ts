@@ -20,8 +20,9 @@ export const CSS = Object.freeze({
 
       const { x, y } = transform;
 
-      return `translate3d(${x ? Math.round(x) : 0}px, ${y ? Math.round(y) : 0
-        }px, 0)`;
+      return `translate3d(${x ? Math.round(x) : 0}px, ${
+        y ? Math.round(y) : 0
+      }px, 0)`;
     },
   },
   Scale: {
@@ -45,7 +46,7 @@ export const CSS = Object.freeze({
       return [
         CSS.Translate.toString(transform),
         CSS.Scale.toString(transform),
-      ].join(' ');
+      ].join(" ");
     },
   },
   Transition: {

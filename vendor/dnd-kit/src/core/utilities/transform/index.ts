@@ -1,2 +1,2 @@
-export {inverseTransform} from './inverseTransform';
-export {parseTransform} from './parseTransform';
+export { inverseTransform } from "./inverseTransform";
+export { parseTransform } from "./parseTransform";

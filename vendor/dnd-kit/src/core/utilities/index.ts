@@ -1,33 +1,33 @@
 export {
   closestCenter,
   closestCorners,
-  rectIntersection,
   getFirstCollision,
   pointerWithin,
-} from './algorithms';
+  rectIntersection,
+} from "./algorithms";
 export type {
   Collision,
   CollisionDescriptor,
   CollisionDetection,
-} from './algorithms';
+} from "./algorithms";
 
 export {
   defaultCoordinates,
   distanceBetween,
   getRelativeTransformOrigin,
-} from './coordinates';
+} from "./coordinates";
 
 export {
-  Rect,
   adjustScale,
   getAdjustedRect,
   getClientRect,
+  getRectDelta,
   getTransformAgnosticClientRect,
   getWindowClientRect,
-  getRectDelta,
-} from './rect';
+  Rect,
+} from "./rect";
 
-export {noop} from './other';
+export { noop } from "./other";
 
 export {
   getFirstScrollableAncestor,
@@ -39,4 +39,4 @@ export {
   getScrollOffsets,
   getScrollPosition,
   isDocumentScrollingElement,
-} from './scroll';
+} from "./scroll";

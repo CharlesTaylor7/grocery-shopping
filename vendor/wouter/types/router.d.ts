@@ -1,14 +1,14 @@
 import {
-  Path,
-  SearchString,
   BaseLocationHook,
   BaseSearchHook,
   HrefsFormatter,
+  Path,
+  SearchString,
 } from "./location-hook.js";
 
 export type Parser = (
   route: Path,
-  loose?: boolean
+  loose?: boolean,
 ) => { pattern: RegExp; keys: string[] };
 
 // Standard navigation options supported by all built-in location hooks
@@ -23,7 +23,7 @@ export type NavigateOptions<S = any> = {
 export type AroundNavHandler = (
   navigate: (to: Path, options?: NavigateOptions) => void,
   to: Path,
-  options?: NavigateOptions
+  options?: NavigateOptions,
 ) => void;
 
 // the object returned from `useRouter`

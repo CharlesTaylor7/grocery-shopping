@@ -1,9 +1,21 @@
 import { useEvent } from "./use-event-polyfill";
-import { RouterCtx, ParamsCtx } from "./hooks";
+import { ParamsCtx, RouterCtx } from "./hooks";
 
-import { Fragment, useRef, isValidElement, cloneElement, createElement } from "react";
-import { defaultRouter, useRouter, useLocationFromRouter, useParams, matchRoute, useCachedParams } from "./hooks.js";
-
+import {
+  cloneElement,
+  createElement,
+  Fragment,
+  isValidElement,
+  useRef,
+} from "react";
+import {
+  defaultRouter,
+  matchRoute,
+  useCachedParams,
+  useLocationFromRouter,
+  useParams,
+  useRouter,
+} from "./hooks.js";
 
 export function Router({ children, ...props }) {
   // the router we will inherit from - it is the closest router in the tree,
@@ -15,7 +27,6 @@ export function Router({ children, ...props }) {
   let value = parent;
   // hooks can define their own `href` formatter (e.g. for hash location)
   props.hrefs = props.hrefs ?? props.hook?.hrefs;
-
 
   // what is happening below: to avoid unnecessary rerenders in child components,
   // we ensure that the router object reference is stable, unless there are any
@@ -33,11 +44,10 @@ export function Router({ children, ...props }) {
     next = prev;
 
   for (let k in parent) {
-    const option =
-      k === "base"
-        ? /* base is special case, it is appended to the parent's base */
-        parent[k] + (props[k] ?? "")
-        : props[k] ?? parent[k];
+    const option = k === "base"
+      /* base is special case, it is appended to the parent's base */
+      ? parent[k] + (props[k] ?? "")
+      : props[k] ?? parent[k];
 
     if (prev === next && option !== next[k]) {
       // oxlint-disable-next-line
@@ -52,7 +62,7 @@ export function Router({ children, ...props }) {
   }
 
   return createElement(RouterCtx.Provider, { value }, children);
-};
+}
 
 export function Route({ path, nest, match, ...renderProps }) {
   const router = useRouter();
@@ -74,8 +84,8 @@ export function Route({ path, nest, match, ...renderProps }) {
     ? createElement(Router, { base }, createRouteElement(renderProps, params))
     : createRouteElement(renderProps, params);
 
-  return createElement(ParamsCtx.Provider, { value: params, }, children);
-};
+  return createElement(ParamsCtx.Provider, { value: params }, children);
+}
 
 export function Link(props) {
   const router = useRouter();
@@ -105,8 +115,9 @@ export function Link(props) {
       event.altKey ||
       event.shiftKey ||
       event.button !== 0
-    )
+    ) {
       return;
+    }
 
     _onClick?.(event);
     if (!event.defaultPrevented) {
@@ -118,7 +129,7 @@ export function Link(props) {
   // handle nested routers and absolute paths
   const href = router.hrefs(
     targetPath[0] === "~" ? targetPath.slice(1) : router.base + targetPath,
-    router // pass router as a second argument for convinience
+    router, // pass router as a second argument for convinience
   );
 
   return asChild && isValidElement(children)
@@ -133,8 +144,7 @@ export function Link(props) {
       children,
       ref,
     });
-};
-
+}
 
 export function Switch({ children, location }) {
   const router = useRouter();
@@ -153,14 +163,15 @@ export function Switch({ children, location }) {
         router.parser,
         element.props.path,
         location || originalLocation,
-        element.props.nest
+        element.props.nest,
       ))[0]
-    )
+    ) {
       return cloneElement(element, { match });
+    }
   }
 
   return null;
-};
+}
 
 export function Redirect(props) {
   const { to, href = to } = props;
@@ -173,10 +184,8 @@ export function Redirect(props) {
     redirect();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-
   return null;
-};
-
+}
 
 // helpers
 
@@ -187,7 +196,6 @@ const flattenChildren = (children) =>
     )
     : [children];
 
-
 const createRouteElement = ({ children, component }, params) => {
   // React-Router style `component` prop
   if (component) return createElement(component, { params });
@@ -195,4 +203,3 @@ const createRouteElement = ({ children, component }, params) => {
   // support render prop or plain children
   return typeof children === "function" ? children(params) : children;
 };
-

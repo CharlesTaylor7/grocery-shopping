@@ -1,10 +1,10 @@
-import { useMemo, useCallback, useState } from 'react';
-import { isHTMLElement, useNodeRef } from '@dnd-kit/utilities';
+import { useCallback, useMemo, useState } from "react";
+import { isHTMLElement, useNodeRef } from "@dnd-kit/utilities";
 
-import { useResizeObserver } from './useResizeObserver';
-import { getMeasurableNode } from '../../utilities/nodes';
-import type { PublicContextDescriptor } from '../../store';
-import type { ClientRect } from '../../types';
+import { useResizeObserver } from "./useResizeObserver";
+import { getMeasurableNode } from "../../utilities/nodes";
+import type { PublicContextDescriptor } from "../../store";
+import type { ClientRect } from "../../types";
 
 interface Arguments {
   measure(element: HTMLElement): ClientRect;
@@ -12,7 +12,7 @@ interface Arguments {
 
 export function useDragOverlayMeasuring({
   measure,
-}: Arguments): PublicContextDescriptor['dragOverlay'] {
+}: Arguments): PublicContextDescriptor["dragOverlay"] {
   const [rect, setRect] = useState<ClientRect | null>(null);
   const handleResize = useCallback(
     (entries: ResizeObserverEntry[]) => {
@@ -29,7 +29,7 @@ export function useDragOverlayMeasuring({
         }
       }
     },
-    [measure]
+    [measure],
   );
   const resizeObserver = useResizeObserver({ callback: handleResize });
   const handleNodeChange = useCallback(
@@ -44,7 +44,7 @@ export function useDragOverlayMeasuring({
 
       setRect(node ? measure(node) : null);
     },
-    [measure, resizeObserver]
+    [measure, resizeObserver],
   );
   const [nodeRef, setRef] = useNodeRef(handleNodeChange);
 
@@ -54,6 +54,6 @@ export function useDragOverlayMeasuring({
       rect,
       setRef,
     }),
-    [rect, nodeRef, setRef]
+    [rect, nodeRef, setRef],
   );
 }

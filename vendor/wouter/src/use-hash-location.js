@@ -9,19 +9,16 @@ const listeners = {
 
 const onHashChange = () => {
   document.startViewTransition(() =>
-    flushSync(() =>
-      listeners.v.forEach((cb) =>
-        cb()
-      )
-    )
+    flushSync(() => listeners.v.forEach((cb) => cb()))
   );
-}
+};
 
 // we subscribe to `hashchange` only once when needed to guarantee that
 // all listeners are called synchronously
 const subscribeToHashUpdates = (callback) => {
-  if (listeners.v.push(callback) === 1)
+  if (listeners.v.push(callback) === 1) {
     addEventListener("hashchange", onHashChange);
+  }
 
   return () => {
     listeners.v = listeners.v.filter((i) => i !== callback);
@@ -50,10 +47,9 @@ const hashNavigate = (to, { state = null, replace = false } = {}) => {
     history.pushState(state, "", newURL);
   }
 
-  const event =
-    typeof HashChangeEvent !== "undefined"
-      ? new HashChangeEvent("hashchange", { oldURL, newURL })
-      : new Event("hashchange", { detail: { oldURL, newURL } });
+  const event = typeof HashChangeEvent !== "undefined"
+    ? new HashChangeEvent("hashchange", { oldURL, newURL })
+    : new Event("hashchange", { detail: { oldURL, newURL } });
 
   dispatchEvent(event);
 };

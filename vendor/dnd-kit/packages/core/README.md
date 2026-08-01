@@ -2,7 +2,8 @@
 
 [![Stable release](https://img.shields.io/npm/v/@dnd-kit/core.svg)](https://npm.im/@dnd-kit/core)
 
-@dnd-kit – a lightweight React library for building performant and accessible drag and drop experiences.
+@dnd-kit – a lightweight React library for building performant and accessible
+drag and drop experiences.
 
 ## Installation
 
@@ -14,4 +15,5 @@ npm install @dnd-kit/core
 
 ## Usage
 
-Visit [docs.dndkit.com](https://docs.dndkit.com) to learn how to get started with @dnd-kit.
+Visit [docs.dndkit.com](https://docs.dndkit.com) to learn how to get started
+with @dnd-kit.

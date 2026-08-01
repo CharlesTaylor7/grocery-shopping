@@ -1,7 +1,7 @@
-import type {Transform} from '@dnd-kit/utilities';
+import type { Transform } from "@dnd-kit/utilities";
 
 export function parseTransform(transform: string): Transform | null {
-  if (transform.startsWith('matrix3d(')) {
+  if (transform.startsWith("matrix3d(")) {
     const transformArray = transform.slice(9, -1).split(/, /);
 
     return {
@@ -10,7 +10,7 @@ export function parseTransform(transform: string): Transform | null {
       scaleX: +transformArray[0],
       scaleY: +transformArray[5],
     };
-  } else if (transform.startsWith('matrix(')) {
+  } else if (transform.startsWith("matrix(")) {
     const transformArray = transform.slice(7, -1).split(/, /);
 
     return {

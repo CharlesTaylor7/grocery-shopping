@@ -1,2 +1,2 @@
-export {AnimationManager} from './AnimationManager';
-export type {Animation} from './AnimationManager';
+export { AnimationManager } from "./AnimationManager";
+export type { Animation } from "./AnimationManager";

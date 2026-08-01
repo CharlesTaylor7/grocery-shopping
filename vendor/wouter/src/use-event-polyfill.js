@@ -1,4 +1,4 @@
-import { useRef, useInsertionEffect } from "react";
+import { useInsertionEffect, useRef } from "react";
 
 // Userland polyfill while we wait for the forthcoming
 // https://github.com/reactjs/rfcs/blob/useevent/text/0000-useevent.md
@@ -17,5 +17,4 @@ export function useEvent(fn) {
     ref[0] = fn;
   });
   return ref[1];
-};
-
+}

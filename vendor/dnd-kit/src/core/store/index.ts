@@ -1,10 +1,10 @@
-export {Action} from './actions';
+export { Action } from "./actions";
 export {
-  PublicContext,
-  InternalContext,
   defaultInternalContext,
-} from './context';
-export {reducer, getInitialState} from './reducer';
+  InternalContext,
+  PublicContext,
+} from "./context";
+export { getInitialState, reducer } from "./reducer";
 export type {
   Active,
   Data,
@@ -14,9 +14,9 @@ export type {
   DraggableNodes,
   DroppableContainer,
   DroppableContainers,
-  PublicContextDescriptor,
   InternalContextDescriptor,
-  RectMap,
   Over,
+  PublicContextDescriptor,
+  RectMap,
   State,
-} from './types';
+} from "./types";

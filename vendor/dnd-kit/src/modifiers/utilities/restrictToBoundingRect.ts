@@ -1,10 +1,10 @@
-import type {ClientRect} from '@dnd-kit/core';
-import type {Transform} from '@dnd-kit/utilities';
+import type { ClientRect } from "@dnd-kit/core";
+import type { Transform } from "@dnd-kit/utilities";
 
 export function restrictToBoundingRect(
   transform: Transform,
   rect: ClientRect,
-  boundingRect: ClientRect
+  boundingRect: ClientRect,
 ): Transform {
   const value = {
     ...transform,
@@ -14,7 +14,7 @@ export function restrictToBoundingRect(
     value.y = boundingRect.top - rect.top;
   } else if (
     rect.bottom + transform.y >=
-    boundingRect.top + boundingRect.height
+      boundingRect.top + boundingRect.height
   ) {
     value.y = boundingRect.top + boundingRect.height - rect.bottom;
   }
@@ -23,7 +23,7 @@ export function restrictToBoundingRect(
     value.x = boundingRect.left - rect.left;
   } else if (
     rect.right + transform.x >=
-    boundingRect.left + boundingRect.width
+      boundingRect.left + boundingRect.width
   ) {
     value.x = boundingRect.left + boundingRect.width - rect.right;
   }

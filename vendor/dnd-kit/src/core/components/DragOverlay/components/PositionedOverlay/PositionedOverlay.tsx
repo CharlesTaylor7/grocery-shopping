@@ -1,14 +1,14 @@
-import React, { forwardRef, JSX } from 'react';
-import { CSS, isKeyboardEvent } from '@dnd-kit/utilities';
+import React, { forwardRef, JSX } from "react";
+import { CSS, isKeyboardEvent } from "@dnd-kit/utilities";
 
-import type { Transform } from '@dnd-kit/utilities';
+import type { Transform } from "@dnd-kit/utilities";
 
-import { getRelativeTransformOrigin } from '../../../../utilities';
-import type { ClientRect, UniqueIdentifier } from '../../../../types';
+import { getRelativeTransformOrigin } from "../../../../utilities";
+import type { ClientRect, UniqueIdentifier } from "../../../../types";
 
 type TransitionGetter = (
-  activatorEvent: Event | null
-) => React.CSSProperties['transition'] | undefined;
+  activatorEvent: Event | null,
+) => React.CSSProperties["transition"] | undefined;
 
 export interface Props {
   as: keyof JSX.IntrinsicElements;
@@ -24,14 +24,14 @@ export interface Props {
 }
 
 const baseStyles: React.CSSProperties = {
-  position: 'fixed',
-  touchAction: 'none',
+  position: "fixed",
+  touchAction: "none",
 };
 
 const defaultTransition: TransitionGetter = (activatorEvent) => {
   const isKeyboardActivator = isKeyboardEvent(activatorEvent);
 
-  return isKeyboardActivator ? 'transform 250ms ease' : undefined;
+  return isKeyboardActivator ? "transform 250ms ease" : undefined;
 };
 
 export const PositionedOverlay = forwardRef<HTMLElement, Props>(
@@ -47,19 +47,17 @@ export const PositionedOverlay = forwardRef<HTMLElement, Props>(
       transform,
       transition = defaultTransition,
     },
-    ref
+    ref,
   ) => {
     if (!rect) {
       return null;
     }
 
-    const scaleAdjustedTransform = adjustScale
-      ? transform
-      : {
-        ...transform,
-        scaleX: 1,
-        scaleY: 1,
-      };
+    const scaleAdjustedTransform = adjustScale ? transform : {
+      ...transform,
+      scaleX: 1,
+      scaleY: 1,
+    };
     const styles: React.CSSProperties | undefined = {
       ...baseStyles,
       width: rect.width,
@@ -67,17 +65,15 @@ export const PositionedOverlay = forwardRef<HTMLElement, Props>(
       top: rect.top,
       left: rect.left,
       transform: CSS.Transform.toString(scaleAdjustedTransform),
-      transformOrigin:
-        adjustScale && activatorEvent
-          ? getRelativeTransformOrigin(
-            activatorEvent as MouseEvent | KeyboardEvent | TouchEvent,
-            rect
-          )
-          : undefined,
-      transition:
-        typeof transition === 'function'
-          ? transition(activatorEvent)
-          : transition,
+      transformOrigin: adjustScale && activatorEvent
+        ? getRelativeTransformOrigin(
+          activatorEvent as MouseEvent | KeyboardEvent | TouchEvent,
+          rect,
+        )
+        : undefined,
+      transition: typeof transition === "function"
+        ? transition(activatorEvent)
+        : transition,
       ...style,
     };
 
@@ -88,7 +84,7 @@ export const PositionedOverlay = forwardRef<HTMLElement, Props>(
         style: styles,
         ref,
       },
-      children
+      children,
     );
-  }
+  },
 );

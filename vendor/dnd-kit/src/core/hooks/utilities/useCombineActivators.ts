@@ -1,22 +1,22 @@
-import {useMemo} from 'react';
+import { useMemo } from "react";
 
-import type {SensorActivatorFunction, SensorDescriptor} from '../../sensors';
+import type { SensorActivatorFunction, SensorDescriptor } from "../../sensors";
 import type {
   SyntheticListener,
   SyntheticListeners,
-} from './useSyntheticListeners';
+} from "./useSyntheticListeners";
 
 export function useCombineActivators(
   sensors: SensorDescriptor<any>[],
   getSyntheticHandler: (
     handler: SensorActivatorFunction<any>,
-    sensor: SensorDescriptor<any>
-  ) => SyntheticListener['handler']
+    sensor: SensorDescriptor<any>,
+  ) => SyntheticListener["handler"],
 ): SyntheticListeners {
   return useMemo(
     () =>
       sensors.reduce<SyntheticListeners>((accumulator, sensor) => {
-        const {sensor: Sensor} = sensor;
+        const { sensor: Sensor } = sensor;
 
         const sensorActivators = Sensor.activators.map((activator) => ({
           eventName: activator.eventName,
@@ -25,6 +25,6 @@ export function useCombineActivators(
 
         return [...accumulator, ...sensorActivators];
       }, []),
-    [sensors, getSyntheticHandler]
+    [sensors, getSyntheticHandler],
   );
 }

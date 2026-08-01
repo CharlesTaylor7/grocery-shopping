@@ -28,10 +28,8 @@ export type BaseSearchHook = (...args: any[]) => SearchString;
 export type HookReturnValue<H extends BaseLocationHook> = ReturnType<H>;
 
 // Utility type that allows us to handle cases like `any` and `never`
-type EmptyInterfaceWhenAnyOrNever<T> = 0 extends 1 & T
-  ? {}
-  : [T] extends [never]
-  ? {}
+type EmptyInterfaceWhenAnyOrNever<T> = 0 extends 1 & T ? {}
+  : [T] extends [never] ? {}
   : T;
 
 // Returns the type of the navigation options that hook's push function accepts.

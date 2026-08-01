@@ -1,12 +1,12 @@
-import {CSS} from '@dnd-kit/utilities';
+import { CSS } from "@dnd-kit/utilities";
 
-import {arrayMove} from '../utilities';
+import { arrayMove } from "../utilities";
 
 import type {
   AnimateLayoutChanges,
   NewIndexGetter,
   SortableTransition,
-} from './types';
+} from "./types";
 
 export const defaultNewIndexGetter: NewIndexGetter = ({
   id,
@@ -43,17 +43,17 @@ export const defaultAnimateLayoutChanges: AnimateLayoutChanges = ({
 
 export const defaultTransition: SortableTransition = {
   duration: 200,
-  easing: 'ease',
+  easing: "ease",
 };
 
-export const transitionProperty = 'transform';
+export const transitionProperty = "transform";
 
 export const disabledTransition = CSS.Transition.toString({
   property: transitionProperty,
   duration: 0,
-  easing: 'linear',
+  easing: "linear",
 });
 
 export const defaultAttributes = {
-  roleDescription: 'sortable',
+  roleDescription: "sortable",
 };

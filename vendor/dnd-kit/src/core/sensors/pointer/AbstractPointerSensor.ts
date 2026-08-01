@@ -1,20 +1,20 @@
 import {
-  subtract as getCoordinatesDelta,
   getEventCoordinates,
   getOwnerDocument,
   getWindow,
-} from '@dnd-kit/utilities';
+  subtract as getCoordinatesDelta,
+} from "@dnd-kit/utilities";
 
-import {defaultCoordinates} from '../../utilities';
+import { defaultCoordinates } from "../../utilities";
 import {
   getEventListenerTarget,
   hasExceededDistance,
   Listeners,
-} from '../utilities';
-import {EventName, preventDefault, stopPropagation} from '../events';
-import {KeyboardCode} from '../keyboard';
-import type {SensorInstance, SensorProps, SensorOptions} from '../types';
-import type {Coordinates, DistanceMeasurement} from '../../types';
+} from "../utilities";
+import { EventName, preventDefault, stopPropagation } from "../events";
+import { KeyboardCode } from "../keyboard";
+import type { SensorInstance, SensorOptions, SensorProps } from "../types";
+import type { Coordinates, DistanceMeasurement } from "../../types";
 
 interface DistanceConstraint {
   distance: DistanceMeasurement;
@@ -43,27 +43,28 @@ export type PointerActivationConstraint =
   | (DelayConstraint & DistanceConstraint);
 
 function isDistanceConstraint(
-  constraint: PointerActivationConstraint
+  constraint: PointerActivationConstraint,
 ): constraint is PointerActivationConstraint & DistanceConstraint {
-  return Boolean(constraint && 'distance' in constraint);
+  return Boolean(constraint && "distance" in constraint);
 }
 
 function isDelayConstraint(
-  constraint: PointerActivationConstraint
+  constraint: PointerActivationConstraint,
 ): constraint is DelayConstraint {
-  return Boolean(constraint && 'delay' in constraint);
+  return Boolean(constraint && "delay" in constraint);
 }
 
 export interface AbstractPointerSensorOptions extends SensorOptions {
   activationConstraint?: PointerActivationConstraint;
   bypassActivationConstraint?(
-    props: Pick<AbstractPointerSensorProps, 'activeNode' | 'event' | 'options'>
+    props: Pick<AbstractPointerSensorProps, "activeNode" | "event" | "options">,
   ): boolean;
-  onActivation?({event}: {event: Event}): void;
+  onActivation?({ event }: { event: Event }): void;
 }
 
-export type AbstractPointerSensorProps =
-  SensorProps<AbstractPointerSensorOptions>;
+export type AbstractPointerSensorProps = SensorProps<
+  AbstractPointerSensorOptions
+>;
 
 export class AbstractPointerSensor implements SensorInstance {
   public autoScrollEnabled = true;
@@ -78,10 +79,10 @@ export class AbstractPointerSensor implements SensorInstance {
   constructor(
     private props: AbstractPointerSensorProps,
     private events: PointerEventHandlers,
-    listenerTarget = getEventListenerTarget(props.event.target)
+    listenerTarget = getEventListenerTarget(props.event.target),
   ) {
-    const {event} = props;
-    const {target} = event;
+    const { event } = props;
+    const { target } = event;
 
     this.props = props;
     this.events = events;
@@ -104,11 +105,11 @@ export class AbstractPointerSensor implements SensorInstance {
     const {
       events,
       props: {
-        options: {activationConstraint, bypassActivationConstraint},
+        options: { activationConstraint, bypassActivationConstraint },
       },
     } = this;
 
-    this.listeners.add(events.move.name, this.handleMove, {passive: false});
+    this.listeners.add(events.move.name, this.handleMove, { passive: false });
     this.listeners.add(events.end.name, this.handleEnd);
 
     if (events.cancel) {
@@ -135,7 +136,7 @@ export class AbstractPointerSensor implements SensorInstance {
       if (isDelayConstraint(activationConstraint)) {
         this.timeoutId = setTimeout(
           this.handleStart,
-          activationConstraint.delay
+          activationConstraint.delay,
         );
         this.handlePending(activationConstraint);
         return;
@@ -166,15 +167,15 @@ export class AbstractPointerSensor implements SensorInstance {
 
   private handlePending(
     constraint: PointerActivationConstraint,
-    offset?: Coordinates | undefined
+    offset?: Coordinates | undefined,
   ): void {
-    const {active, onPending} = this.props;
+    const { active, onPending } = this.props;
     onPending(active, constraint, this.initialCoordinates, offset);
   }
 
   private handleStart() {
-    const {initialCoordinates} = this;
-    const {onStart} = this.props;
+    const { initialCoordinates } = this;
+    const { onStart } = this.props;
 
     if (initialCoordinates) {
       this.activated = true;
@@ -190,7 +191,7 @@ export class AbstractPointerSensor implements SensorInstance {
       // Prevent further text selection while dragging
       this.documentListeners.add(
         EventName.SelectionChange,
-        this.removeTextSelection
+        this.removeTextSelection,
       );
 
       onStart(initialCoordinates);
@@ -198,10 +199,10 @@ export class AbstractPointerSensor implements SensorInstance {
   }
 
   private handleMove(event: Event) {
-    const {activated, initialCoordinates, props} = this;
+    const { activated, initialCoordinates, props } = this;
     const {
       onMove,
-      options: {activationConstraint},
+      options: { activationConstraint },
     } = props;
 
     if (!initialCoordinates) {
@@ -244,7 +245,7 @@ export class AbstractPointerSensor implements SensorInstance {
   }
 
   private handleEnd() {
-    const {onAbort, onEnd} = this.props;
+    const { onAbort, onEnd } = this.props;
 
     this.detach();
     if (!this.activated) {
@@ -254,7 +255,7 @@ export class AbstractPointerSensor implements SensorInstance {
   }
 
   private handleCancel() {
-    const {onAbort, onCancel} = this.props;
+    const { onAbort, onCancel } = this.props;
 
     this.detach();
     if (!this.activated) {

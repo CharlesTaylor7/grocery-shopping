@@ -1,4 +1,4 @@
-import {isDocumentScrollingElement} from './documentScrollingElement';
+import { isDocumentScrollingElement } from "./documentScrollingElement";
 
 export function getScrollPosition(scrollingContainer: Element) {
   const minScroll = {
@@ -7,13 +7,13 @@ export function getScrollPosition(scrollingContainer: Element) {
   };
   const dimensions = isDocumentScrollingElement(scrollingContainer)
     ? {
-        height: window.innerHeight,
-        width: window.innerWidth,
-      }
+      height: window.innerHeight,
+      width: window.innerWidth,
+    }
     : {
-        height: scrollingContainer.clientHeight,
-        width: scrollingContainer.clientWidth,
-      };
+      height: scrollingContainer.clientHeight,
+      width: scrollingContainer.clientWidth,
+    };
   const maxScroll = {
     x: scrollingContainer.scrollWidth - dimensions.width,
     y: scrollingContainer.scrollHeight - dimensions.height,

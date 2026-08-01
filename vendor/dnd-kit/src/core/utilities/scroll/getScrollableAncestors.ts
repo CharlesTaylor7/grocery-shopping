@@ -3,14 +3,14 @@ import {
   isDocument,
   isHTMLElement,
   isSVGElement,
-} from '@dnd-kit/utilities';
+} from "@dnd-kit/utilities";
 
-import {isFixed} from './isFixed';
-import {isScrollable} from './isScrollable';
+import { isFixed } from "./isFixed";
+import { isScrollable } from "./isScrollable";
 
 export function getScrollableAncestors(
   element: Node | null,
-  limit?: number
+  limit?: number,
 ): Element[] {
   const scrollParents: Element[] = [];
 

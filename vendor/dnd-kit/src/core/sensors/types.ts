@@ -1,26 +1,26 @@
-import type { MutableRefObject } from 'react';
+import type { MutableRefObject } from "react";
 import type {
   Active,
-  Over,
   DraggableNode,
   DraggableNodes,
   DroppableContainers,
+  Over,
   RectMap,
-} from '../store';
+} from "../store";
 import type {
+  ClientRect,
   Coordinates,
   SyntheticEventName,
   Translate,
   UniqueIdentifier,
-  ClientRect,
-} from '../types';
-import type { Collision } from '../utilities/algorithms';
-import type { PointerActivationConstraint } from './pointer';
+} from "../types";
+import type { Collision } from "../utilities/algorithms";
+import type { PointerActivationConstraint } from "./pointer";
 
 export enum Response {
-  Start = 'start',
-  Move = 'move',
-  End = 'end',
+  Start = "start",
+  Move = "move",
+  End = "end",
 }
 
 export type SensorContext = {
@@ -52,7 +52,7 @@ export interface SensorProps<T> {
     id: UniqueIdentifier,
     constraint: PointerActivationConstraint,
     initialCoordinates: Coordinates,
-    offset?: Coordinates | undefined
+    offset?: Coordinates | undefined,
   ): void;
   onStart(coordinates: Coordinates): void;
   onCancel(): void;
@@ -69,7 +69,7 @@ export type SensorActivatorFunction<T> = (
   options: T,
   context: {
     active: DraggableNode;
-  }
+  },
 ) => boolean | undefined;
 
 export type Activator<T> = {
@@ -82,7 +82,7 @@ export type Activators<T> = Activator<T>[];
 type Teardown = () => void;
 
 export interface Sensor<T extends Object> {
-  new(props: SensorProps<T>): SensorInstance;
+  new (props: SensorProps<T>): SensorInstance;
   activators: Activators<T>;
   setup?(): Teardown | undefined;
 }
@@ -96,5 +96,5 @@ export type SensorDescriptor<T extends Object> = {
 
 export type SensorHandler = (
   event: Event,
-  active: UniqueIdentifier
+  active: UniqueIdentifier,
 ) => boolean | void;

@@ -1,19 +1,19 @@
-import { getOwnerDocument } from '@dnd-kit/utilities';
+import { getOwnerDocument } from "@dnd-kit/utilities";
 
-import type { SensorProps } from '../types';
+import type { SensorProps } from "../types";
 import {
   AbstractPointerSensor,
   AbstractPointerSensorOptions,
   PointerEventHandlers,
-} from './AbstractPointerSensor';
+} from "./AbstractPointerSensor";
 
 const events: PointerEventHandlers = {
-  cancel: { name: 'pointercancel' },
-  move: { name: 'pointermove' },
-  end: { name: 'pointerup' },
+  cancel: { name: "pointercancel" },
+  move: { name: "pointermove" },
+  end: { name: "pointerup" },
 };
 
-export interface PointerSensorOptions extends AbstractPointerSensorOptions { }
+export interface PointerSensorOptions extends AbstractPointerSensorOptions {}
 
 export type PointerSensorProps = SensorProps<PointerSensorOptions>;
 
@@ -29,10 +29,10 @@ export class PointerSensor extends AbstractPointerSensor {
 
   static activators = [
     {
-      eventName: 'onPointerDown' as const,
+      eventName: "onPointerDown" as const,
       handler: (
         event: PointerEvent,
-        { onActivation }: PointerSensorOptions
+        { onActivation }: PointerSensorOptions,
       ) => {
         if (!event.isPrimary || event.button !== 0) {
           return false;

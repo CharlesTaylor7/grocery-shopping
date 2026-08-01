@@ -1,32 +1,32 @@
 import {
   add as getAdjustedCoordinates,
-  subtract as getCoordinatesDelta,
   getOwnerDocument,
   getWindow,
   isKeyboardEvent,
-} from '@dnd-kit/utilities';
+  subtract as getCoordinatesDelta,
+} from "@dnd-kit/utilities";
 
-import type { Coordinates } from '../../types';
+import type { Coordinates } from "../../types";
 import {
   defaultCoordinates,
-  getScrollPosition,
   getScrollElementRect,
-} from '../../utilities';
-import { scrollIntoViewIfNeeded } from '../../utilities/scroll';
-import { EventName } from '../events';
-import { Listeners } from '../utilities';
+  getScrollPosition,
+} from "../../utilities";
+import { scrollIntoViewIfNeeded } from "../../utilities/scroll";
+import { EventName } from "../events";
+import { Listeners } from "../utilities";
 import type {
   Activators,
   SensorInstance,
-  SensorProps,
   SensorOptions,
-} from '../types';
+  SensorProps,
+} from "../types";
 
-import { KeyboardCoordinateGetter, KeyboardCode, KeyboardCodes } from './types';
+import { KeyboardCode, KeyboardCodes, KeyboardCoordinateGetter } from "./types";
 import {
   defaultKeyboardCodes,
   defaultKeyboardCoordinateGetter,
-} from './defaults';
+} from "./defaults";
 
 export interface KeyboardSensorOptions extends SensorOptions {
   keyboardCodes?: KeyboardCodes;
@@ -83,7 +83,7 @@ export class KeyboardSensor implements SensorInstance {
       const {
         keyboardCodes = defaultKeyboardCodes,
         coordinateGetter = defaultKeyboardCoordinateGetter,
-        scrollBehavior = 'smooth',
+        scrollBehavior = "smooth",
       } = options;
       const { code } = event;
 
@@ -115,7 +115,7 @@ export class KeyboardSensor implements SensorInstance {
       if (newCoordinates) {
         const coordinatesDelta = getCoordinatesDelta(
           newCoordinates,
-          currentCoordinates
+          currentCoordinates,
         );
         const scrollDelta = {
           x: 0,
@@ -138,8 +138,8 @@ export class KeyboardSensor implements SensorInstance {
                 direction === KeyboardCode.Right
                   ? scrollElementRect.left
                   : scrollElementRect.left + scrollElementRect.width / 2,
-                newCoordinates.x
-              )
+                newCoordinates.x,
+              ),
             ),
             y: Math.min(
               direction === KeyboardCode.Down
@@ -149,21 +149,19 @@ export class KeyboardSensor implements SensorInstance {
                 direction === KeyboardCode.Down
                   ? scrollElementRect.top
                   : scrollElementRect.top + scrollElementRect.height / 2,
-                newCoordinates.y
-              )
+                newCoordinates.y,
+              ),
             ),
           };
 
-          const canScrollX =
-            (direction === KeyboardCode.Right && !isRight) ||
+          const canScrollX = (direction === KeyboardCode.Right && !isRight) ||
             (direction === KeyboardCode.Left && !isLeft);
-          const canScrollY =
-            (direction === KeyboardCode.Down && !isBottom) ||
+          const canScrollY = (direction === KeyboardCode.Down && !isBottom) ||
             (direction === KeyboardCode.Up && !isTop);
 
           if (canScrollX && clampedCoordinates.x !== newCoordinates.x) {
-            const newScrollCoordinates =
-              scrollContainer.scrollLeft + coordinatesDelta.x;
+            const newScrollCoordinates = scrollContainer.scrollLeft +
+              coordinatesDelta.x;
             const canScrollToNewCoordinates =
               (direction === KeyboardCode.Right &&
                 newScrollCoordinates <= maxScroll.x) ||
@@ -183,10 +181,9 @@ export class KeyboardSensor implements SensorInstance {
             if (canScrollToNewCoordinates) {
               scrollDelta.x = scrollContainer.scrollLeft - newScrollCoordinates;
             } else {
-              scrollDelta.x =
-                direction === KeyboardCode.Right
-                  ? scrollContainer.scrollLeft - maxScroll.x
-                  : scrollContainer.scrollLeft - minScroll.x;
+              scrollDelta.x = direction === KeyboardCode.Right
+                ? scrollContainer.scrollLeft - maxScroll.x
+                : scrollContainer.scrollLeft - minScroll.x;
             }
 
             if (scrollDelta.x) {
@@ -197,8 +194,8 @@ export class KeyboardSensor implements SensorInstance {
             }
             break;
           } else if (canScrollY && clampedCoordinates.y !== newCoordinates.y) {
-            const newScrollCoordinates =
-              scrollContainer.scrollTop + coordinatesDelta.y;
+            const newScrollCoordinates = scrollContainer.scrollTop +
+              coordinatesDelta.y;
             const canScrollToNewCoordinates =
               (direction === KeyboardCode.Down &&
                 newScrollCoordinates <= maxScroll.y) ||
@@ -218,10 +215,9 @@ export class KeyboardSensor implements SensorInstance {
             if (canScrollToNewCoordinates) {
               scrollDelta.y = scrollContainer.scrollTop - newScrollCoordinates;
             } else {
-              scrollDelta.y =
-                direction === KeyboardCode.Down
-                  ? scrollContainer.scrollTop - maxScroll.y
-                  : scrollContainer.scrollTop - minScroll.y;
+              scrollDelta.y = direction === KeyboardCode.Down
+                ? scrollContainer.scrollTop - maxScroll.y
+                : scrollContainer.scrollTop - minScroll.y;
             }
 
             if (scrollDelta.y) {
@@ -239,8 +235,8 @@ export class KeyboardSensor implements SensorInstance {
           event,
           getAdjustedCoordinates(
             getCoordinatesDelta(newCoordinates, this.referenceCoordinates),
-            scrollDelta
-          )
+            scrollDelta,
+          ),
         );
       }
     }
@@ -276,11 +272,11 @@ export class KeyboardSensor implements SensorInstance {
 
   static activators: Activators<KeyboardSensorOptions> = [
     {
-      eventName: 'onKeyDown' as const,
+      eventName: "onKeyDown" as const,
       handler: (
         event: KeyboardEvent,
         { keyboardCodes = defaultKeyboardCodes, onActivation },
-        { active }
+        { active },
       ) => {
         const { code } = event;
 

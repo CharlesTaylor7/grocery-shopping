@@ -1,8 +1,8 @@
-import {Direction, ClientRect} from '../../types';
-import {getScrollPosition} from './getScrollPosition';
+import { ClientRect, Direction } from "../../types";
+import { getScrollPosition } from "./getScrollPosition";
 
 interface PositionalCoordinates
-  extends Pick<ClientRect, 'top' | 'left' | 'right' | 'bottom'> {}
+  extends Pick<ClientRect, "top" | "left" | "right" | "bottom"> {}
 
 const defaultThreshold = {
   x: 0.2,
@@ -12,11 +12,13 @@ const defaultThreshold = {
 export function getScrollDirectionAndSpeed(
   scrollContainer: Element,
   scrollContainerRect: ClientRect,
-  {top, left, right, bottom}: PositionalCoordinates,
+  { top, left, right, bottom }: PositionalCoordinates,
   acceleration = 10,
-  thresholdPercentage = defaultThreshold
+  thresholdPercentage = defaultThreshold,
 ) {
-  const {isTop, isBottom, isLeft, isRight} = getScrollPosition(scrollContainer);
+  const { isTop, isBottom, isLeft, isRight } = getScrollPosition(
+    scrollContainer,
+  );
 
   const direction = {
     x: 0,
@@ -34,10 +36,9 @@ export function getScrollDirectionAndSpeed(
   if (!isTop && top <= scrollContainerRect.top + threshold.height) {
     // Scroll Up
     direction.y = Direction.Backward;
-    speed.y =
-      acceleration *
+    speed.y = acceleration *
       Math.abs(
-        (scrollContainerRect.top + threshold.height - top) / threshold.height
+        (scrollContainerRect.top + threshold.height - top) / threshold.height,
       );
   } else if (
     !isBottom &&
@@ -45,29 +46,26 @@ export function getScrollDirectionAndSpeed(
   ) {
     // Scroll Down
     direction.y = Direction.Forward;
-    speed.y =
-      acceleration *
+    speed.y = acceleration *
       Math.abs(
         (scrollContainerRect.bottom - threshold.height - bottom) /
-          threshold.height
+          threshold.height,
       );
   }
 
   if (!isRight && right >= scrollContainerRect.right - threshold.width) {
     // Scroll Right
     direction.x = Direction.Forward;
-    speed.x =
-      acceleration *
+    speed.x = acceleration *
       Math.abs(
-        (scrollContainerRect.right - threshold.width - right) / threshold.width
+        (scrollContainerRect.right - threshold.width - right) / threshold.width,
       );
   } else if (!isLeft && left <= scrollContainerRect.left + threshold.width) {
     // Scroll Left
     direction.x = Direction.Backward;
-    speed.x =
-      acceleration *
+    speed.x = acceleration *
       Math.abs(
-        (scrollContainerRect.left + threshold.width - left) / threshold.width
+        (scrollContainerRect.left + threshold.width - left) / threshold.width,
       );
   }
 
