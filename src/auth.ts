@@ -1,4 +1,3 @@
-import * as Sentry from "@sentry/browser";
 import { NEON_AUTH_URL } from "@/config";
 
 // TODO:
@@ -40,9 +39,7 @@ class AuthClient {
       credentials: "include",
     });
     console.log(response.status);
-    Sentry.captureMessage(`status: ${response.status}`);
     const body = await response.text();
-    Sentry.captureMessage(body);
     return JSON.parse(body).token;
   }
 
