@@ -6,19 +6,13 @@
     "oxc"
   ],
   "rules": {
-    "react/only-export-components": [
-      "warn",
-      {
-        "allowConstantExport": true
-      }
-    ],
     "react/react-compiler": "error",
     "typescript/no-non-null-asserted-optional-chain": "off",
     "no-restricted-globals": [
       "error",
       {
         "name": "location",
-        "message": "Use wouter's useLocation()"
+        "message": "useLocation()"
       }
     ],
     "no-restricted-properties": [
@@ -26,17 +20,17 @@
       {
         "object": "window",
         "property": "location",
-        "message": "Use wouter's useLocation()"
+        "message": "useLocation()"
       },
       {
         "object": "document",
         "property": "location",
-        "message": "Use wouter's useLocation()"
+        "message": "useLocation()"
       },
       {
         "object": "globalThis",
         "property": "location",
-        "message": "Use wouter's useLocation()"
+        "message": "useLocation()"
       }
     ]
   }

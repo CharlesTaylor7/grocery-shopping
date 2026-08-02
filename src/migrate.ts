@@ -1,4 +1,5 @@
 export const VERSION = 7;
+export const DB_NAME = "groceries";
 
 export function migrate(event: IDBVersionChangeEvent): IDBDatabase {
   const db: IDBDatabase = (event.target as any).result;

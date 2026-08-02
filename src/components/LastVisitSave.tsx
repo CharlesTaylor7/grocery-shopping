@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { useLocation } from "wouter";
+import { useLocation } from "@tanstack/react-router";
 
 export default function LastVisitSave() {
-  const route = useLocation();
+  const { pathname: route } = useLocation();
   useEffect(() => {
     if (route.endsWith("/") || route.startsWith("/auth")) return;
 

@@ -2,15 +2,15 @@
 // allows signout
 // prompts for signup or login
 import { authClient } from "@/auth";
-import { Link, useLocation, useNavigate } from "wouter";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 
 export default function LoginPrompt() {
-  const location = useLocation();
+  const { pathname: location } = useLocation();
   const navigate = useNavigate();
   const session = authClient.useSession();
   function logout() {
     authClient.signOut();
-    navigate("/auth/login");
+    navigate({ to: "/auth/login" });
   }
 
   if (session.data) {

@@ -1,9 +1,11 @@
-import preact from "@preact/preset-vite";
-import { defineConfig } from "vite";
-import tailwindcss from "@tailwindcss/vite";
-import alias from "@rollup/plugin-alias";
 import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
+import { defineConfig } from "vite";
+import tailwindcss from "@tailwindcss/vite";
+import { tanstackRouter } from '@tanstack/router-plugin/vite'
+import react, { reactCompilerPreset } from '@vitejs/plugin-react'
+import babel from '@rolldown/plugin-babel'
+
 
 function getCommitSHA() {
   return execSync("git rev-parse --short HEAD").toString().trim();
@@ -23,18 +25,17 @@ export default defineConfig(({ command }) => ({
       : '"dev"',
   },
   plugins: [
-    preact({ reactAliasesEnabled: false }),
+    tanstackRouter({
+      target: 'react',
+      autoCodeSpliting: true
+    }),
+    react(),
+    babel({ presets: [reactCompilerPreset()] }),
     tailwindcss(),
   ],
   base: "/grocery-shopping/",
   resolve: {
     tsconfigPaths: true,
-    alias: {
-      "react/client": "preact/compat",
-      react: "preact/compat",
-      "react-dom": "preact/compat",
-      "react/jsx-runtime": "preact/jsx-runtime",
-    },
   },
   worker: {
     format: "es",
@@ -48,19 +49,7 @@ export default defineConfig(({ command }) => ({
     cssMinify: false,
     rolldownOptions: {
       plugins: [
-        alias({
-          entries: [
-            { find: "react/client", replacement: "preact/compat" },
-            { find: "react", replacement: "preact/compat" },
-            { find: "react-dom", replacement: "preact/compat" },
-            { find: "react/jsx-runtime", replacement: "preact/jsx-runtime" },
-          ],
-        }),
       ],
-      optimization: {
-        inlineConst: false,
-        pifeForModuleWrappers: false,
-      },
       output: {
         minify: false,
         manualChunks(id: string) {

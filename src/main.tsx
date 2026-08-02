@@ -1,9 +1,14 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "@/components/App";
 import { ENABLE_SERVICE_WORKER, SENTRY_DSN } from "@/config";
 import * as Sentry from "@sentry/browser";
 import "@/styles.css";
+import { RouterProvider, createHashHistory, createRouter, Router } from '@tanstack/react-router'
+import { routeTree } from "@/routeTree.gen";
+
+const hashHistory = createHashHistory()
+
+const router = createRouter({ routeTree, history: hashHistory })
 
 if (import.meta.env.PROD) {
   Sentry.init({
@@ -25,6 +30,6 @@ if (ENABLE_SERVICE_WORKER) {
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
+    <RouterProvider router={router} />
   </StrictMode>,
 );

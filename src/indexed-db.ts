@@ -1,8 +1,8 @@
-import { migrate, VERSION } from "@/migrate.ts";
+import { migrate, DB_NAME, VERSION } from "@/migrate.ts";
 
 export function openIndexedDB(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open("groceries", VERSION);
+    const request = indexedDB.open(DB_NAME, VERSION);
     request.onerror = (event) => {
       reject(event);
     };
@@ -10,8 +10,7 @@ export function openIndexedDB(): Promise<IDBDatabase> {
       resolve((event.target! as any).result);
     };
     request.onupgradeneeded = (event) => {
-      const db = migrate(event);
-      resolve(db);
+      migrate(event);
     };
   });
 }
