@@ -4,6 +4,7 @@ import SyncActionProvider from "@/components/SyncActionProvider";
 import { SYNC_MODE } from "@/config";
 import LastVisitSave from "@/components/LastVisitSave";
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+import ClickMe from '@/components/ClickMe';
 
 
 
@@ -27,19 +28,24 @@ function RootComponent() {
   return (
     <SyncActionProvider mode={SYNC_MODE}>
       {/* nav */}
-      <div className="p-2 flex gap-2">
-        <Link to="/store" className="[&.active]:font-bold">
-          Stores
-        </Link>
-        <Link to="/auth/login" className="[&.active]:font-bold">
-          Login
-        </Link>
-        <Link to="/auth/signup" className="[&.active]:font-bold">
-          Signup
-        </Link>
-        <Link to="/auth/signout" className="[&.active]:font-bold">
-          Logout
-        </Link>
+
+      <div className='flex justify-between items-center p-2'>
+        <div className="flex gap-2">
+          <Link to="/store" className="[&.active]:font-bold">
+            Stores
+          </Link>
+          <Link to="/auth/login" className="[&.active]:font-bold">
+            Login
+          </Link>
+          <Link to="/auth/signup" className="[&.active]:font-bold">
+            Signup
+          </Link>
+          <Link to="/auth/signout" className="[&.active]:font-bold">
+            Logout
+          </Link>
+
+        </div>
+        <ClickMe class />
       </div>
       <hr />
       {/* body */}
