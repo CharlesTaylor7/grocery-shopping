@@ -2,7 +2,6 @@ import { n as __toESM } from "./rolldown-runtime-DBMA93yC.js";
 import { i as require_react } from "./@dnd-kit/accessibility-BX73M05g.js";
 import { t as require_client } from "./react-dom-BfQNMHPu.js";
 import { d as CSS, g as require_react_dom, i as closestCenter, l as useSensor, r as PointerSensor, t as DndContext, u as useSensors } from "./@dnd-kit/core-HCsU9H8M.js";
-import { n as captureMessage, t as init } from "./@sentry/browser-BaaCLekR.js";
 import { a as createFileRoute, c as useNavigate, i as Outlet, l as require_jsx_runtime, n as RouterProvider, o as createRootRoute, r as createRouter, s as Link, t as useLocation } from "./@tanstack/react-router-0MzEfOEg.js";
 import { n as createHashHistory } from "./@tanstack/history-uEhFT_8-.js";
 import { t as require_compiler_runtime } from "./react-3z6xboo-.js";
@@ -49,7 +48,6 @@ import { t as Temporal } from "./temporal-polyfill-Dsm9fIVe.js";
 //#region src/config.ts
 var import_react = /* @__PURE__ */ __toESM(require_react(), 1);
 var import_client = require_client();
-var SENTRY_DSN = "https://fa9d710195c2565a103aad3fd04bed54@o4511832287674368.ingest.us.sentry.io/4511832294817792";
 var NEON_AUTH_URL = "https://ep-red-morning-awzkc1lp.neonauth.c-12.us-east-1.aws.neon.tech/neondb/auth";
 var NEON_DATA_URL = "https://ep-red-morning-awzkc1lp.apirest.c-12.us-east-1.aws.neon.tech/neondb/rest/v1";
 var SYNC_MODE = "main-loop";
@@ -95,9 +93,7 @@ var AuthClient = class {
 			credentials: "include"
 		});
 		console.log(response.status);
-		captureMessage(`status: ${response.status}`);
 		const body = await response.text();
-		captureMessage(body);
 		return JSON.parse(body).token;
 	}
 	async getSession() {
@@ -368,7 +364,7 @@ var syncAtom = atom(SyncModel.new({ useIndexedDB: false }));
 //#endregion
 //#region src/sync-worker.ts?worker
 function WorkerWrapper(options) {
-	return new Worker("/grocery-shopping/assets/sync-worker-CxOpjRYg.js", {
+	return new Worker("/grocery-shopping/assets/sync-worker-Cf0z_O5O.js", {
 		type: "module",
 		name: options?.name
 	});
@@ -475,6 +471,25 @@ function LastVisitSave() {
 }
 
 //#endregion
+//#region src/components/toast.tsx
+function toast(render) {
+	toast$1.custom((id) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_jsx_runtime.Fragment, { children: render(() => toast$1.dismiss(id)) }));
+}
+
+//#endregion
+//#region src/components/ClickMe.tsx
+function ClickMe_default() {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+		className: "btn btn-accent",
+		onClick: () => toast(() => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+			className: "p-3 bg-base-300 rounded-full",
+			children: "greetings traveler"
+		})),
+		children: "Click Me"
+	});
+}
+
+//#endregion
 //#region src/routes/__root.tsx
 var Route$8 = createRootRoute({
 	component: RootComponent,
@@ -512,29 +527,32 @@ function RootComponent() {
 	let t1;
 	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
 		t0 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			className: "p-2 flex gap-2",
-			children: [
-				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
-					to: "/store",
-					className: "[&.active]:font-bold",
-					children: "Stores"
-				}),
-				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
-					to: "/auth/login",
-					className: "[&.active]:font-bold",
-					children: "Login"
-				}),
-				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
-					to: "/auth/signup",
-					className: "[&.active]:font-bold",
-					children: "Signup"
-				}),
-				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
-					to: "/auth/signout",
-					className: "[&.active]:font-bold",
-					children: "Logout"
-				})
-			]
+			className: "flex justify-between items-center p-2",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "flex gap-2",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+						to: "/store",
+						className: "[&.active]:font-bold",
+						children: "Stores"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+						to: "/auth/login",
+						className: "[&.active]:font-bold",
+						children: "Login"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+						to: "/auth/signup",
+						className: "[&.active]:font-bold",
+						children: "Signup"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+						to: "/auth/signout",
+						className: "[&.active]:font-bold",
+						children: "Logout"
+					})
+				]
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ClickMe_default, { class: true })]
 		});
 		t1 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("hr", {});
 		$[0] = t0;
@@ -586,16 +604,10 @@ function RouteComponent$6() {
 	const $ = (0, import_compiler_runtime.c)(1);
 	let t0;
 	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
-		t0 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("ul", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", { children: ["Version: ", "2026-08-02_0"] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", { children: ["Git Commit: ", "f44b8e2"] })] });
+		t0 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("ul", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", { children: ["Version: ", "2026-08-02_1"] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", { children: ["Git Commit: ", "687d89a"] })] });
 		$[0] = t0;
 	} else t0 = $[0];
 	return t0;
-}
-
-//#endregion
-//#region src/components/toast.tsx
-function toast(render) {
-	toast$1.custom((id) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_jsx_runtime.Fragment, { children: render(() => toast$1.dismiss(id)) }));
 }
 
 //#endregion
@@ -1598,11 +1610,6 @@ var hashHistory = createHashHistory();
 var router = createRouter({
 	routeTree,
 	history: hashHistory
-});
-init({
-	dsn: SENTRY_DSN,
-	release: "2026-08-02_0",
-	initialScope: { tags: { git_commit: "f44b8e2" } }
 });
 if (false) navigator.serviceWorker.register("/grocery-shopping/service-worker.js").catch(console.error);
 (0, import_client.createRoot)(document.getElementById("root")).render(/* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.StrictMode, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(RouterProvider, { router }) }));

@@ -1168,6 +1168,12 @@
       opacity: .2;
     }
 
+    .btn-accent {
+      --btn-color: var(--color-accent);
+      --btn-fg: var(--color-accent-content);
+      --btn-soft-bg: initial;
+    }
+
     .btn-primary {
       --btn-color: var(--color-primary);
       --btn-fg: var(--color-primary-content);
@@ -1249,8 +1255,16 @@
     flex-direction: row;
   }
 
+  .items-center {
+    align-items: center;
+  }
+
   .items-start {
     align-items: flex-start;
+  }
+
+  .justify-between {
+    justify-content: space-between;
   }
 
   .gap-2 {
@@ -1267,6 +1281,14 @@
 
   .overflow-y-scroll {
     overflow-y: scroll;
+  }
+
+  .rounded-full {
+    border-radius: 3.40282e38px;
+  }
+
+  .bg-base-300 {
+    background-color: var(--color-base-300);
   }
 
   .p-2 {
