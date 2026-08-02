@@ -1,9 +1,161 @@
-import { C as x, E as X, S as q, b as d, d as gn, g as A, i as $, l as _n, n as LiveRegion, r as useAnnouncement, s as N, t as HiddenText, v as T, w as y, x as h, y as _ } from "./accessibility-BA1htokQ.js";
+import { n as __toESM, t as __commonJSMin } from "../rolldown-runtime-DBMA93yC.js";
+import { i as require_react, n as LiveRegion, r as useAnnouncement, t as HiddenText } from "./accessibility-BX73M05g.js";
 
-//#region node_modules/.pnpm/@dnd-kit+utilities@3.2.2_@preact+compat@18.3.2_preact@10.29.7_/node_modules/@dnd-kit/utilities/dist/utilities.esm.js
+//#region node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom.production.js
+var require_react_dom_production = /* @__PURE__ */ __commonJSMin(((exports) => {
+	var React = require_react();
+	function formatProdErrorMessage(code) {
+		var url = "https://react.dev/errors/" + code;
+		if (1 < arguments.length) {
+			url += "?args[]=" + encodeURIComponent(arguments[1]);
+			for (var i = 2; i < arguments.length; i++) url += "&args[]=" + encodeURIComponent(arguments[i]);
+		}
+		return "Minified React error #" + code + "; visit " + url + " for the full message or use the non-minified dev environment for full errors and additional helpful warnings.";
+	}
+	function noop() {}
+	var Internals = {
+		d: {
+			f: noop,
+			r: function() {
+				throw Error(formatProdErrorMessage(522));
+			},
+			D: noop,
+			C: noop,
+			L: noop,
+			m: noop,
+			X: noop,
+			S: noop,
+			M: noop
+		},
+		p: 0,
+		findDOMNode: null
+	};
+	var REACT_PORTAL_TYPE = Symbol.for("react.portal");
+	function createPortal$1(children, containerInfo, implementation) {
+		var key = 3 < arguments.length && void 0 !== arguments[3] ? arguments[3] : null;
+		return {
+			$$typeof: REACT_PORTAL_TYPE,
+			key: null == key ? null : "" + key,
+			children,
+			containerInfo,
+			implementation
+		};
+	}
+	var ReactSharedInternals = React.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;
+	function getCrossOriginStringAs(as, input) {
+		if ("font" === as) return "";
+		if ("string" === typeof input) return "use-credentials" === input ? input : "";
+	}
+	exports.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE = Internals;
+	exports.createPortal = function(children, container) {
+		var key = 2 < arguments.length && void 0 !== arguments[2] ? arguments[2] : null;
+		if (!container || 1 !== container.nodeType && 9 !== container.nodeType && 11 !== container.nodeType) throw Error(formatProdErrorMessage(299));
+		return createPortal$1(children, container, null, key);
+	};
+	exports.flushSync = function(fn) {
+		var previousTransition = ReactSharedInternals.T, previousUpdatePriority = Internals.p;
+		try {
+			if (ReactSharedInternals.T = null, Internals.p = 2, fn) return fn();
+		} finally {
+			ReactSharedInternals.T = previousTransition, Internals.p = previousUpdatePriority, Internals.d.f();
+		}
+	};
+	exports.preconnect = function(href, options) {
+		"string" === typeof href && (options ? (options = options.crossOrigin, options = "string" === typeof options ? "use-credentials" === options ? options : "" : void 0) : options = null, Internals.d.C(href, options));
+	};
+	exports.prefetchDNS = function(href) {
+		"string" === typeof href && Internals.d.D(href);
+	};
+	exports.preinit = function(href, options) {
+		if ("string" === typeof href && options && "string" === typeof options.as) {
+			var as = options.as, crossOrigin = getCrossOriginStringAs(as, options.crossOrigin), integrity = "string" === typeof options.integrity ? options.integrity : void 0, fetchPriority = "string" === typeof options.fetchPriority ? options.fetchPriority : void 0;
+			"style" === as ? Internals.d.S(href, "string" === typeof options.precedence ? options.precedence : void 0, {
+				crossOrigin,
+				integrity,
+				fetchPriority
+			}) : "script" === as && Internals.d.X(href, {
+				crossOrigin,
+				integrity,
+				fetchPriority,
+				nonce: "string" === typeof options.nonce ? options.nonce : void 0
+			});
+		}
+	};
+	exports.preinitModule = function(href, options) {
+		if ("string" === typeof href) if ("object" === typeof options && null !== options) {
+			if (null == options.as || "script" === options.as) {
+				var crossOrigin = getCrossOriginStringAs(options.as, options.crossOrigin);
+				Internals.d.M(href, {
+					crossOrigin,
+					integrity: "string" === typeof options.integrity ? options.integrity : void 0,
+					nonce: "string" === typeof options.nonce ? options.nonce : void 0
+				});
+			}
+		} else options ?? Internals.d.M(href);
+	};
+	exports.preload = function(href, options) {
+		if ("string" === typeof href && "object" === typeof options && null !== options && "string" === typeof options.as) {
+			var as = options.as, crossOrigin = getCrossOriginStringAs(as, options.crossOrigin);
+			Internals.d.L(href, as, {
+				crossOrigin,
+				integrity: "string" === typeof options.integrity ? options.integrity : void 0,
+				nonce: "string" === typeof options.nonce ? options.nonce : void 0,
+				type: "string" === typeof options.type ? options.type : void 0,
+				fetchPriority: "string" === typeof options.fetchPriority ? options.fetchPriority : void 0,
+				referrerPolicy: "string" === typeof options.referrerPolicy ? options.referrerPolicy : void 0,
+				imageSrcSet: "string" === typeof options.imageSrcSet ? options.imageSrcSet : void 0,
+				imageSizes: "string" === typeof options.imageSizes ? options.imageSizes : void 0,
+				media: "string" === typeof options.media ? options.media : void 0
+			});
+		}
+	};
+	exports.preloadModule = function(href, options) {
+		if ("string" === typeof href) if (options) {
+			var crossOrigin = getCrossOriginStringAs(options.as, options.crossOrigin);
+			Internals.d.m(href, {
+				as: "string" === typeof options.as && "script" !== options.as ? options.as : void 0,
+				crossOrigin,
+				integrity: "string" === typeof options.integrity ? options.integrity : void 0
+			});
+		} else Internals.d.m(href);
+	};
+	exports.requestFormReset = function(form) {
+		Internals.d.r(form);
+	};
+	exports.unstable_batchedUpdates = function(fn, a) {
+		return fn(a);
+	};
+	exports.useFormState = function(action, initialState, permalink) {
+		return ReactSharedInternals.H.useFormState(action, initialState, permalink);
+	};
+	exports.useFormStatus = function() {
+		return ReactSharedInternals.H.useHostTransitionStatus();
+	};
+	exports.version = "19.2.8";
+}));
+
+//#endregion
+//#region node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/index.js
+var require_react_dom = /* @__PURE__ */ __commonJSMin(((exports, module) => {
+	function checkDCE() {
+		if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === "undefined" || typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE !== "function") return;
+		try {
+			__REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE(checkDCE);
+		} catch (err) {
+			console.error(err);
+		}
+	}
+	checkDCE();
+	module.exports = require_react_dom_production();
+}));
+
+//#endregion
+//#region node_modules/.pnpm/@dnd-kit+utilities@3.2.2_react@19.2.8/node_modules/@dnd-kit/utilities/dist/utilities.esm.js
+var import_react_dom = /* @__PURE__ */ __toESM(require_react_dom());
+var import_react = /* @__PURE__ */ __toESM(require_react());
 function useCombinedRefs() {
 	for (var _len = arguments.length, refs = new Array(_len), _key = 0; _key < _len; _key++) refs[_key] = arguments[_key];
-	return T(() => (node) => {
+	return (0, import_react.useMemo)(() => (node) => {
 		refs.forEach((ref) => ref(node));
 	}, refs);
 }
@@ -41,22 +193,22 @@ function getOwnerDocument(target) {
 	if (isHTMLElement(target) || isSVGElement(target)) return target.ownerDocument;
 	return document;
 }
-var useIsomorphicLayoutEffect = canUseDOM ? _ : h;
+var useIsomorphicLayoutEffect = canUseDOM ? import_react.useLayoutEffect : import_react.useEffect;
 function useEvent(handler) {
-	const handlerRef = A(handler);
+	const handlerRef = (0, import_react.useRef)(handler);
 	useIsomorphicLayoutEffect(() => {
 		handlerRef.current = handler;
 	});
-	return q(function() {
+	return (0, import_react.useCallback)(function() {
 		for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) args[_key] = arguments[_key];
 		return handlerRef.current == null ? void 0 : handlerRef.current(...args);
 	}, []);
 }
 function useInterval() {
-	const intervalRef = A(null);
-	return [q((listener, duration) => {
+	const intervalRef = (0, import_react.useRef)(null);
+	return [(0, import_react.useCallback)((listener, duration) => {
 		intervalRef.current = setInterval(listener, duration);
-	}, []), q(() => {
+	}, []), (0, import_react.useCallback)(() => {
 		if (intervalRef.current !== null) {
 			clearInterval(intervalRef.current);
 			intervalRef.current = null;
@@ -65,15 +217,15 @@ function useInterval() {
 }
 function useLatestValue(value, dependencies) {
 	if (dependencies === void 0) dependencies = [value];
-	const valueRef = A(value);
+	const valueRef = (0, import_react.useRef)(value);
 	useIsomorphicLayoutEffect(() => {
 		if (valueRef.current !== value) valueRef.current = value;
 	}, dependencies);
 	return valueRef;
 }
 function useLazyMemo(callback, dependencies) {
-	const valueRef = A();
-	return T(() => {
+	const valueRef = (0, import_react.useRef)();
+	return (0, import_react.useMemo)(() => {
 		const newValue = callback(valueRef.current);
 		valueRef.current = newValue;
 		return newValue;
@@ -81,22 +233,22 @@ function useLazyMemo(callback, dependencies) {
 }
 function useNodeRef(onChange) {
 	const onChangeHandler = useEvent(onChange);
-	const node = A(null);
-	return [node, q((element) => {
+	const node = (0, import_react.useRef)(null);
+	return [node, (0, import_react.useCallback)((element) => {
 		if (element !== node.current) onChangeHandler?.(element, node.current);
 		node.current = element;
 	}, [])];
 }
 function usePrevious(value) {
-	const ref = A();
-	h(() => {
+	const ref = (0, import_react.useRef)();
+	(0, import_react.useEffect)(() => {
 		ref.current = value;
 	}, [value]);
 	return ref.current;
 }
 var ids = {};
 function useUniqueId(prefix, value) {
-	return T(() => {
+	return (0, import_react.useMemo)(() => {
 		if (value) return value;
 		const id = ids[prefix] == null ? 0 : ids[prefix] + 1;
 		ids[prefix] = id;
@@ -180,22 +332,22 @@ function findFirstFocusableNode(element) {
 }
 
 //#endregion
-//#region node_modules/.pnpm/@dnd-kit+core@6.3.1_@preact+compat@18.3.2_preact@10.29.7__@preact+compat@18.3.2_preact@10.29.7_/node_modules/@dnd-kit/core/dist/core.esm.js
-var DndMonitorContext = /*#__PURE__*/ X(null);
+//#region node_modules/.pnpm/@dnd-kit+core@6.3.1_react-dom@19.2.8_react@19.2.8__react@19.2.8/node_modules/@dnd-kit/core/dist/core.esm.js
+var DndMonitorContext = /*#__PURE__*/ (0, import_react.createContext)(null);
 function useDndMonitor(listener) {
-	const registerListener = x(DndMonitorContext);
-	h(() => {
+	const registerListener = (0, import_react.useContext)(DndMonitorContext);
+	(0, import_react.useEffect)(() => {
 		if (!registerListener) throw new Error("useDndMonitor must be used within a children of <DndContext>");
 		return registerListener(listener);
 	}, [listener, registerListener]);
 }
 function useDndMonitorProvider() {
-	const [listeners] = d(() => /* @__PURE__ */ new Set());
-	const registerListener = q((listener) => {
+	const [listeners] = (0, import_react.useState)(() => /* @__PURE__ */ new Set());
+	const registerListener = (0, import_react.useCallback)((listener) => {
 		listeners.add(listener);
 		return () => listeners.delete(listener);
 	}, [listeners]);
-	return [q((_ref) => {
+	return [(0, import_react.useCallback)((_ref) => {
 		let { type, event } = _ref;
 		listeners.forEach((listener) => {
 			var _listener$type;
@@ -228,11 +380,11 @@ function Accessibility(_ref) {
 	let { announcements = defaultAnnouncements, container, hiddenTextDescribedById, screenReaderInstructions = defaultScreenReaderInstructions } = _ref;
 	const { announce, announcement } = useAnnouncement();
 	const liveRegionId = useUniqueId("DndLiveRegion");
-	const [mounted, setMounted] = d(false);
-	h(() => {
+	const [mounted, setMounted] = (0, import_react.useState)(false);
+	(0, import_react.useEffect)(() => {
 		setMounted(true);
 	}, []);
-	useDndMonitor(T(() => ({
+	useDndMonitor((0, import_react.useMemo)(() => ({
 		onDragStart(_ref2) {
 			let { active } = _ref2;
 			announce(announcements.onDragStart({ active }));
@@ -267,14 +419,14 @@ function Accessibility(_ref) {
 		}
 	}), [announce, announcements]));
 	if (!mounted) return null;
-	const markup = gn.createElement(gn.Fragment, null, gn.createElement(HiddenText, {
+	const markup = import_react.createElement(import_react.Fragment, null, import_react.createElement(HiddenText, {
 		id: hiddenTextDescribedById,
 		value: screenReaderInstructions.draggable
-	}), gn.createElement(LiveRegion, {
+	}), import_react.createElement(LiveRegion, {
 		id: liveRegionId,
 		announcement
 	}));
-	return container ? $(markup, container) : markup;
+	return container ? (0, import_react_dom.createPortal)(markup, container) : markup;
 }
 var Action;
 (function(Action) {
@@ -289,14 +441,14 @@ var Action;
 })(Action || (Action = {}));
 function noop() {}
 function useSensor(sensor, options) {
-	return T(() => ({
+	return (0, import_react.useMemo)(() => ({
 		sensor,
 		options: options != null ? options : {}
 	}), [sensor, options]);
 }
 function useSensors() {
 	for (var _len = arguments.length, sensors = new Array(_len), _key = 0; _key < _len; _key++) sensors[_key] = arguments[_key];
-	return T(() => [...sensors].filter((sensor) => sensor != null), [...sensors]);
+	return (0, import_react.useMemo)(() => [...sensors].filter((sensor) => sensor != null), [...sensors]);
 }
 var defaultCoordinates = /*#__PURE__*/ Object.freeze({
 	x: 0,
@@ -1161,15 +1313,15 @@ function useAutoScroller(_ref) {
 		disabled: !enabled
 	});
 	const [setAutoScrollInterval, clearAutoScrollInterval] = useInterval();
-	const scrollSpeed = A({
+	const scrollSpeed = (0, import_react.useRef)({
 		x: 0,
 		y: 0
 	});
-	const scrollDirection = A({
+	const scrollDirection = (0, import_react.useRef)({
 		x: 0,
 		y: 0
 	});
-	const rect = T(() => {
+	const rect = (0, import_react.useMemo)(() => {
 		switch (activator) {
 			case AutoScrollActivator.Pointer: return pointerCoordinates ? {
 				top: pointerCoordinates.y,
@@ -1184,16 +1336,16 @@ function useAutoScroller(_ref) {
 		draggingRect,
 		pointerCoordinates
 	]);
-	const scrollContainerRef = A(null);
-	const autoScroll = q(() => {
+	const scrollContainerRef = (0, import_react.useRef)(null);
+	const autoScroll = (0, import_react.useCallback)(() => {
 		const scrollContainer = scrollContainerRef.current;
 		if (!scrollContainer) return;
 		const scrollLeft = scrollSpeed.current.x * scrollDirection.current.x;
 		const scrollTop = scrollSpeed.current.y * scrollDirection.current.y;
 		scrollContainer.scrollBy(scrollLeft, scrollTop);
 	}, []);
-	const sortedScrollableAncestors = T(() => order === TraversalOrder.TreeOrder ? [...scrollableAncestors].reverse() : scrollableAncestors, [order, scrollableAncestors]);
-	h(() => {
+	const sortedScrollableAncestors = (0, import_react.useMemo)(() => order === TraversalOrder.TreeOrder ? [...scrollableAncestors].reverse() : scrollableAncestors, [order, scrollableAncestors]);
+	(0, import_react.useEffect)(() => {
 		if (!enabled || !scrollableAncestors.length || !rect) {
 			clearAutoScrollInterval();
 			return;
@@ -1287,7 +1439,7 @@ function useCachedNode(draggableNodes, id) {
 	}, [node, id]);
 }
 function useCombineActivators(sensors, getSyntheticHandler) {
-	return T(() => sensors.reduce((accumulator, sensor) => {
+	return (0, import_react.useMemo)(() => sensors.reduce((accumulator, sensor) => {
 		const { sensor: Sensor } = sensor;
 		const sensorActivators = Sensor.activators.map((activator) => ({
 			eventName: activator.eventName,
@@ -1309,12 +1461,12 @@ var MeasuringFrequency;
 var defaultValue = /*#__PURE__*/ new Map();
 function useDroppableMeasuring(containers, _ref) {
 	let { dragging, dependencies, config } = _ref;
-	const [queue, setQueue] = d(null);
+	const [queue, setQueue] = (0, import_react.useState)(null);
 	const { frequency, measure, strategy } = config;
-	const containersRef = A(containers);
+	const containersRef = (0, import_react.useRef)(containers);
 	const disabled = isDisabled();
 	const disabledRef = useLatestValue(disabled);
-	const measureDroppableContainers = q(function(ids) {
+	const measureDroppableContainers = (0, import_react.useCallback)(function(ids) {
 		if (ids === void 0) ids = [];
 		if (disabledRef.current) return;
 		setQueue((value) => {
@@ -1322,7 +1474,7 @@ function useDroppableMeasuring(containers, _ref) {
 			return value.concat(ids.filter((id) => !value.includes(id)));
 		});
 	}, [disabledRef]);
-	const timeoutId = A(null);
+	const timeoutId = (0, import_react.useRef)(null);
 	const droppableRects = useLazyMemo((previousValue) => {
 		if (disabled && !dragging) return defaultValue;
 		if (!previousValue || previousValue === defaultValue || containersRef.current !== containers || queue != null) {
@@ -1348,17 +1500,17 @@ function useDroppableMeasuring(containers, _ref) {
 		disabled,
 		measure
 	]);
-	h(() => {
+	(0, import_react.useEffect)(() => {
 		containersRef.current = containers;
 	}, [containers]);
-	h(() => {
+	(0, import_react.useEffect)(() => {
 		if (disabled) return;
 		measureDroppableContainers();
 	}, [dragging, disabled]);
-	h(() => {
+	(0, import_react.useEffect)(() => {
 		if (queue && queue.length > 0) setQueue(null);
 	}, [JSON.stringify(queue)]);
-	h(() => {
+	(0, import_react.useEffect)(() => {
 		if (disabled || typeof frequency !== "number" || timeoutId.current !== null) return;
 		timeoutId.current = setTimeout(() => {
 			measureDroppableContainers();
@@ -1396,12 +1548,12 @@ function useInitialRect(node, measure) {
 function useMutationObserver(_ref) {
 	let { callback, disabled } = _ref;
 	const handleMutations = useEvent(callback);
-	const mutationObserver = T(() => {
+	const mutationObserver = (0, import_react.useMemo)(() => {
 		if (disabled || typeof window === "undefined" || typeof window.MutationObserver === "undefined") return;
 		const { MutationObserver } = window;
 		return new MutationObserver(handleMutations);
 	}, [handleMutations, disabled]);
-	h(() => {
+	(0, import_react.useEffect)(() => {
 		return () => mutationObserver == null ? void 0 : mutationObserver.disconnect();
 	}, [mutationObserver]);
 	return mutationObserver;
@@ -1409,12 +1561,12 @@ function useMutationObserver(_ref) {
 function useResizeObserver(_ref) {
 	let { callback, disabled } = _ref;
 	const handleResize = useEvent(callback);
-	const resizeObserver = T(() => {
+	const resizeObserver = (0, import_react.useMemo)(() => {
 		if (disabled || typeof window === "undefined" || typeof window.ResizeObserver === "undefined") return;
 		const { ResizeObserver } = window;
 		return new ResizeObserver(handleResize);
 	}, [disabled]);
-	h(() => {
+	(0, import_react.useEffect)(() => {
 		return () => resizeObserver == null ? void 0 : resizeObserver.disconnect();
 	}, [resizeObserver]);
 	return resizeObserver;
@@ -1424,7 +1576,7 @@ function defaultMeasure(element) {
 }
 function useRect(element, measure, fallbackRect) {
 	if (measure === void 0) measure = defaultMeasure;
-	const [rect, setRect] = d(null);
+	const [rect, setRect] = (0, import_react.useState)(null);
 	function measureRect() {
 		setRect((currentRect) => {
 			if (!element) return null;
@@ -1468,21 +1620,21 @@ function useRectDelta(rect) {
 }
 var defaultValue$1 = [];
 function useScrollableAncestors(node) {
-	const previousNode = A(node);
+	const previousNode = (0, import_react.useRef)(node);
 	const ancestors = useLazyMemo((previousValue) => {
 		if (!node) return defaultValue$1;
 		if (previousValue && previousValue !== defaultValue$1 && node && previousNode.current && node.parentNode === previousNode.current.parentNode) return previousValue;
 		return getScrollableAncestors(node);
 	}, [node]);
-	h(() => {
+	(0, import_react.useEffect)(() => {
 		previousNode.current = node;
 	}, [node]);
 	return ancestors;
 }
 function useScrollOffsets(elements) {
-	const [scrollCoordinates, setScrollCoordinates] = d(null);
-	const prevElements = A(elements);
-	const handleScroll = q((event) => {
+	const [scrollCoordinates, setScrollCoordinates] = (0, import_react.useState)(null);
+	const prevElements = (0, import_react.useRef)(elements);
+	const handleScroll = (0, import_react.useCallback)((event) => {
 		const scrollingElement = getScrollableElement(event.target);
 		if (!scrollingElement) return;
 		setScrollCoordinates((scrollCoordinates) => {
@@ -1491,7 +1643,7 @@ function useScrollOffsets(elements) {
 			return new Map(scrollCoordinates);
 		});
 	}, []);
-	h(() => {
+	(0, import_react.useEffect)(() => {
 		const previousElements = prevElements.current;
 		if (elements !== previousElements) {
 			cleanup(previousElements);
@@ -1516,18 +1668,18 @@ function useScrollOffsets(elements) {
 			});
 		}
 	}, [handleScroll, elements]);
-	return T(() => {
+	return (0, import_react.useMemo)(() => {
 		if (elements.length) return scrollCoordinates ? Array.from(scrollCoordinates.values()).reduce((acc, coordinates) => add(acc, coordinates), defaultCoordinates) : getScrollOffsets(elements);
 		return defaultCoordinates;
 	}, [elements, scrollCoordinates]);
 }
 function useScrollOffsetsDelta(scrollOffsets, dependencies) {
 	if (dependencies === void 0) dependencies = [];
-	const initialScrollOffsets = A(null);
-	h(() => {
+	const initialScrollOffsets = (0, import_react.useRef)(null);
+	(0, import_react.useEffect)(() => {
 		initialScrollOffsets.current = null;
 	}, dependencies);
-	h(() => {
+	(0, import_react.useEffect)(() => {
 		const hasScrollOffsets = scrollOffsets !== defaultCoordinates;
 		if (hasScrollOffsets && !initialScrollOffsets.current) initialScrollOffsets.current = scrollOffsets;
 		if (!hasScrollOffsets && initialScrollOffsets.current) initialScrollOffsets.current = null;
@@ -1535,7 +1687,7 @@ function useScrollOffsetsDelta(scrollOffsets, dependencies) {
 	return initialScrollOffsets.current ? subtract(scrollOffsets, initialScrollOffsets.current) : defaultCoordinates;
 }
 function useSensorSetup(sensors) {
-	h(() => {
+	(0, import_react.useEffect)(() => {
 		if (!canUseDOM) return;
 		const teardownFns = sensors.map((_ref) => {
 			let { sensor } = _ref;
@@ -1550,7 +1702,7 @@ function useSensorSetup(sensors) {
 	}));
 }
 function useSyntheticListeners(listeners, id) {
-	return T(() => {
+	return (0, import_react.useMemo)(() => {
 		return listeners.reduce((acc, _ref) => {
 			let { eventName, handler } = _ref;
 			acc[eventName] = (event) => {
@@ -1561,14 +1713,14 @@ function useSyntheticListeners(listeners, id) {
 	}, [listeners, id]);
 }
 function useWindowRect(element) {
-	return T(() => element ? getWindowClientRect(element) : null, [element]);
+	return (0, import_react.useMemo)(() => element ? getWindowClientRect(element) : null, [element]);
 }
 var defaultValue$2 = [];
 function useRects(elements, measure) {
 	if (measure === void 0) measure = getClientRect;
 	const [firstElement] = elements;
 	const windowRect = useWindowRect(firstElement ? getWindow(firstElement) : null);
-	const [rects, setRects] = d(defaultValue$2);
+	const [rects, setRects] = (0, import_react.useState)(defaultValue$2);
 	function measureRects() {
 		setRects(() => {
 			if (!elements.length) return defaultValue$2;
@@ -1591,8 +1743,8 @@ function getMeasurableNode(node) {
 }
 function useDragOverlayMeasuring(_ref) {
 	let { measure } = _ref;
-	const [rect, setRect] = d(null);
-	const resizeObserver = useResizeObserver({ callback: q((entries) => {
+	const [rect, setRect] = (0, import_react.useState)(null);
+	const resizeObserver = useResizeObserver({ callback: (0, import_react.useCallback)((entries) => {
 		for (const { target } of entries) if (isHTMLElement(target)) {
 			setRect((rect) => {
 				const newRect = measure(target);
@@ -1605,13 +1757,14 @@ function useDragOverlayMeasuring(_ref) {
 			break;
 		}
 	}, [measure]) });
-	const [nodeRef, setRef] = useNodeRef(q((element) => {
+	const handleNodeChange = (0, import_react.useCallback)((element) => {
 		const node = getMeasurableNode(element);
 		resizeObserver?.disconnect();
 		if (node) resizeObserver?.observe(node);
 		setRect(node ? measure(node) : null);
-	}, [measure, resizeObserver]));
-	return T(() => ({
+	}, [measure, resizeObserver]);
+	const [nodeRef, setRef] = useNodeRef(handleNodeChange);
+	return (0, import_react.useMemo)(() => ({
 		nodeRef,
 		rect,
 		setRef
@@ -1691,8 +1844,8 @@ var defaultInternalContext = {
 	over: null,
 	measureDroppableContainers: noop
 };
-var InternalContext = /*#__PURE__*/ X(defaultInternalContext);
-var PublicContext = /*#__PURE__*/ X(defaultPublicContext);
+var InternalContext = /*#__PURE__*/ (0, import_react.createContext)(defaultInternalContext);
+var PublicContext = /*#__PURE__*/ (0, import_react.createContext)(defaultPublicContext);
 function getInitialState() {
 	return {
 		draggable: {
@@ -1797,10 +1950,10 @@ function reducer(state, action) {
 }
 function RestoreFocus(_ref) {
 	let { disabled } = _ref;
-	const { active, activatorEvent, draggableNodes } = x(InternalContext);
+	const { active, activatorEvent, draggableNodes } = (0, import_react.useContext)(InternalContext);
 	const previousActivatorEvent = usePrevious(activatorEvent);
 	const previousActiveId = usePrevious(active == null ? void 0 : active.id);
-	h(() => {
+	(0, import_react.useEffect)(() => {
 		if (disabled) return;
 		if (!activatorEvent && previousActivatorEvent && previousActiveId != null) {
 			if (!isKeyboardEvent(previousActivatorEvent)) return;
@@ -1839,7 +1992,7 @@ function applyModifiers(modifiers, _ref) {
 	}, transform) : transform;
 }
 function useMeasuringConfiguration(config) {
-	return T(() => ({
+	return (0, import_react.useMemo)(() => ({
 		draggable: {
 			...defaultMeasuringConfiguration.draggable,
 			...config == null ? void 0 : config.draggable
@@ -1860,7 +2013,7 @@ function useMeasuringConfiguration(config) {
 }
 function useLayoutShiftScrollCompensation(_ref) {
 	let { activeNode, measure, initialRect, config = true } = _ref;
-	const initialized = A(false);
+	const initialized = (0, import_react.useRef)(false);
 	const { x, y } = typeof config === "boolean" ? {
 		x: config,
 		y: config
@@ -1892,7 +2045,7 @@ function useLayoutShiftScrollCompensation(_ref) {
 		measure
 	]);
 }
-var ActiveDraggableContext = /*#__PURE__*/ X({
+var ActiveDraggableContext = /*#__PURE__*/ (0, import_react.createContext)({
 	...defaultCoordinates,
 	scaleX: 1,
 	scaleY: 1
@@ -1903,20 +2056,20 @@ var Status;
 	Status[Status["Initializing"] = 1] = "Initializing";
 	Status[Status["Initialized"] = 2] = "Initialized";
 })(Status || (Status = {}));
-var DndContext = /*#__PURE__*/ N(function DndContext(_ref) {
+var DndContext = /*#__PURE__*/ (0, import_react.memo)(function DndContext(_ref) {
 	var _sensorContext$curren, _dragOverlay$nodeRef$, _dragOverlay$rect, _over$rect;
 	let { id, accessibility, autoScroll = true, children, sensors = defaultSensors, collisionDetection = rectIntersection, measuring, modifiers, ...props } = _ref;
-	const [state, dispatch] = y(reducer, void 0, getInitialState);
+	const [state, dispatch] = (0, import_react.useReducer)(reducer, void 0, getInitialState);
 	const [dispatchMonitorEvent, registerMonitorListener] = useDndMonitorProvider();
-	const [status, setStatus] = d(Status.Uninitialized);
+	const [status, setStatus] = (0, import_react.useState)(Status.Uninitialized);
 	const isInitialized = status === Status.Initialized;
 	const { draggable: { active: activeId, nodes: draggableNodes, translate }, droppable: { containers: droppableContainers } } = state;
 	const node = activeId != null ? draggableNodes.get(activeId) : null;
-	const activeRects = A({
+	const activeRects = (0, import_react.useRef)({
 		initial: null,
 		translated: null
 	});
-	const active = T(() => {
+	const active = (0, import_react.useMemo)(() => {
 		var _node$data;
 		return activeId != null ? {
 			id: activeId,
@@ -1924,12 +2077,12 @@ var DndContext = /*#__PURE__*/ N(function DndContext(_ref) {
 			rect: activeRects
 		} : null;
 	}, [activeId, node]);
-	const activeRef = A(null);
-	const [activeSensor, setActiveSensor] = d(null);
-	const [activatorEvent, setActivatorEvent] = d(null);
+	const activeRef = (0, import_react.useRef)(null);
+	const [activeSensor, setActiveSensor] = (0, import_react.useState)(null);
+	const [activatorEvent, setActivatorEvent] = (0, import_react.useState)(null);
 	const latestProps = useLatestValue(props, Object.values(props));
 	const draggableDescribedById = useUniqueId("DndDescribedBy", id);
-	const enabledDroppableContainers = T(() => droppableContainers.getEnabled(), [droppableContainers]);
+	const enabledDroppableContainers = (0, import_react.useMemo)(() => droppableContainers.getEnabled(), [droppableContainers]);
 	const measuringConfiguration = useMeasuringConfiguration(measuring);
 	const { droppableRects, measureDroppableContainers, measuringScheduled } = useDroppableMeasuring(enabledDroppableContainers, {
 		dragging: isInitialized,
@@ -1937,7 +2090,7 @@ var DndContext = /*#__PURE__*/ N(function DndContext(_ref) {
 		config: measuringConfiguration.droppable
 	});
 	const activeNode = useCachedNode(draggableNodes, activeId);
-	const activationCoordinates = T(() => activatorEvent ? getEventCoordinates(activatorEvent) : null, [activatorEvent]);
+	const activationCoordinates = (0, import_react.useMemo)(() => activatorEvent ? getEventCoordinates(activatorEvent) : null, [activatorEvent]);
 	const autoScrollOptions = getAutoScrollerOptions();
 	const initialActiveNodeRect = useInitialRect(activeNode, measuringConfiguration.draggable.measure);
 	useLayoutShiftScrollCompensation({
@@ -1948,7 +2101,7 @@ var DndContext = /*#__PURE__*/ N(function DndContext(_ref) {
 	});
 	const activeNodeRect = useRect(activeNode, measuringConfiguration.draggable.measure, initialActiveNodeRect);
 	const containerNodeRect = useRect(activeNode ? activeNode.parentElement : null);
-	const sensorContext = A({
+	const sensorContext = (0, import_react.useRef)({
 		activatorEvent: null,
 		active: null,
 		activeNode,
@@ -2004,10 +2157,10 @@ var DndContext = /*#__PURE__*/ N(function DndContext(_ref) {
 		pointerCoordinates
 	}) : null;
 	const overId = getFirstCollision(collisions, "id");
-	const [over, setOver] = d(null);
+	const [over, setOver] = (0, import_react.useState)(null);
 	const transform = adjustScale(usesDragOverlay ? modifiedTranslate : add(modifiedTranslate, activeNodeScrollDelta), (_over$rect = over == null ? void 0 : over.rect) != null ? _over$rect : null, activeNodeRect);
-	const activeSensorRef = A(null);
-	const instantiateSensor = q((event, _ref2) => {
+	const activeSensorRef = (0, import_react.useRef)(null);
+	const instantiateSensor = (0, import_react.useCallback)((event, _ref2) => {
 		let { sensor: Sensor, options } = _ref2;
 		if (activeRef.current == null) return;
 		const activeNode = draggableNodes.get(activeRef.current);
@@ -2058,7 +2211,7 @@ var DndContext = /*#__PURE__*/ N(function DndContext(_ref) {
 						rect: activeRects
 					}
 				};
-				_n(() => {
+				(0, import_react_dom.unstable_batchedUpdates)(() => {
 					onDragStart?.(event);
 					setStatus(Status.Initializing);
 					dispatch({
@@ -2102,7 +2255,7 @@ var DndContext = /*#__PURE__*/ N(function DndContext(_ref) {
 					}
 				}
 				activeRef.current = null;
-				_n(() => {
+				(0, import_react_dom.unstable_batchedUpdates)(() => {
 					dispatch({ type });
 					setStatus(Status.Uninitialized);
 					setOver(null);
@@ -2122,7 +2275,7 @@ var DndContext = /*#__PURE__*/ N(function DndContext(_ref) {
 			};
 		}
 	}, [draggableNodes]);
-	const activators = useCombineActivators(sensors, q((handler, sensor) => {
+	const activators = useCombineActivators(sensors, (0, import_react.useCallback)((handler, sensor) => {
 		return (event, active) => {
 			const nativeEvent = event.nativeEvent;
 			const activeDraggableNode = draggableNodes.get(active);
@@ -2139,7 +2292,7 @@ var DndContext = /*#__PURE__*/ N(function DndContext(_ref) {
 	useIsomorphicLayoutEffect(() => {
 		if (activeNodeRect && status === Status.Initializing) setStatus(Status.Initialized);
 	}, [activeNodeRect, status]);
-	h(() => {
+	(0, import_react.useEffect)(() => {
 		const { onDragMove } = latestProps.current;
 		const { active, activatorEvent, collisions, over } = sensorContext.current;
 		if (!active || !activatorEvent) return;
@@ -2153,7 +2306,7 @@ var DndContext = /*#__PURE__*/ N(function DndContext(_ref) {
 			},
 			over
 		};
-		_n(() => {
+		(0, import_react_dom.unstable_batchedUpdates)(() => {
 			onDragMove?.(event);
 			dispatchMonitorEvent({
 				type: "onDragMove",
@@ -2161,7 +2314,7 @@ var DndContext = /*#__PURE__*/ N(function DndContext(_ref) {
 			});
 		});
 	}, [scrollAdjustedTranslate.x, scrollAdjustedTranslate.y]);
-	h(() => {
+	(0, import_react.useEffect)(() => {
 		const { active, activatorEvent, collisions, droppableContainers, scrollAdjustedTranslate } = sensorContext.current;
 		if (!active || activeRef.current == null || !activatorEvent || !scrollAdjustedTranslate) return;
 		const { onDragOver } = latestProps.current;
@@ -2182,7 +2335,7 @@ var DndContext = /*#__PURE__*/ N(function DndContext(_ref) {
 			},
 			over
 		};
-		_n(() => {
+		(0, import_react_dom.unstable_batchedUpdates)(() => {
 			setOver(over);
 			onDragOver?.(event);
 			dispatchMonitorEvent({
@@ -2233,7 +2386,7 @@ var DndContext = /*#__PURE__*/ N(function DndContext(_ref) {
 		scrollableAncestors,
 		scrollableAncestorRects
 	});
-	const publicContext = T(() => {
+	const publicContext = (0, import_react.useMemo)(() => {
 		return {
 			active,
 			activeNode,
@@ -2272,7 +2425,7 @@ var DndContext = /*#__PURE__*/ N(function DndContext(_ref) {
 		measuringScheduled,
 		windowRect
 	]);
-	const internalContext = T(() => {
+	const internalContext = (0, import_react.useMemo)(() => {
 		return {
 			activatorEvent,
 			activators,
@@ -2295,7 +2448,7 @@ var DndContext = /*#__PURE__*/ N(function DndContext(_ref) {
 		over,
 		measureDroppableContainers
 	]);
-	return gn.createElement(DndMonitorContext.Provider, { value: registerMonitorListener }, gn.createElement(InternalContext.Provider, { value: internalContext }, gn.createElement(PublicContext.Provider, { value: publicContext }, gn.createElement(ActiveDraggableContext.Provider, { value: transform }, children)), gn.createElement(RestoreFocus, { disabled: (accessibility == null ? void 0 : accessibility.restoreFocus) === false })), gn.createElement(Accessibility, {
+	return import_react.createElement(DndMonitorContext.Provider, { value: registerMonitorListener }, import_react.createElement(InternalContext.Provider, { value: internalContext }, import_react.createElement(PublicContext.Provider, { value: publicContext }, import_react.createElement(ActiveDraggableContext.Provider, { value: transform }, children)), import_react.createElement(RestoreFocus, { disabled: (accessibility == null ? void 0 : accessibility.restoreFocus) === false })), import_react.createElement(Accessibility, {
 		...accessibility,
 		hiddenTextDescribedById: draggableDescribedById
 	}));
@@ -2310,16 +2463,16 @@ var DndContext = /*#__PURE__*/ N(function DndContext(_ref) {
 		return { enabled };
 	}
 });
-var NullContext = /*#__PURE__*/ X(null);
+var NullContext = /*#__PURE__*/ (0, import_react.createContext)(null);
 var defaultRole = "button";
 var ID_PREFIX = "Draggable";
 function useDraggable(_ref) {
 	let { id, data, disabled = false, attributes } = _ref;
 	const key = useUniqueId(ID_PREFIX);
-	const { activators, activatorEvent, active, activeNodeRect, ariaDescribedById, draggableNodes, over } = x(InternalContext);
+	const { activators, activatorEvent, active, activeNodeRect, ariaDescribedById, draggableNodes, over } = (0, import_react.useContext)(InternalContext);
 	const { role = defaultRole, roleDescription = "draggable", tabIndex = 0 } = attributes != null ? attributes : {};
 	const isDragging = (active == null ? void 0 : active.id) === id;
-	const transform = x(isDragging ? ActiveDraggableContext : NullContext);
+	const transform = (0, import_react.useContext)(isDragging ? ActiveDraggableContext : NullContext);
 	const [node, setNodeRef] = useNodeRef();
 	const [activatorNode, setActivatorNodeRef] = useNodeRef();
 	const listeners = useSyntheticListeners(activators, id);
@@ -2341,7 +2494,7 @@ function useDraggable(_ref) {
 		active,
 		activatorEvent,
 		activeNodeRect,
-		attributes: T(() => ({
+		attributes: (0, import_react.useMemo)(() => ({
 			role,
 			tabIndex,
 			"aria-disabled": disabled,
@@ -2366,25 +2519,25 @@ function useDraggable(_ref) {
 	};
 }
 function useDndContext() {
-	return x(PublicContext);
+	return (0, import_react.useContext)(PublicContext);
 }
 var ID_PREFIX$1 = "Droppable";
 var defaultResizeObserverConfig = { timeout: 25 };
 function useDroppable(_ref) {
 	let { data, disabled = false, id, resizeObserverConfig } = _ref;
 	const key = useUniqueId(ID_PREFIX$1);
-	const { active, dispatch, over, measureDroppableContainers } = x(InternalContext);
-	const previous = A({ disabled });
-	const resizeObserverConnected = A(false);
-	const rect = A(null);
-	const callbackId = A(null);
+	const { active, dispatch, over, measureDroppableContainers } = (0, import_react.useContext)(InternalContext);
+	const previous = (0, import_react.useRef)({ disabled });
+	const resizeObserverConnected = (0, import_react.useRef)(false);
+	const rect = (0, import_react.useRef)(null);
+	const callbackId = (0, import_react.useRef)(null);
 	const { disabled: resizeObserverDisabled, updateMeasurementsFor, timeout: resizeObserverTimeout } = {
 		...defaultResizeObserverConfig,
 		...resizeObserverConfig
 	};
 	const ids = useLatestValue(updateMeasurementsFor != null ? updateMeasurementsFor : id);
 	const resizeObserver = useResizeObserver({
-		callback: q(() => {
+		callback: (0, import_react.useCallback)(() => {
 			if (!resizeObserverConnected.current) {
 				resizeObserverConnected.current = true;
 				return;
@@ -2397,22 +2550,23 @@ function useDroppable(_ref) {
 		}, [resizeObserverTimeout]),
 		disabled: resizeObserverDisabled || !active
 	});
-	const [nodeRef, setNodeRef] = useNodeRef(q((newElement, previousElement) => {
+	const handleNodeChange = (0, import_react.useCallback)((newElement, previousElement) => {
 		if (!resizeObserver) return;
 		if (previousElement) {
 			resizeObserver.unobserve(previousElement);
 			resizeObserverConnected.current = false;
 		}
 		if (newElement) resizeObserver.observe(newElement);
-	}, [resizeObserver]));
+	}, [resizeObserver]);
+	const [nodeRef, setNodeRef] = useNodeRef(handleNodeChange);
 	const dataRef = useLatestValue(data);
-	h(() => {
+	(0, import_react.useEffect)(() => {
 		if (!resizeObserver || !nodeRef.current) return;
 		resizeObserver.disconnect();
 		resizeObserverConnected.current = false;
 		resizeObserver.observe(nodeRef.current);
 	}, [nodeRef, resizeObserver]);
-	h(() => {
+	(0, import_react.useEffect)(() => {
 		dispatch({
 			type: Action.RegisterDroppable,
 			element: {
@@ -2430,7 +2584,7 @@ function useDroppable(_ref) {
 			id
 		});
 	}, [id]);
-	h(() => {
+	(0, import_react.useEffect)(() => {
 		if (disabled !== previous.current.disabled) {
 			dispatch({
 				type: Action.SetDroppableDisabled,
@@ -2457,4 +2611,4 @@ function useDroppable(_ref) {
 }
 
 //#endregion
-export { getClientRect as a, useDroppable as c, CSS as d, isKeyboardEvent as f, useUniqueId as h, closestCenter as i, useSensor as l, useIsomorphicLayoutEffect as m, KeyboardCode as n, useDndContext as o, useCombinedRefs as p, PointerSensor as r, useDraggable as s, DndContext as t, useSensors as u };
+export { getClientRect as a, useDroppable as c, CSS as d, isKeyboardEvent as f, require_react_dom as g, useUniqueId as h, closestCenter as i, useSensor as l, useIsomorphicLayoutEffect as m, KeyboardCode as n, useDndContext as o, useCombinedRefs as p, PointerSensor as r, useDraggable as s, DndContext as t, useSensors as u };

@@ -7,6 +7,7 @@
       --tw-rotate-z: initial;
       --tw-skew-x: initial;
       --tw-skew-y: initial;
+      --tw-font-weight: initial;
     }
   }
 }
@@ -21,6 +22,7 @@
     --spacing: .25rem;
     --text-xl: 1.25rem;
     --text-xl--line-height: calc(1.75 / 1.25);
+    --font-weight-bold: 700;
     --default-transition-duration: .15s;
     --default-transition-timing-function: cubic-bezier(.4, 0, .2, 1);
     --default-font-family: var(--font-sans);
@@ -1166,12 +1168,6 @@
       opacity: .2;
     }
 
-    .btn-accent {
-      --btn-color: var(--color-accent);
-      --btn-fg: var(--color-accent-content);
-      --btn-soft-bg: initial;
-    }
-
     .btn-primary {
       --btn-color: var(--color-primary);
       --btn-fg: var(--color-primary-content);
@@ -1213,16 +1209,8 @@
     display: flex;
   }
 
-  .grid {
-    display: grid;
-  }
-
   .table {
     display: table;
-  }
-
-  .h-screen {
-    height: 100vh;
   }
 
   .w-80 {
@@ -1231,10 +1219,6 @@
 
   .w-100 {
     width: calc(var(--spacing) * 100);
-  }
-
-  .w-full {
-    width: 100%;
   }
 
   .flex-1 {
@@ -1257,20 +1241,12 @@
     cursor: pointer;
   }
 
-  .grid-cols-3 {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
   .flex-col {
     flex-direction: column;
   }
 
   .flex-row {
     flex-direction: row;
-  }
-
-  .items-center {
-    align-items: center;
   }
 
   .items-start {
@@ -1293,28 +1269,12 @@
     overflow-y: scroll;
   }
 
-  .rounded-full {
-    border-radius: 3.40282e38px;
-  }
-
-  .bg-base-200 {
-    background-color: var(--color-base-200);
-  }
-
-  .bg-base-300 {
-    background-color: var(--color-base-300);
-  }
-
   .p-2 {
     padding: calc(var(--spacing) * 2);
   }
 
   .p-3 {
     padding: calc(var(--spacing) * 3);
-  }
-
-  .p-4 {
-    padding: calc(var(--spacing) * 4);
   }
 
   .px-2 {
@@ -1331,10 +1291,6 @@
 
   .text-center {
     text-align: center;
-  }
-
-  .text-right {
-    text-align: right;
   }
 
   .text-xl {
@@ -1366,6 +1322,11 @@
     transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
     transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
     transition-duration: var(--tw-duration, var(--default-transition-duration));
+  }
+
+  .\[\&\.active\]\:font-bold.active {
+    --tw-font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-bold);
   }
 }
 
@@ -1492,6 +1453,11 @@
 }
 
 @property --tw-skew-y {
+  syntax: "*";
+  inherits: false
+}
+
+@property --tw-font-weight {
   syntax: "*";
   inherits: false
 }

@@ -1,7 +1,9 @@
-import { C as x, b as d, d as gn, g as A, v as T, x as h } from "./accessibility-BA1htokQ.js";
-import { a as getClientRect, c as useDroppable, d as CSS, f as isKeyboardEvent, h as useUniqueId, m as useIsomorphicLayoutEffect, n as KeyboardCode, o as useDndContext, p as useCombinedRefs, s as useDraggable } from "./core-DUUonhBk.js";
+import { n as __toESM } from "../rolldown-runtime-DBMA93yC.js";
+import { i as require_react } from "./accessibility-BX73M05g.js";
+import { a as getClientRect, c as useDroppable, d as CSS, f as isKeyboardEvent, h as useUniqueId, m as useIsomorphicLayoutEffect, n as KeyboardCode, o as useDndContext, p as useCombinedRefs, s as useDraggable } from "./core-HCsU9H8M.js";
 
-//#region node_modules/.pnpm/@dnd-kit+sortable@10.0.0_@dnd-kit+core@6.3.1_@preact+compat@18.3.2_preact@10.29.7__@pre_bb61d69a95dd54e21d61620a911642ba/node_modules/@dnd-kit/sortable/dist/sortable.esm.js
+//#region node_modules/.pnpm/@dnd-kit+sortable@10.0.0_@dnd-kit+core@6.3.1_react-dom@19.2.8_react@19.2.8__react@19.2.8__react@19.2.8/node_modules/@dnd-kit/sortable/dist/sortable.esm.js
+var import_react = /* @__PURE__ */ __toESM(require_react());
 function arrayMove(array, from, to) {
 	const newArray = array.slice();
 	newArray.splice(to < 0 ? newArray.length + to : to, 0, newArray.splice(from, 1)[0]);
@@ -87,7 +89,7 @@ function getItemGap$1(clientRects, index, activeIndex) {
 	return nextRect ? nextRect.top - (currentRect.top + currentRect.height) : previousRect ? currentRect.top - (previousRect.top + previousRect.height) : 0;
 }
 var ID_PREFIX = "Sortable";
-var Context = /*#__PURE__*/ gn.createContext({
+var Context = /*#__PURE__*/ import_react.createContext({
 	activeIndex: -1,
 	containerId: ID_PREFIX,
 	disableTransforms: false,
@@ -106,11 +108,11 @@ function SortableContext(_ref) {
 	const { active, dragOverlay, droppableRects, over, measureDroppableContainers } = useDndContext();
 	const containerId = useUniqueId(ID_PREFIX, id);
 	const useDragOverlay = Boolean(dragOverlay.rect !== null);
-	const items = T(() => userDefinedItems.map((item) => typeof item === "object" && "id" in item ? item.id : item), [userDefinedItems]);
+	const items = (0, import_react.useMemo)(() => userDefinedItems.map((item) => typeof item === "object" && "id" in item ? item.id : item), [userDefinedItems]);
 	const isDragging = active != null;
 	const activeIndex = active ? items.indexOf(active.id) : -1;
 	const overIndex = over ? items.indexOf(over.id) : -1;
-	const previousItemsRef = A(items);
+	const previousItemsRef = (0, import_react.useRef)(items);
 	const itemsHaveChanged = !itemsEqual(items, previousItemsRef.current);
 	const disableTransforms = overIndex !== -1 && activeIndex === -1 || itemsHaveChanged;
 	const disabled = normalizeDisabled(disabledProp);
@@ -122,10 +124,10 @@ function SortableContext(_ref) {
 		isDragging,
 		measureDroppableContainers
 	]);
-	h(() => {
+	(0, import_react.useEffect)(() => {
 		previousItemsRef.current = items;
 	}, [items]);
-	const contextValue = T(() => ({
+	const contextValue = (0, import_react.useMemo)(() => ({
 		activeIndex,
 		containerId,
 		disabled,
@@ -147,7 +149,7 @@ function SortableContext(_ref) {
 		useDragOverlay,
 		strategy
 	]);
-	return gn.createElement(Context.Provider, { value: contextValue }, children);
+	return import_react.createElement(Context.Provider, { value: contextValue }, children);
 }
 var defaultNewIndexGetter = (_ref) => {
 	let { id, items, activeIndex, overIndex } = _ref;
@@ -173,8 +175,8 @@ var disabledTransition = /*#__PURE__*/ CSS.Transition.toString({
 var defaultAttributes = { roleDescription: "sortable" };
 function useDerivedTransform(_ref) {
 	let { disabled, index, node, rect } = _ref;
-	const [derivedTransform, setDerivedtransform] = d(null);
-	const previousIndex = A(index);
+	const [derivedTransform, setDerivedtransform] = (0, import_react.useState)(null);
+	const previousIndex = (0, import_react.useRef)(index);
 	useIsomorphicLayoutEffect(() => {
 		if (!disabled && index !== previousIndex.current && node.current) {
 			const initial = rect.current;
@@ -196,17 +198,17 @@ function useDerivedTransform(_ref) {
 		node,
 		rect
 	]);
-	h(() => {
+	(0, import_react.useEffect)(() => {
 		if (derivedTransform) setDerivedtransform(null);
 	}, [derivedTransform]);
 	return derivedTransform;
 }
 function useSortable(_ref) {
 	let { animateLayoutChanges = defaultAnimateLayoutChanges, attributes: userDefinedAttributes, disabled: localDisabled, data: customData, getNewIndex = defaultNewIndexGetter, id, strategy: localStrategy, resizeObserverConfig, transition = defaultTransition } = _ref;
-	const { items, containerId, activeIndex, disabled: globalDisabled, disableTransforms, sortedRects, overIndex, useDragOverlay, strategy: globalStrategy } = x(Context);
+	const { items, containerId, activeIndex, disabled: globalDisabled, disableTransforms, sortedRects, overIndex, useDragOverlay, strategy: globalStrategy } = (0, import_react.useContext)(Context);
 	const disabled = normalizeLocalDisabled(localDisabled, globalDisabled);
 	const index = items.indexOf(id);
-	const data = T(() => ({
+	const data = (0, import_react.useMemo)(() => ({
 		sortable: {
 			containerId,
 			index,
@@ -219,7 +221,7 @@ function useSortable(_ref) {
 		index,
 		items
 	]);
-	const itemsAfterCurrentSortable = T(() => items.slice(items.indexOf(id)), [items, id]);
+	const itemsAfterCurrentSortable = (0, import_react.useMemo)(() => items.slice(items.indexOf(id)), [items, id]);
 	const { rect, node, isOver, setNodeRef: setDroppableNodeRef } = useDroppable({
 		id,
 		data,
@@ -257,7 +259,7 @@ function useSortable(_ref) {
 		overIndex
 	}) : index;
 	const activeId = active == null ? void 0 : active.id;
-	const previous = A({
+	const previous = (0, import_react.useRef)({
 		activeId,
 		items,
 		newIndex,
@@ -284,7 +286,7 @@ function useSortable(_ref) {
 		node,
 		rect
 	});
-	h(() => {
+	(0, import_react.useEffect)(() => {
 		if (isSorting && previous.current.newIndex !== newIndex) previous.current.newIndex = newIndex;
 		if (containerId !== previous.current.containerId) previous.current.containerId = containerId;
 		if (items !== previous.current.items) previous.current.items = items;
@@ -294,7 +296,7 @@ function useSortable(_ref) {
 		containerId,
 		items
 	]);
-	h(() => {
+	(0, import_react.useEffect)(() => {
 		if (activeId === previous.current.activeId) return;
 		if (activeId != null && previous.current.activeId == null) {
 			previous.current.activeId = activeId;

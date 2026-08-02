@@ -1,6 +1,8 @@
-import { C as x, D as k, E as X, S as q, _ as P, d as gn, g as A, w as y, x as h } from "./@dnd-kit/accessibility-BA1htokQ.js";
+import { n as __toESM } from "./rolldown-runtime-DBMA93yC.js";
+import { i as require_react } from "./@dnd-kit/accessibility-BX73M05g.js";
 
-//#region node_modules/.pnpm/jotai@2.20.2_@babel+core@7.29.7_@babel+template@7.29.7_@preact+compat@18.3.2_preact@10.29.7__@types+react@19.2.17/node_modules/jotai/esm/vanilla/internals.mjs
+//#region node_modules/.pnpm/jotai@2.20.2_@babel+core@7.29.7_@babel+template@7.29.7_@types+react@19.2.18_react@19.2.8/node_modules/jotai/esm/vanilla/internals.mjs
+var import_react = /* @__PURE__ */ __toESM(require_react(), 1);
 function hasInitialValue(atom) {
 	return "init" in atom;
 }
@@ -575,7 +577,7 @@ function buildStore(...partialBuildingBlocks) {
 }
 
 //#endregion
-//#region node_modules/.pnpm/jotai@2.20.2_@babel+core@7.29.7_@babel+template@7.29.7_@preact+compat@18.3.2_preact@10.29.7__@types+react@19.2.17/node_modules/jotai/esm/vanilla.mjs
+//#region node_modules/.pnpm/jotai@2.20.2_@babel+core@7.29.7_@babel+template@7.29.7_@types+react@19.2.18_react@19.2.8/node_modules/jotai/esm/vanilla.mjs
 var keyCount = 0;
 function atom(read, write) {
 	const key = `atom${++keyCount}`;
@@ -609,17 +611,17 @@ function getDefaultStore() {
 }
 
 //#endregion
-//#region node_modules/.pnpm/jotai@2.20.2_@babel+core@7.29.7_@babel+template@7.29.7_@preact+compat@18.3.2_preact@10.29.7__@types+react@19.2.17/node_modules/jotai/esm/react.mjs
-var StoreContext = X(void 0);
+//#region node_modules/.pnpm/jotai@2.20.2_@babel+core@7.29.7_@babel+template@7.29.7_@types+react@19.2.18_react@19.2.8/node_modules/jotai/esm/react.mjs
+var StoreContext = (0, import_react.createContext)(void 0);
 function useStore(options) {
-	const store = x(StoreContext);
+	const store = (0, import_react.useContext)(StoreContext);
 	return (options == null ? void 0 : options.store) || store || getDefaultStore();
 }
 function Provider({ children, store }) {
-	const storeRef = A(null);
-	if (store) return k(StoreContext.Provider, { value: store }, children);
+	const storeRef = (0, import_react.useRef)(null);
+	if (store) return (0, import_react.createElement)(StoreContext.Provider, { value: store }, children);
 	if (storeRef.current === null) storeRef.current = createStore();
-	return k(StoreContext.Provider, { value: storeRef.current }, children);
+	return (0, import_react.createElement)(StoreContext.Provider, { value: storeRef.current }, children);
 }
 var isPromiseLike = (x) => typeof (x == null ? void 0 : x.then) === "function";
 var attachPromiseStatus = (promise) => {
@@ -634,7 +636,7 @@ var attachPromiseStatus = (promise) => {
 		});
 	}
 };
-var use = gn.use || ((promise) => {
+var use = import_react.use || ((promise) => {
 	if (promise.status === "pending") throw promise;
 	else if (promise.status === "fulfilled") return promise.value;
 	else if (promise.status === "rejected") throw promise.reason;
@@ -678,9 +680,9 @@ var createContinuablePromise = (store, promise, getValue) => {
 	return continuablePromise;
 };
 function useAtomValue(atom, options) {
-	const { delay, unstable_promiseStatus: promiseStatus = !gn.use } = options || {};
+	const { delay, unstable_promiseStatus: promiseStatus = !import_react.use } = options || {};
 	const store = useStore(options);
-	const [[valueFromReducer, storeFromReducer, atomFromReducer], rerender] = y((prev) => {
+	const [[valueFromReducer, storeFromReducer, atomFromReducer], rerender] = (0, import_react.useReducer)((prev) => {
 		const nextValue = store.get(atom);
 		if (Object.is(prev[0], nextValue) && prev[1] === store && prev[2] === atom) return prev;
 		return [
@@ -698,7 +700,7 @@ function useAtomValue(atom, options) {
 		rerender();
 		value = store.get(atom);
 	}
-	h(() => {
+	(0, import_react.useEffect)(() => {
 		const unsub = store.sub(atom, () => {
 			if (promiseStatus) try {
 				const value2 = store.get(atom);
@@ -740,7 +742,7 @@ function useAtomValueWithDelay<Value>(
 		delay,
 		promiseStatus
 	]);
-	P(value);
+	(0, import_react.useDebugValue)(value);
 	if (isPromiseLike(value)) {
 		const promise = createContinuablePromise(store, value, () => store.get(atom));
 		if (promiseStatus) attachPromiseStatus(promise);
@@ -750,7 +752,7 @@ function useAtomValueWithDelay<Value>(
 }
 function useSetAtom(atom, options) {
 	const store = useStore(options);
-	return q((...args) => {
+	return (0, import_react.useCallback)((...args) => {
 		return store.set(atom, ...args);
 	}, [store, atom]);
 }

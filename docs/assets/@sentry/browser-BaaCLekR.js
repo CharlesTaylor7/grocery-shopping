@@ -17,12 +17,12 @@ function getMainCarrier() {
 }
 function getSentryCarrier(carrier) {
 	const __SENTRY__ = carrier.__SENTRY__ = carrier.__SENTRY__ || {};
-	__SENTRY__.version = __SENTRY__.version || SDK_VERSION;
-	return __SENTRY__[SDK_VERSION] = __SENTRY__[SDK_VERSION] || {};
+	__SENTRY__.version = __SENTRY__.version || "10.69.0";
+	return __SENTRY__[SDK_VERSION] = __SENTRY__["10.69.0"] || {};
 }
 function getGlobalSingleton(name, creator, obj = GLOBAL_OBJ) {
 	const __SENTRY__ = obj.__SENTRY__ = obj.__SENTRY__ || {};
-	const carrier = __SENTRY__[SDK_VERSION] = __SENTRY__[SDK_VERSION] || {};
+	const carrier = __SENTRY__[SDK_VERSION] = __SENTRY__["10.69.0"] || {};
 	return carrier[name] || (carrier[name] = creator());
 }
 
@@ -138,7 +138,7 @@ function stripSentryFramesAndReverse(stack) {
 	return localStack.slice(0, STACKTRACE_FRAME_LIMIT).map((frame) => ({
 		...frame,
 		filename: frame.filename || getLastStackFrame(localStack).filename,
-		function: frame.function || UNKNOWN_FUNCTION
+		function: frame.function || "?"
 	}));
 }
 function getLastStackFrame(arr) {
@@ -416,7 +416,7 @@ function normalize(input, depth = 100, maxProperties = Infinity) {
 		return { ERROR: `**non-serializable** (${err})` };
 	}
 }
-function normalizeToSize(object, depth = 3, maxSize = 100 * 1024) {
+function normalizeToSize(object, depth = 3, maxSize = 102400) {
 	const normalized = normalize(object, depth);
 	if (jsonSize(normalized) > maxSize) return normalizeToSize(object, depth - 1, maxSize);
 	return normalized;
@@ -1141,7 +1141,8 @@ var AsyncContextStack = class {
 	}
 };
 function getAsyncContextStack() {
-	const sentry = getSentryCarrier(getMainCarrier());
+	const registry = getMainCarrier();
+	const sentry = getSentryCarrier(registry);
 	return sentry.stack = sentry.stack || new AsyncContextStack(getDefaultCurrentScope(), getDefaultIsolationScope());
 }
 function withScope$1(callback) {
@@ -1234,16 +1235,19 @@ function getExternalPropagationContext() {
 	return _externalPropagationContextProvider?.();
 }
 function getCurrentScope() {
-	return getAsyncContextStrategy(getMainCarrier()).getCurrentScope();
+	const carrier = getMainCarrier();
+	return getAsyncContextStrategy(carrier).getCurrentScope();
 }
 function getIsolationScope() {
-	return getAsyncContextStrategy(getMainCarrier()).getIsolationScope();
+	const carrier = getMainCarrier();
+	return getAsyncContextStrategy(carrier).getIsolationScope();
 }
 function getGlobalScope() {
 	return getGlobalSingleton("globalScope", () => new Scope());
 }
 function withScope(...rest) {
-	const acs = getAsyncContextStrategy(getMainCarrier());
+	const carrier = getMainCarrier();
+	const acs = getAsyncContextStrategy(carrier);
 	if (rest.length === 2) {
 		const [scope, callback] = rest;
 		if (!scope) return acs.withScope(callback);
@@ -1281,11 +1285,6 @@ var SEMANTIC_ATTRIBUTE_EXCLUSIVE_TIME = "sentry.exclusive_time";
 var GEN_AI_CONVERSATION_ID_ATTRIBUTE = "gen_ai.conversation.id";
 
 //#endregion
-//#region node_modules/.pnpm/@sentry+core@10.69.0/node_modules/@sentry/core/build/esm/tracing/spanstatus.js
-var SPAN_STATUS_UNSET = 0;
-var SPAN_STATUS_OK = 1;
-
-//#endregion
 //#region node_modules/.pnpm/@sentry+core@10.69.0/node_modules/@sentry/core/build/esm/tracing/utils.js
 var SCOPE_ON_START_SPAN_FIELD = "_sentryScope";
 var ISOLATION_SCOPE_ON_START_SPAN_FIELD = "_sentryIsolationScope";
@@ -1304,7 +1303,7 @@ function baggageHeaderToDynamicSamplingContext(baggageHeader) {
 	const baggageObject = parseBaggageHeader(baggageHeader);
 	if (!baggageObject) return;
 	const dynamicSamplingContext = Object.entries(baggageObject).reduce((acc, [key, value]) => {
-		if (key.startsWith(SENTRY_BAGGAGE_KEY_PREFIX)) {
+		if (key.startsWith("sentry-")) {
 			const nonPrefixedKey = key.slice(7);
 			acc[nonPrefixedKey] = value;
 		}
@@ -1466,7 +1465,7 @@ function convertSpanLinksForEnvelope(links) {
 	if (links && links.length > 0) return links.map(({ context: { spanId, traceId, traceFlags, ...restContext }, attributes }) => ({
 		span_id: spanId,
 		trace_id: traceId,
-		sampled: traceFlags === TRACE_FLAG_SAMPLED,
+		sampled: traceFlags === 1,
 		attributes,
 		...restContext
 	}));
@@ -1529,11 +1528,11 @@ function spanIsSentrySpan(span) {
 }
 function spanIsSampled(span) {
 	const { traceFlags } = span.spanContext();
-	return traceFlags === TRACE_FLAG_SAMPLED;
+	return traceFlags === 1;
 }
 function getStatusMessage(status) {
-	if (!status || status.code === SPAN_STATUS_UNSET) return;
-	if (status.code === SPAN_STATUS_OK) return "ok";
+	if (!status || status.code === 0) return;
+	if (status.code === 1) return "ok";
 	return status.message || "internal_error";
 }
 var ROOT_SPAN_FIELD = "_sentryRootSpan";
@@ -1618,7 +1617,7 @@ function getDynamicSamplingContextFromClient(trace_id, client) {
 	const options = client.getOptions();
 	const { publicKey: public_key } = client.getDsn() || {};
 	const dsc = {
-		environment: options.environment || DEFAULT_ENVIRONMENT,
+		environment: options.environment || "production",
 		release: options.release,
 		public_key,
 		trace_id,
@@ -1638,7 +1637,7 @@ function getDynamicSamplingContextFromSpan(span) {
 	const rootSpanJson = spanToJSON(rootSpan);
 	const rootSpanAttributes = rootSpanJson.data;
 	const traceState = rootSpan.spanContext().traceState;
-	const rootSpanSampleRate = traceState?.get("sentry.sample_rate") ?? rootSpanAttributes[SEMANTIC_ATTRIBUTE_SENTRY_SAMPLE_RATE] ?? rootSpanAttributes[SEMANTIC_ATTRIBUTE_SENTRY_PREVIOUS_TRACE_SAMPLE_RATE];
+	const rootSpanSampleRate = traceState?.get("sentry.sample_rate") ?? rootSpanAttributes["sentry.sample_rate"] ?? rootSpanAttributes["sentry.previous_trace_sample_rate"];
 	function applyLocalSampleRateToDsc(dsc2) {
 		if (typeof rootSpanSampleRate === "number" || typeof rootSpanSampleRate === "string") dsc2.sample_rate = `${rootSpanSampleRate}`;
 		return dsc2;
@@ -1659,7 +1658,7 @@ function getDynamicSamplingContextFromSpan(span) {
 	const dscOnTraceState = traceStateDsc && baggageHeaderToDynamicSamplingContext(traceStateDsc);
 	if (dscOnTraceState) return applyLocalSampleRateToDsc(dscOnTraceState);
 	const dsc = getDynamicSamplingContextFromClient(span.spanContext().traceId, client);
-	const source = rootSpanAttributes[SEMANTIC_ATTRIBUTE_SENTRY_SOURCE] ?? rootSpanAttributes["sentry.segment.name.source"];
+	const source = rootSpanAttributes["sentry.source"] ?? rootSpanAttributes["sentry.segment.name.source"];
 	const name = rootSpanJson.description;
 	if (source !== "url" && name) dsc.transaction = name;
 	if (hasSpansEnabled()) {
@@ -1804,11 +1803,13 @@ function _enhanceEventWithSdkInfo(event, newSdkInfo) {
 }
 function createSessionEnvelope(session, dsn, metadata, tunnel) {
 	const sdkInfo = getSdkMetadataForEnvelopeHeader(metadata);
-	return createEnvelope({
+	const envelopeHeaders = {
 		sent_at: new Date(safeDateNow()).toISOString(),
 		...sdkInfo && { sdk: sdkInfo },
 		...!!tunnel && dsn && { dsn: dsnToString(dsn) }
-	}, ["aggregates" in session ? [{ type: "sessions" }, session] : [{ type: "session" }, session.toJSON()]]);
+	};
+	const envelopeItem = "aggregates" in session ? [{ type: "sessions" }, session] : [{ type: "session" }, session.toJSON()];
+	return createEnvelope(envelopeHeaders, [envelopeItem]);
 }
 function createEventEnvelope(event, dsn, metadata, tunnel) {
 	const sdkInfo = getSdkMetadataForEnvelopeHeader(metadata);
@@ -1904,7 +1905,8 @@ function applySpanToEvent(event, span) {
 		dynamicSamplingContext: getDynamicSamplingContextFromSpan(span),
 		...event.sdkProcessingMetadata
 	};
-	const transactionName = spanToJSON(getRootSpan(span)).description;
+	const rootSpan = getRootSpan(span);
+	const transactionName = spanToJSON(rootSpan).description;
 	if (transactionName && !event.transaction && event.type === "transaction") event.transaction = transactionName;
 }
 function applyFingerprintToEvent(event, fingerprint) {
@@ -2122,7 +2124,7 @@ function prepareEvent(options, event, hint, scope, client, isolationScope) {
 }
 function applyClientOptions(event, options) {
 	const { environment, release, dist, maxValueLength } = options;
-	event.environment = event.environment || environment || DEFAULT_ENVIRONMENT;
+	event.environment = event.environment || environment || "production";
 	if (!event.release && release) event.release = release;
 	if (!event.dist && dist) event.dist = dist;
 	const request = event.request;
@@ -2289,7 +2291,7 @@ function _getIngestEndpoint(dsn) {
 	return `${getBaseApiEndpoint(dsn)}${dsn.projectId}/envelope/`;
 }
 function _encodedAuth(dsn, sdkInfo) {
-	const params = { sentry_version: SENTRY_API_VERSION };
+	const params = { sentry_version: "7" };
 	if (dsn.publicKey) params.sentry_key = dsn.publicKey;
 	if (sdkInfo) params.sentry_client = `${sdkInfo.name}/${sdkInfo.version}`;
 	return new URLSearchParams(params).toString();
@@ -2485,7 +2487,7 @@ function _getBufferMap() {
 //#endregion
 //#region node_modules/.pnpm/@sentry+core@10.69.0/node_modules/@sentry/core/build/esm/tracing/spans/spanJsonToStreamedSpan.js
 function spanJsonToSerializedStreamedSpan(span) {
-	return streamedSpanJsonToSerializedSpan({
+	const streamedSpan = {
 		trace_id: span.trace_id,
 		span_id: span.span_id,
 		parent_span_id: span.parent_span_id,
@@ -2496,7 +2498,8 @@ function spanJsonToSerializedStreamedSpan(span) {
 		is_segment: false,
 		attributes: { ...span.data },
 		links: span.links
-	});
+	};
+	return streamedSpanJsonToSerializedSpan(streamedSpan);
 }
 
 //#endregion
@@ -2560,7 +2563,7 @@ function makePromiseBuffer(limit = 100) {
 
 //#endregion
 //#region node_modules/.pnpm/@sentry+core@10.69.0/node_modules/@sentry/core/build/esm/utils/ratelimit.js
-var DEFAULT_RETRY_AFTER = 60 * 1e3;
+var DEFAULT_RETRY_AFTER = 6e4;
 function parseRetryAfterHeader(header, now = safeDateNow()) {
 	const headerDelay = parseInt(`${header}`, 10);
 	if (!isNaN(headerDelay)) return headerDelay * 1e3;
@@ -2588,14 +2591,14 @@ function updateRateLimits(limits, { statusCode, headers }, now = safeDateNow()) 
 		} else updatedRateLimits[category] = now + delay;
 	}
 	else if (retryAfterHeader) updatedRateLimits.all = now + parseRetryAfterHeader(retryAfterHeader, now);
-	else if (statusCode === 429) updatedRateLimits.all = now + 60 * 1e3;
+	else if (statusCode === 429) updatedRateLimits.all = now + 6e4;
 	return updatedRateLimits;
 }
 
 //#endregion
 //#region node_modules/.pnpm/@sentry+core@10.69.0/node_modules/@sentry/core/build/esm/transports/base.js
 var DEFAULT_TRANSPORT_BUFFER_SIZE = 64;
-function createTransport(options, makeRequest, buffer = makePromiseBuffer(options.bufferSize || DEFAULT_TRANSPORT_BUFFER_SIZE)) {
+function createTransport(options, makeRequest, buffer = makePromiseBuffer(options.bufferSize || 64)) {
 	let rateLimits = {};
 	const flush = (timeout) => buffer.drain(timeout);
 	function send(envelope) {
@@ -2705,8 +2708,8 @@ function convertSpanJsonToTransactionEvent(span) {
 			origin: span.origin,
 			data: {
 				...span.data,
-				...span.profile_id && { [SEMANTIC_ATTRIBUTE_PROFILE_ID]: span.profile_id },
-				...span.exclusive_time && { [SEMANTIC_ATTRIBUTE_EXCLUSIVE_TIME]: span.exclusive_time }
+				...span.profile_id && { ["sentry.profile_id"]: span.profile_id },
+				...span.exclusive_time && { ["sentry.exclusive_time"]: span.exclusive_time }
 			}
 		} },
 		measurements: span.measurements
@@ -2887,7 +2890,7 @@ var Client = class {
 		this._outcomes = {};
 		this._hooks = {};
 		this._eventProcessors = [];
-		this._promiseBuffer = makePromiseBuffer(options.transportOptions?.bufferSize ?? DEFAULT_TRANSPORT_BUFFER_SIZE);
+		this._promiseBuffer = makePromiseBuffer(options.transportOptions?.bufferSize ?? 64);
 		this._dataCollection = resolveDataCollectionOptions(options);
 		if (options.dsn) this._dsn = makeDsn(options.dsn);
 		else DEBUG_BUILD$2 && debug.warn("No DSN provided, client will not send events.");
@@ -4186,7 +4189,8 @@ function getErrorPropertyFromObject(obj) {
 var BrowserClient = class extends Client {
 	constructor(options) {
 		const opts = applyDefaultOptions(options);
-		applySdkMetadata(opts, "browser", ["browser"], WINDOW$1.SENTRY_SDK_SOURCE || getSDKSource());
+		const sdkSource = WINDOW$1.SENTRY_SDK_SOURCE || getSDKSource();
+		applySdkMetadata(opts, "browser", ["browser"], sdkSource);
 		super(opts);
 		const { userInfo } = this.getDataCollectionOptions();
 		if (opts._metadata?.sdk) opts._metadata.sdk.settings = {
@@ -4566,12 +4570,13 @@ function instrumentXHR() {
 				try {
 					xhrInfo.status_code = xhrOpenThisArg.status;
 				} catch {}
-				triggerHandlers("xhr", {
+				const handlerData = {
 					endTimestamp: timestampInSeconds() * 1e3,
 					startTimestamp,
 					xhr: xhrOpenThisArg,
 					virtualError
-				});
+				};
+				triggerHandlers("xhr", handlerData);
 				xhrOpenThisArg.removeEventListener("readystatechange", onreadystatechangeHandler);
 			}
 		};
@@ -4592,10 +4597,11 @@ function instrumentXHR() {
 		const sentryXhrData = sendThisArg[SENTRY_XHR_DATA_KEY];
 		if (!sentryXhrData) return originalSend.apply(sendThisArg, sendArgArray);
 		if (sendArgArray[0] !== void 0) sentryXhrData.body = sendArgArray[0];
-		triggerHandlers("xhr", {
+		const handlerData = {
 			startTimestamp: timestampInSeconds() * 1e3,
 			xhr: sendThisArg
-		});
+		};
+		triggerHandlers("xhr", handlerData);
 		return originalSend.apply(sendThisArg, sendArgArray);
 	} });
 }
@@ -4666,7 +4672,7 @@ var GECKO_PRIORITY = 50;
 function createFrame(filename, func, lineno, colno) {
 	const frame = {
 		filename,
-		function: func === "<anonymous>" ? UNKNOWN_FUNCTION : func,
+		function: func === "<anonymous>" ? "?" : func,
 		in_app: true
 	};
 	if (lineno !== void 0) frame.lineno = lineno;
@@ -4686,7 +4692,7 @@ var chromeStackParserFn = (line) => {
 	const noFnParts = chromeRegexNoFnName.exec(line);
 	if (noFnParts) {
 		const [, filename, line2, col] = noFnParts;
-		return createFrame(filename, UNKNOWN_FUNCTION, +line2, +col);
+		return createFrame(filename, "?", +line2, +col);
 	}
 	const parts = chromeRegex.exec(line);
 	if (parts) {
@@ -4698,7 +4704,7 @@ var chromeStackParserFn = (line) => {
 				parts[4] = subMatch[3];
 			}
 		}
-		const [func, filename] = extractSafariExtensionDetails(parts[1] || UNKNOWN_FUNCTION, parts[2]);
+		const [func, filename] = extractSafariExtensionDetails(parts[1] || "?", parts[2]);
 		return createFrame(filename, func, parts[3] ? +parts[3] : void 0, parts[4] ? +parts[4] : void 0);
 	}
 };
@@ -4718,7 +4724,7 @@ var gecko = (line) => {
 			}
 		}
 		let filename = parts[3];
-		let func = parts[1] || UNKNOWN_FUNCTION;
+		let func = parts[1] || "?";
 		[func, filename] = extractSafariExtensionDetails(func, filename);
 		return createFrame(filename, func, parts[4] ? +parts[4] : void 0, parts[5] ? +parts[5] : void 0);
 	}
@@ -4729,7 +4735,7 @@ var defaultStackParser = createStackParser(...defaultStackLineParsers);
 var extractSafariExtensionDetails = (func, filename) => {
 	const isSafariExtension = func.indexOf("safari-extension") !== -1;
 	const isSafariWebExtension = func.indexOf("safari-web-extension") !== -1;
-	return isSafariExtension || isSafariWebExtension ? [func.indexOf("@") !== -1 ? func.split("@")[0] : UNKNOWN_FUNCTION, isSafariExtension ? `safari-extension:${filename}` : `safari-web-extension:${filename}`] : [func, filename];
+	return isSafariExtension || isSafariWebExtension ? [func.indexOf("@") !== -1 ? func.split("@")[0] : "?", isSafariExtension ? `safari-extension:${filename}` : `safari-web-extension:${filename}`] : [func, filename];
 };
 
 //#endregion
@@ -5206,7 +5212,7 @@ function _enhanceEventWithInitialFrame(event, url, lineno, colno) {
 		colno,
 		lineno,
 		filename: getFilenameFromUrl(url) ?? getLocationHref(),
-		function: UNKNOWN_FUNCTION,
+		function: "?",
 		in_app: true
 	});
 	return event;
@@ -5268,7 +5274,8 @@ var _linkedErrorsIntegration = ((options = {}) => {
 	return {
 		name: INTEGRATION_NAME,
 		preprocessEvent(event, hint, client) {
-			applyAggregateErrorsToEvent(exceptionFromError, client.getOptions().stackParser, key, limit, event, hint);
+			const options2 = client.getOptions();
+			applyAggregateErrorsToEvent(exceptionFromError, options2.stackParser, key, limit, event, hint);
 		}
 	};
 });

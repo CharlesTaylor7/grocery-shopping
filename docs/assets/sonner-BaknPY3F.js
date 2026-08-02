@@ -1,6 +1,10 @@
-import { d as gn } from "./@dnd-kit/accessibility-BA1htokQ.js";
+import { n as __toESM } from "./rolldown-runtime-DBMA93yC.js";
+import { i as require_react } from "./@dnd-kit/accessibility-BX73M05g.js";
+import { g as require_react_dom } from "./@dnd-kit/core-HCsU9H8M.js";
 
-//#region node_modules/.pnpm/sonner@2.0.7_@preact+compat@18.3.2_preact@10.29.7__@preact+compat@18.3.2_preact@10.29.7_/node_modules/sonner/dist/index.mjs
+//#region node_modules/.pnpm/sonner@2.0.7_react-dom@19.2.8_react@19.2.8__react@19.2.8/node_modules/sonner/dist/index.mjs
+var import_react = /* @__PURE__ */ __toESM(require_react(), 1);
+var import_react_dom = /* @__PURE__ */ __toESM(require_react_dom(), 1);
 function __insertCSS(code) {
 	if (!code || typeof document == "undefined") return;
 	let head = document.head || document.getElementsByTagName("head")[0];
@@ -20,59 +24,59 @@ var getAsset = (type) => {
 };
 var bars = Array(12).fill(0);
 var Loader = ({ visible, className }) => {
-	return /*#__PURE__*/ gn.createElement("div", {
+	return /*#__PURE__*/ import_react.createElement("div", {
 		className: ["sonner-loading-wrapper", className].filter(Boolean).join(" "),
 		"data-visible": visible
-	}, /*#__PURE__*/ gn.createElement("div", { className: "sonner-spinner" }, bars.map((_, i) => /*#__PURE__*/ gn.createElement("div", {
+	}, /*#__PURE__*/ import_react.createElement("div", { className: "sonner-spinner" }, bars.map((_, i) => /*#__PURE__*/ import_react.createElement("div", {
 		className: "sonner-loading-bar",
 		key: `spinner-bar-${i}`
 	}))));
 };
-var SuccessIcon = /*#__PURE__*/ gn.createElement("svg", {
+var SuccessIcon = /*#__PURE__*/ import_react.createElement("svg", {
 	xmlns: "http://www.w3.org/2000/svg",
 	viewBox: "0 0 20 20",
 	fill: "currentColor",
 	height: "20",
 	width: "20"
-}, /*#__PURE__*/ gn.createElement("path", {
+}, /*#__PURE__*/ import_react.createElement("path", {
 	fillRule: "evenodd",
 	d: "M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z",
 	clipRule: "evenodd"
 }));
-var WarningIcon = /*#__PURE__*/ gn.createElement("svg", {
+var WarningIcon = /*#__PURE__*/ import_react.createElement("svg", {
 	xmlns: "http://www.w3.org/2000/svg",
 	viewBox: "0 0 24 24",
 	fill: "currentColor",
 	height: "20",
 	width: "20"
-}, /*#__PURE__*/ gn.createElement("path", {
+}, /*#__PURE__*/ import_react.createElement("path", {
 	fillRule: "evenodd",
 	d: "M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a.75.75 0 100-1.5.75.75 0 000 1.5z",
 	clipRule: "evenodd"
 }));
-var InfoIcon = /*#__PURE__*/ gn.createElement("svg", {
+var InfoIcon = /*#__PURE__*/ import_react.createElement("svg", {
 	xmlns: "http://www.w3.org/2000/svg",
 	viewBox: "0 0 20 20",
 	fill: "currentColor",
 	height: "20",
 	width: "20"
-}, /*#__PURE__*/ gn.createElement("path", {
+}, /*#__PURE__*/ import_react.createElement("path", {
 	fillRule: "evenodd",
 	d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z",
 	clipRule: "evenodd"
 }));
-var ErrorIcon = /*#__PURE__*/ gn.createElement("svg", {
+var ErrorIcon = /*#__PURE__*/ import_react.createElement("svg", {
 	xmlns: "http://www.w3.org/2000/svg",
 	viewBox: "0 0 20 20",
 	fill: "currentColor",
 	height: "20",
 	width: "20"
-}, /*#__PURE__*/ gn.createElement("path", {
+}, /*#__PURE__*/ import_react.createElement("path", {
 	fillRule: "evenodd",
 	d: "M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-5a.75.75 0 01.75.75v4.5a.75.75 0 01-1.5 0v-4.5A.75.75 0 0110 5zm0 10a1 1 0 100-2 1 1 0 000 2z",
 	clipRule: "evenodd"
 }));
-var CloseIcon = /*#__PURE__*/ gn.createElement("svg", {
+var CloseIcon = /*#__PURE__*/ import_react.createElement("svg", {
 	xmlns: "http://www.w3.org/2000/svg",
 	width: "12",
 	height: "12",
@@ -82,20 +86,20 @@ var CloseIcon = /*#__PURE__*/ gn.createElement("svg", {
 	strokeWidth: "1.5",
 	strokeLinecap: "round",
 	strokeLinejoin: "round"
-}, /*#__PURE__*/ gn.createElement("line", {
+}, /*#__PURE__*/ import_react.createElement("line", {
 	x1: "18",
 	y1: "6",
 	x2: "6",
 	y2: "18"
-}), /*#__PURE__*/ gn.createElement("line", {
+}), /*#__PURE__*/ import_react.createElement("line", {
 	x1: "6",
 	y1: "6",
 	x2: "18",
 	y2: "18"
 }));
 var useIsDocumentHidden = () => {
-	const [isDocumentHidden, setIsDocumentHidden] = gn.useState(document.hidden);
-	gn.useEffect(() => {
+	const [isDocumentHidden, setIsDocumentHidden] = import_react.useState(document.hidden);
+	import_react.useEffect(() => {
 		const callback = () => {
 			setIsDocumentHidden(document.hidden);
 		};
@@ -227,7 +231,7 @@ var Observer = class {
 			let result;
 			const originalPromise = p.then(async (response) => {
 				result = ["resolve", response];
-				if (gn.isValidElement(response)) {
+				if (import_react.isValidElement(response)) {
 					shouldDismiss = false;
 					this.create({
 						id,
@@ -238,7 +242,7 @@ var Observer = class {
 					shouldDismiss = false;
 					const promiseData = typeof data.error === "function" ? await data.error(`HTTP error! status: ${response.status}`) : data.error;
 					const description = typeof data.description === "function" ? await data.description(`HTTP error! status: ${response.status}`) : data.description;
-					const toastSettings = typeof promiseData === "object" && !gn.isValidElement(promiseData) ? promiseData : { message: promiseData };
+					const toastSettings = typeof promiseData === "object" && !import_react.isValidElement(promiseData) ? promiseData : { message: promiseData };
 					this.create({
 						id,
 						type: "error",
@@ -249,7 +253,7 @@ var Observer = class {
 					shouldDismiss = false;
 					const promiseData = typeof data.error === "function" ? await data.error(response) : data.error;
 					const description = typeof data.description === "function" ? await data.description(response) : data.description;
-					const toastSettings = typeof promiseData === "object" && !gn.isValidElement(promiseData) ? promiseData : { message: promiseData };
+					const toastSettings = typeof promiseData === "object" && !import_react.isValidElement(promiseData) ? promiseData : { message: promiseData };
 					this.create({
 						id,
 						type: "error",
@@ -260,7 +264,7 @@ var Observer = class {
 					shouldDismiss = false;
 					const promiseData = typeof data.success === "function" ? await data.success(response) : data.success;
 					const description = typeof data.description === "function" ? await data.description(response) : data.description;
-					const toastSettings = typeof promiseData === "object" && !gn.isValidElement(promiseData) ? promiseData : { message: promiseData };
+					const toastSettings = typeof promiseData === "object" && !import_react.isValidElement(promiseData) ? promiseData : { message: promiseData };
 					this.create({
 						id,
 						type: "success",
@@ -274,7 +278,7 @@ var Observer = class {
 					shouldDismiss = false;
 					const promiseData = typeof data.error === "function" ? await data.error(error) : data.error;
 					const description = typeof data.description === "function" ? await data.description(error) : data.description;
-					const toastSettings = typeof promiseData === "object" && !gn.isValidElement(promiseData) ? promiseData : { message: promiseData };
+					const toastSettings = typeof promiseData === "object" && !import_react.isValidElement(promiseData) ? promiseData : { message: promiseData };
 					this.create({
 						id,
 						type: "error",
@@ -365,36 +369,36 @@ function getDefaultSwipeDirections(position) {
 var Toast = (props) => {
 	var _toast_classNames, _toast_classNames1, _toast_classNames2, _toast_classNames3, _toast_classNames4, _toast_classNames5, _toast_classNames6, _toast_classNames7, _toast_classNames8;
 	const { invert: ToasterInvert, toast, unstyled, interacting, setHeights, visibleToasts, heights, index, toasts, expanded, removeToast, defaultRichColors, closeButton: closeButtonFromToaster, style, cancelButtonStyle, actionButtonStyle, className = "", descriptionClassName = "", duration: durationFromToaster, position, gap, expandByDefault, classNames, icons, closeButtonAriaLabel = "Close toast" } = props;
-	const [swipeDirection, setSwipeDirection] = gn.useState(null);
-	const [swipeOutDirection, setSwipeOutDirection] = gn.useState(null);
-	const [mounted, setMounted] = gn.useState(false);
-	const [removed, setRemoved] = gn.useState(false);
-	const [swiping, setSwiping] = gn.useState(false);
-	const [swipeOut, setSwipeOut] = gn.useState(false);
-	const [isSwiped, setIsSwiped] = gn.useState(false);
-	const [offsetBeforeRemove, setOffsetBeforeRemove] = gn.useState(0);
-	const [initialHeight, setInitialHeight] = gn.useState(0);
-	const remainingTime = gn.useRef(toast.duration || durationFromToaster || TOAST_LIFETIME);
-	const dragStartTime = gn.useRef(null);
-	const toastRef = gn.useRef(null);
+	const [swipeDirection, setSwipeDirection] = import_react.useState(null);
+	const [swipeOutDirection, setSwipeOutDirection] = import_react.useState(null);
+	const [mounted, setMounted] = import_react.useState(false);
+	const [removed, setRemoved] = import_react.useState(false);
+	const [swiping, setSwiping] = import_react.useState(false);
+	const [swipeOut, setSwipeOut] = import_react.useState(false);
+	const [isSwiped, setIsSwiped] = import_react.useState(false);
+	const [offsetBeforeRemove, setOffsetBeforeRemove] = import_react.useState(0);
+	const [initialHeight, setInitialHeight] = import_react.useState(0);
+	const remainingTime = import_react.useRef(toast.duration || durationFromToaster || TOAST_LIFETIME);
+	const dragStartTime = import_react.useRef(null);
+	const toastRef = import_react.useRef(null);
 	const isFront = index === 0;
 	const isVisible = index + 1 <= visibleToasts;
 	const toastType = toast.type;
 	const dismissible = toast.dismissible !== false;
 	const toastClassname = toast.className || "";
 	const toastDescriptionClassname = toast.descriptionClassName || "";
-	const heightIndex = gn.useMemo(() => heights.findIndex((height) => height.toastId === toast.id) || 0, [heights, toast.id]);
-	const closeButton = gn.useMemo(() => {
+	const heightIndex = import_react.useMemo(() => heights.findIndex((height) => height.toastId === toast.id) || 0, [heights, toast.id]);
+	const closeButton = import_react.useMemo(() => {
 		var _toast_closeButton;
 		return (_toast_closeButton = toast.closeButton) != null ? _toast_closeButton : closeButtonFromToaster;
 	}, [toast.closeButton, closeButtonFromToaster]);
-	const duration = gn.useMemo(() => toast.duration || durationFromToaster || TOAST_LIFETIME, [toast.duration, durationFromToaster]);
-	const closeTimerStartTimeRef = gn.useRef(0);
-	const offset = gn.useRef(0);
-	const lastCloseTimerStartTimeRef = gn.useRef(0);
-	const pointerStartRef = gn.useRef(null);
+	const duration = import_react.useMemo(() => toast.duration || durationFromToaster || TOAST_LIFETIME, [toast.duration, durationFromToaster]);
+	const closeTimerStartTimeRef = import_react.useRef(0);
+	const offset = import_react.useRef(0);
+	const lastCloseTimerStartTimeRef = import_react.useRef(0);
+	const pointerStartRef = import_react.useRef(null);
 	const [y, x] = position.split("-");
-	const toastsHeightBefore = gn.useMemo(() => {
+	const toastsHeightBefore = import_react.useMemo(() => {
 		return heights.reduce((prev, curr, reducerIndex) => {
 			if (reducerIndex >= heightIndex) return prev;
 			return prev + curr.height;
@@ -403,14 +407,14 @@ var Toast = (props) => {
 	const isDocumentHidden = useIsDocumentHidden();
 	const invert = toast.invert || ToasterInvert;
 	const disabled = toastType === "loading";
-	offset.current = gn.useMemo(() => heightIndex * gap + toastsHeightBefore, [heightIndex, toastsHeightBefore]);
-	gn.useEffect(() => {
+	offset.current = import_react.useMemo(() => heightIndex * gap + toastsHeightBefore, [heightIndex, toastsHeightBefore]);
+	import_react.useEffect(() => {
 		remainingTime.current = duration;
 	}, [duration]);
-	gn.useEffect(() => {
+	import_react.useEffect(() => {
 		setMounted(true);
 	}, []);
-	gn.useEffect(() => {
+	import_react.useEffect(() => {
 		const toastNode = toastRef.current;
 		if (toastNode) {
 			const height = toastNode.getBoundingClientRect().height;
@@ -423,7 +427,7 @@ var Toast = (props) => {
 			return () => setHeights((h) => h.filter((height) => height.toastId !== toast.id));
 		}
 	}, [setHeights, toast.id]);
-	gn.useLayoutEffect(() => {
+	import_react.useLayoutEffect(() => {
 		if (!mounted) return;
 		const toastNode = toastRef.current;
 		const originalHeight = toastNode.style.height;
@@ -452,7 +456,7 @@ var Toast = (props) => {
 		toast.action,
 		toast.cancel
 	]);
-	const deleteToast = gn.useCallback(() => {
+	const deleteToast = import_react.useCallback(() => {
 		setRemoved(true);
 		setOffsetBeforeRemove(offset.current);
 		setHeights((h) => h.filter((height) => height.toastId !== toast.id));
@@ -465,7 +469,7 @@ var Toast = (props) => {
 		setHeights,
 		offset
 	]);
-	gn.useEffect(() => {
+	import_react.useEffect(() => {
 		if (toast.promise && toastType === "loading" || toast.duration === Infinity || toast.type === "loading") return;
 		let timeoutId;
 		const pauseTimer = () => {
@@ -494,7 +498,7 @@ var Toast = (props) => {
 		isDocumentHidden,
 		deleteToast
 	]);
-	gn.useEffect(() => {
+	import_react.useEffect(() => {
 		if (toast.delete) {
 			deleteToast();
 			toast.onDismiss == null || toast.onDismiss.call(toast, toast);
@@ -504,19 +508,19 @@ var Toast = (props) => {
 		var _toast_classNames;
 		if (icons == null ? void 0 : icons.loading) {
 			var _toast_classNames1;
-			return /*#__PURE__*/ gn.createElement("div", {
+			return /*#__PURE__*/ import_react.createElement("div", {
 				className: cn(classNames == null ? void 0 : classNames.loader, toast == null ? void 0 : (_toast_classNames1 = toast.classNames) == null ? void 0 : _toast_classNames1.loader, "sonner-loader"),
 				"data-visible": toastType === "loading"
 			}, icons.loading);
 		}
-		return /*#__PURE__*/ gn.createElement(Loader, {
+		return /*#__PURE__*/ import_react.createElement(Loader, {
 			className: cn(classNames == null ? void 0 : classNames.loader, toast == null ? void 0 : (_toast_classNames = toast.classNames) == null ? void 0 : _toast_classNames.loader),
 			visible: toastType === "loading"
 		});
 	}
 	const icon = toast.icon || (icons == null ? void 0 : icons[toastType]) || getAsset(toastType);
 	var _toast_richColors, _icons_close;
-	return /*#__PURE__*/ gn.createElement("li", {
+	return /*#__PURE__*/ import_react.createElement("li", {
 		tabIndex: 0,
 		ref: toastRef,
 		className: cn(className, toastClassname, classNames == null ? void 0 : classNames.toast, toast == null ? void 0 : (_toast_classNames = toast.classNames) == null ? void 0 : _toast_classNames.toast, classNames == null ? void 0 : classNames.default, classNames == null ? void 0 : classNames[toastType], toast == null ? void 0 : (_toast_classNames1 = toast.classNames) == null ? void 0 : _toast_classNames1[toastType]),
@@ -626,7 +630,7 @@ var Toast = (props) => {
 			(_toastRef_current = toastRef.current) == null || _toastRef_current.style.setProperty("--swipe-amount-x", `${swipeAmount.x}px`);
 			(_toastRef_current1 = toastRef.current) == null || _toastRef_current1.style.setProperty("--swipe-amount-y", `${swipeAmount.y}px`);
 		}
-	}, closeButton && !toast.jsx && toastType !== "loading" ? /*#__PURE__*/ gn.createElement("button", {
+	}, closeButton && !toast.jsx && toastType !== "loading" ? /*#__PURE__*/ import_react.createElement("button", {
 		"aria-label": closeButtonAriaLabel,
 		"data-disabled": disabled,
 		"data-close-button": true,
@@ -635,19 +639,19 @@ var Toast = (props) => {
 			toast.onDismiss == null || toast.onDismiss.call(toast, toast);
 		},
 		className: cn(classNames == null ? void 0 : classNames.closeButton, toast == null ? void 0 : (_toast_classNames2 = toast.classNames) == null ? void 0 : _toast_classNames2.closeButton)
-	}, (_icons_close = icons == null ? void 0 : icons.close) != null ? _icons_close : CloseIcon) : null, (toastType || toast.icon || toast.promise) && toast.icon !== null && ((icons == null ? void 0 : icons[toastType]) !== null || toast.icon) ? /*#__PURE__*/ gn.createElement("div", {
+	}, (_icons_close = icons == null ? void 0 : icons.close) != null ? _icons_close : CloseIcon) : null, (toastType || toast.icon || toast.promise) && toast.icon !== null && ((icons == null ? void 0 : icons[toastType]) !== null || toast.icon) ? /*#__PURE__*/ import_react.createElement("div", {
 		"data-icon": "",
 		className: cn(classNames == null ? void 0 : classNames.icon, toast == null ? void 0 : (_toast_classNames3 = toast.classNames) == null ? void 0 : _toast_classNames3.icon)
-	}, toast.promise || toast.type === "loading" && !toast.icon ? toast.icon || getLoadingIcon() : null, toast.type !== "loading" ? icon : null) : null, /*#__PURE__*/ gn.createElement("div", {
+	}, toast.promise || toast.type === "loading" && !toast.icon ? toast.icon || getLoadingIcon() : null, toast.type !== "loading" ? icon : null) : null, /*#__PURE__*/ import_react.createElement("div", {
 		"data-content": "",
 		className: cn(classNames == null ? void 0 : classNames.content, toast == null ? void 0 : (_toast_classNames4 = toast.classNames) == null ? void 0 : _toast_classNames4.content)
-	}, /*#__PURE__*/ gn.createElement("div", {
+	}, /*#__PURE__*/ import_react.createElement("div", {
 		"data-title": "",
 		className: cn(classNames == null ? void 0 : classNames.title, toast == null ? void 0 : (_toast_classNames5 = toast.classNames) == null ? void 0 : _toast_classNames5.title)
-	}, toast.jsx ? toast.jsx : typeof toast.title === "function" ? toast.title() : toast.title), toast.description ? /*#__PURE__*/ gn.createElement("div", {
+	}, toast.jsx ? toast.jsx : typeof toast.title === "function" ? toast.title() : toast.title), toast.description ? /*#__PURE__*/ import_react.createElement("div", {
 		"data-description": "",
 		className: cn(descriptionClassName, toastDescriptionClassname, classNames == null ? void 0 : classNames.description, toast == null ? void 0 : (_toast_classNames6 = toast.classNames) == null ? void 0 : _toast_classNames6.description)
-	}, typeof toast.description === "function" ? toast.description() : toast.description) : null), /*#__PURE__*/ gn.isValidElement(toast.cancel) ? toast.cancel : toast.cancel && isAction(toast.cancel) ? /*#__PURE__*/ gn.createElement("button", {
+	}, typeof toast.description === "function" ? toast.description() : toast.description) : null), /*#__PURE__*/ import_react.isValidElement(toast.cancel) ? toast.cancel : toast.cancel && isAction(toast.cancel) ? /*#__PURE__*/ import_react.createElement("button", {
 		"data-button": true,
 		"data-cancel": true,
 		style: toast.cancelButtonStyle || cancelButtonStyle,
@@ -658,7 +662,7 @@ var Toast = (props) => {
 			deleteToast();
 		},
 		className: cn(classNames == null ? void 0 : classNames.cancelButton, toast == null ? void 0 : (_toast_classNames7 = toast.classNames) == null ? void 0 : _toast_classNames7.cancelButton)
-	}, toast.cancel.label) : null, /*#__PURE__*/ gn.isValidElement(toast.action) ? toast.action : toast.action && isAction(toast.action) ? /*#__PURE__*/ gn.createElement("button", {
+	}, toast.cancel.label) : null, /*#__PURE__*/ import_react.isValidElement(toast.action) ? toast.action : toast.action && isAction(toast.action) ? /*#__PURE__*/ import_react.createElement("button", {
 		"data-button": true,
 		"data-action": true,
 		style: toast.actionButtonStyle || actionButtonStyle,
@@ -708,32 +712,32 @@ function assignOffset(defaultOffset, mobileOffset) {
 	});
 	return styles;
 }
-var Toaster = /*#__PURE__*/ gn.forwardRef(function Toaster(props, ref) {
+var Toaster = /*#__PURE__*/ import_react.forwardRef(function Toaster(props, ref) {
 	const { id, invert, position = "bottom-right", hotkey = ["altKey", "KeyT"], expand, closeButton, className, offset, mobileOffset, theme = "light", richColors, duration, style, visibleToasts = VISIBLE_TOASTS_AMOUNT, toastOptions, dir = getDocumentDirection(), gap = GAP, icons, containerAriaLabel = "Notifications" } = props;
-	const [toasts, setToasts] = gn.useState([]);
-	const filteredToasts = gn.useMemo(() => {
+	const [toasts, setToasts] = import_react.useState([]);
+	const filteredToasts = import_react.useMemo(() => {
 		if (id) return toasts.filter((toast) => toast.toasterId === id);
 		return toasts.filter((toast) => !toast.toasterId);
 	}, [toasts, id]);
-	const possiblePositions = gn.useMemo(() => {
+	const possiblePositions = import_react.useMemo(() => {
 		return Array.from(new Set([position].concat(filteredToasts.filter((toast) => toast.position).map((toast) => toast.position))));
 	}, [filteredToasts, position]);
-	const [heights, setHeights] = gn.useState([]);
-	const [expanded, setExpanded] = gn.useState(false);
-	const [interacting, setInteracting] = gn.useState(false);
-	const [actualTheme, setActualTheme] = gn.useState(theme !== "system" ? theme : typeof window !== "undefined" ? window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light" : "light");
-	const listRef = gn.useRef(null);
+	const [heights, setHeights] = import_react.useState([]);
+	const [expanded, setExpanded] = import_react.useState(false);
+	const [interacting, setInteracting] = import_react.useState(false);
+	const [actualTheme, setActualTheme] = import_react.useState(theme !== "system" ? theme : typeof window !== "undefined" ? window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light" : "light");
+	const listRef = import_react.useRef(null);
 	const hotkeyLabel = hotkey.join("+").replace(/Key/g, "").replace(/Digit/g, "");
-	const lastFocusedElementRef = gn.useRef(null);
-	const isFocusWithinRef = gn.useRef(false);
-	const removeToast = gn.useCallback((toastToRemove) => {
+	const lastFocusedElementRef = import_react.useRef(null);
+	const isFocusWithinRef = import_react.useRef(false);
+	const removeToast = import_react.useCallback((toastToRemove) => {
 		setToasts((toasts) => {
 			var _toasts_find;
 			if (!((_toasts_find = toasts.find((toast) => toast.id === toastToRemove.id)) == null ? void 0 : _toasts_find.delete)) ToastState.dismiss(toastToRemove.id);
 			return toasts.filter(({ id }) => id !== toastToRemove.id);
 		});
 	}, []);
-	gn.useEffect(() => {
+	import_react.useEffect(() => {
 		return ToastState.subscribe((toast) => {
 			if (toast.dismiss) {
 				requestAnimationFrame(() => {
@@ -745,7 +749,7 @@ var Toaster = /*#__PURE__*/ gn.forwardRef(function Toaster(props, ref) {
 				return;
 			}
 			setTimeout(() => {
-				gn.flushSync(() => {
+				import_react_dom.flushSync(() => {
 					setToasts((toasts) => {
 						const indexOfExistingToast = toasts.findIndex((t) => t.id === toast.id);
 						if (indexOfExistingToast !== -1) return [
@@ -762,7 +766,7 @@ var Toaster = /*#__PURE__*/ gn.forwardRef(function Toaster(props, ref) {
 			});
 		});
 	}, [toasts]);
-	gn.useEffect(() => {
+	import_react.useEffect(() => {
 		if (theme !== "system") {
 			setActualTheme(theme);
 			return;
@@ -787,10 +791,10 @@ var Toaster = /*#__PURE__*/ gn.forwardRef(function Toaster(props, ref) {
 			});
 		}
 	}, [theme]);
-	gn.useEffect(() => {
+	import_react.useEffect(() => {
 		if (toasts.length <= 1) setExpanded(false);
 	}, [toasts]);
-	gn.useEffect(() => {
+	import_react.useEffect(() => {
 		const handleKeyDown = (event) => {
 			var _listRef_current;
 			if (hotkey.every((key) => event[key] || event.code === key)) {
@@ -803,7 +807,7 @@ var Toaster = /*#__PURE__*/ gn.forwardRef(function Toaster(props, ref) {
 		document.addEventListener("keydown", handleKeyDown);
 		return () => document.removeEventListener("keydown", handleKeyDown);
 	}, [hotkey]);
-	gn.useEffect(() => {
+	import_react.useEffect(() => {
 		if (listRef.current) return () => {
 			if (lastFocusedElementRef.current) {
 				lastFocusedElementRef.current.focus({ preventScroll: true });
@@ -812,7 +816,7 @@ var Toaster = /*#__PURE__*/ gn.forwardRef(function Toaster(props, ref) {
 			}
 		};
 	}, [listRef.current]);
-	return /*#__PURE__*/ gn.createElement("section", {
+	return /*#__PURE__*/ import_react.createElement("section", {
 		ref,
 		"aria-label": `${containerAriaLabel} ${hotkeyLabel}`,
 		tabIndex: -1,
@@ -824,7 +828,7 @@ var Toaster = /*#__PURE__*/ gn.forwardRef(function Toaster(props, ref) {
 		var _heights_;
 		const [y, x] = position.split("-");
 		if (!filteredToasts.length) return null;
-		return /*#__PURE__*/ gn.createElement("ol", {
+		return /*#__PURE__*/ import_react.createElement("ol", {
 			key: position,
 			dir: dir === "auto" ? getDocumentDirection() : dir,
 			tabIndex: -1,
@@ -870,7 +874,7 @@ var Toaster = /*#__PURE__*/ gn.forwardRef(function Toaster(props, ref) {
 			onPointerUp: () => setInteracting(false)
 		}, filteredToasts.filter((toast) => !toast.position && index === 0 || toast.position === position).map((toast, index) => {
 			var _toastOptions_duration, _toastOptions_closeButton;
-			return /*#__PURE__*/ gn.createElement(Toast, {
+			return /*#__PURE__*/ import_react.createElement(Toast, {
 				key: toast.id,
 				icons,
 				index,
