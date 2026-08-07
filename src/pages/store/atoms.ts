@@ -39,20 +39,7 @@ export const gotItemsAtom = atom((get) => {
   );
 });
 
-//     // go to indexed db for offline pending items
-//     const db = await openIndexedDB();
-//     const request = db
-//       .transaction("actions")
-//       .objectStore("actions")
-//       .index("actions_entity_store_id")
-//       .getAll(storeId);
-//
-//     const actions = await promisify(request);
-//     for (const action of actions) {
-//       set(applyActionAtom, action);
-//     }
-//
-const applyActionAtom = atom(null, (_get, set, action: Action) => {
+export const applyActionAtom = atom(null, (_get, set, action: Action) => {
   if (action.table !== "store_items") return;
   switch (action.op) {
     case "new":
@@ -85,15 +72,13 @@ export const applyAndSyncAtom = atom(null, (_get, set, action: Action) => {
 
 const syncActionAtom = atom(null, (get, _set, action: Action) => {
   const storeId = get(storeIdAtom);
-  get(syncModelAtom).then((sync) =>
-    sync.send({
-      ...action,
-      entity: {
-        ...action.entity,
-        store_id: storeId,
-      },
-    })
-  );
+  get(syncModelAtom).send({
+    ...action,
+    entity: {
+      ...action.entity,
+      store_id: storeId,
+    },
+  })
 });
 
 export const appendNewItemAtom = atom(null, (get, set) => {

@@ -1,3 +1,5 @@
+
+
 export type Nullish<T> = T | undefined | null;
 
 export interface Trip {
@@ -60,6 +62,6 @@ export type Entity<TName extends TableName = TableName> = TName extends "stores"
 
 export type EntityFields<TOp extends Op = Op, TEntity extends HasId = HasId> =
   TOp extends "new" ? TEntity
-    : TOp extends "edit" ? HasId & Partial<TEntity>
-    : TOp extends "delete" ? HasId & Partial<TEntity>
-    : never;
+  : TOp extends "edit" ? HasId & Partial<TEntity>
+  : TOp extends "delete" ? HasId & Partial<TEntity>
+  : never;

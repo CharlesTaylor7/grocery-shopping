@@ -8,13 +8,13 @@ import { syncAtom } from "@/model";
 import { DataClient } from "@/neon";
 
 import { openIndexedDb, promisify, readTransaction } from "@/indexed-db";
+import { JotaiStore } from "@/components/JotaiProvider";
 
 const storesAtom = atom<Store[]>([]);
 const sortedStoresAtom = atom(
   (get) => get(storesAtom).toSorted((a, b) => a.name.localeCompare(b.name)),
 );
 
-const jotaiStore = createStore();
 export const Route = createFileRoute("/store/")({
   component: RouteComponent,
   loader: async () => {
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/store/")({
       order: "name.asc",
     });
 
-    jotaiStore.set(storesAtom, result);
+    JotaiStore.set(storesAtom, result);
     const db = await openIndexedDb();
     const actions = await promisify(readTransaction(db, "actions").getAll());
 
@@ -39,7 +39,7 @@ function applyAction(action: Action) {
   if (action.table != "stores") return;
   switch (action.op) {
     case "new": {
-      jotaiStore.set(
+      JotaiStore.set(
         storesAtom,
         (stores) => [...stores, action.entity as Store],
       );
@@ -58,14 +58,6 @@ function applyAction(action: Action) {
 }
 
 function RouteComponent() {
-  return (
-    <Provider store={jotaiStore}>
-      <Page />
-    </Provider>
-  );
-}
-
-function Page() {
   const sync = useAtomValue(syncAtom);
   const stores: Store[] = useAtomValue(sortedStoresAtom);
   const [name, setName] = useState("");

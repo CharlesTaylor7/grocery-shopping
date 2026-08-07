@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { type ReactNode, useEffect } from "react";
+import { type ReactNode, } from "react";
 import { syncAtom } from "@/model";
 import {
   closestCenter,
@@ -26,6 +26,7 @@ import {
 
 import {
   appendNewItemAtom,
+  applyActionAtom,
   focusIndexAtom,
   GotItem,
   gotItemsAtom,
@@ -41,13 +42,15 @@ import {
 import { Temporal } from "temporal-polyfill";
 import { DataClient } from "@/neon";
 import { StoreItem } from "@/types";
+import { openIndexedDb, promisify, readTransaction } from "@/indexed-db";
+import { JotaiStore } from "@/components/JotaiProvider";
 
-const jotaiStore = createStore();
+const nowAtom = atom<Temporal.PlainDate>(toPlainDate(new Date()));
 export const Route = createFileRoute("/store/$storeId")({
   component: RouteComponent,
+
   loader: async ({ params: { storeId }, abortController }) => {
     const dataClient = await DataClient.new();
-    // fixme: how to abort this?
     const stores = await dataClient
       .get("stores", {
         "select":
@@ -68,11 +71,21 @@ export const Route = createFileRoute("/store/$storeId")({
       // @ts-ignore
       result.items[item.id] = item;
     }
-    // TODO: load indexed db actions
-    return result;
+
+
+    JotaiStore.set(storeIdAtom, storeId);
+    JotaiStore.set(storeItemsAtom, items);
+    JotaiStore.set(nowAtom, toPlainDate(new Date()));
+
+    const db = await openIndexedDb();
+    const actions = await promisify(readTransaction(db, "actions").getAll());
+    for (const action of actions) {
+      JotaiStore.set(applyActionAtom, action);
+    }
+
+    return { name: store.name }
   },
 });
-const nowAtom = atom(toPlainDate(new Date()));
 
 function toPlainDate(date: Date): Temporal.PlainDate {
   return new Temporal.PlainDate(
@@ -91,26 +104,11 @@ function ago(item: GotItem, now: Temporal.PlainDate): string {
 }
 
 function RouteComponent() {
-  const { id, items } = Route.useLoaderData();
-  useEffect(() => {
-    console.log(items);
-    jotaiStore.set(storeIdAtom, id);
-    jotaiStore.set(storeItemsAtom, items);
-    // oxlint-disable-next-line
-  }, [id]);
-  return (
-    <Provider store={jotaiStore}>
-      <StoreItems />
-    </Provider>
-  );
-}
-
-function StoreItems() {
-  const { name, id } = Route.useLoaderData();
+  const { name } = Route.useLoaderData();
+  const id = useAtomValue(storeIdAtom);
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
   );
-
   const now = useAtomValue(nowAtom);
   const handleDragStart = useSetAtom(handleDragStartAtom);
   const handleDragEnd = useSetAtom(handleDragEndAtom);

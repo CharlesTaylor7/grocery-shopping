@@ -1,44 +1,25 @@
-// import { authClient, getAccessToken } from "@/auth";
-import { syncAtom, SyncModel } from "@/model.ts";
-import { type ReactNode, useEffect, useState } from "react";
-import { DataClient } from "@/neon.ts";
-import { syncNextAction } from "@/sync.ts";
-import { openIndexedDb } from "@/indexed-db.ts";
+import { useEffect } from "react";
+import { DataClient } from "@/neon";
+import { syncNextAction } from "@/sync";
+import { openIndexedDb } from "@/indexed-db";
+import { SyncMode } from '@/config';
 import SyncWorker from "@/sync-worker.ts?worker";
-import { createStore, Provider } from "jotai";
 
-export type SyncMode = "immediate" | "offline-sim" | "main-loop" | "web-worker";
 
 interface Props {
   mode: SyncMode;
-  children: ReactNode;
 }
 
-// immediate means publish to postgrest immediately and ignore indexeddb
-// offline-sim means publish to indexed db and don't start any worker to process those events
-// main-loop means use an effect loop to publish indexedb actions from the main ui loop
-// web-workermeans use a background web worker publish indexedb actions from the main ui loop
-
-export default function SyncActionProvider(props: Props) {
-  const [store, _] = useState(createStore);
+export default function SyncActionRunner(props: Props) {
   useEffect(() => {
     if (props.mode === "web-worker") {
       return runOnWorkerThread();
     } else if (props.mode === "main-loop") {
       return runOnMainThread();
     }
+  }, [props.mode]);
 
-    store.set(
-      syncAtom,
-      SyncModel.new({ useIndexedDB: props.mode !== "immediate" }),
-    );
-  }, [props.mode, store]);
-
-  return (
-    <Provider store={store}>
-      {props.children}
-    </Provider>
-  );
+  return null;
 }
 
 type EffectCleanup = () => void;
@@ -48,10 +29,6 @@ function runOnWorkerThread(): EffectCleanup {
   worker.addEventListener("message", (ev) => {
     console.log("from worker", ev.data);
   });
-  // getAccessToken().then((token) => {
-  //   worker.postMessage(token);
-  // });
-
   return () => worker.terminate();
 }
 
