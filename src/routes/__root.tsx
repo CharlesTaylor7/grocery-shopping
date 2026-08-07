@@ -9,6 +9,7 @@ import ClickMe from '@/components/ClickMe';
 import { QueryClientProvider } from '@tanstack/react-query'
 import queryClient from '@/query-client';
 import { authClient } from '@/auth';
+import { useEffect } from 'react';
 
 
 export const Route = createRootRoute({
@@ -19,13 +20,13 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
-  const { user } = Route.useLoaderData();
+  const { data } = Route.useLoaderData();
   return (
     <QueryClientProvider client={queryClient}>
       <SyncActionProvider mode={SYNC_MODE}>
         <header className='px-3 pt-3 text-sm flex flex-row justify-between w-full'>
           <span>
-            Hello {user?.name ?? 'Guest'}
+            Hello {data?.user?.name ?? 'Guest'}
           </span>
         </header>
         <div className='flex justify-between w-full'>
@@ -34,11 +35,8 @@ function RootComponent() {
             <Link to="/store" className="tab">
               Stores
             </Link>
-            <Link to="/trips" className="tab">
-              Trips
-            </Link>
 
-            {user != null ? null :
+            {data?.user != null ? null :
               <>
                 <Link to="/auth/login" className="tab">
                   Login
@@ -51,7 +49,9 @@ function RootComponent() {
 
           </nav>
 
-          {user == null ? null : <button className="btn btn-error btn-xs mr-3" >
+          {data?.user == null ? null : <button className="btn btn-error btn-xs mr-3"
+            onClick={() => authClient.signOut}
+          >
             Log out
 
           </button>}

@@ -1,4 +1,4 @@
-import { authClient, getAccessToken } from "@/auth";
+// import { authClient, getAccessToken } from "@/auth";
 import { syncAtom, SyncModel } from "@/model.ts";
 import { type ReactNode, useEffect, useState } from "react";
 import { DataClient } from "@/neon.ts";
@@ -48,9 +48,9 @@ function runOnWorkerThread(): EffectCleanup {
   worker.addEventListener("message", (ev) => {
     console.log("from worker", ev.data);
   });
-  getAccessToken().then((token) => {
-    worker.postMessage(token);
-  });
+  // getAccessToken().then((token) => {
+  //   worker.postMessage(token);
+  // });
 
   return () => worker.terminate();
 }

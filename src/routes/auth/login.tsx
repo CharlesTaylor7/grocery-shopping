@@ -23,7 +23,7 @@ function RouteComponent() {
       rememberMe: true,
     };
     try {
-      await authClient.loginWithEmail(payload);
+      await authClient.signIn.email(payload);
       navigate({ to: lastVisitedUrl() });
     } catch (e) {
       console.error(e);

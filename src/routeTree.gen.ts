@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as NavRouteImport } from './routes/nav'
 import { Route as VersionRouteImport } from './routes/version'
 import { Route as AuthForgorRouteImport } from './routes/auth/forgor'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
@@ -18,11 +17,6 @@ import { Route as AuthSignupRouteImport } from './routes/auth/signup'
 import { Route as StoreIndexRouteImport } from './routes/store/index'
 import { Route as StoreStoreIdRouteImport } from './routes/store/$storeId'
 
-const NavRoute = NavRouteImport.update({
-  id: '/nav',
-  path: '/nav',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const VersionRoute = VersionRouteImport.update({
   id: '/version',
   path: '/version',
@@ -60,7 +54,6 @@ const StoreStoreIdRoute = StoreStoreIdRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/nav': typeof NavRoute
   '/version': typeof VersionRoute
   '/auth/forgor': typeof AuthForgorRoute
   '/auth/login': typeof AuthLoginRoute
@@ -70,7 +63,6 @@ export interface FileRoutesByFullPath {
   '/store/': typeof StoreIndexRoute
 }
 export interface FileRoutesByTo {
-  '/nav': typeof NavRoute
   '/version': typeof VersionRoute
   '/auth/forgor': typeof AuthForgorRoute
   '/auth/login': typeof AuthLoginRoute
@@ -81,7 +73,6 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/nav': typeof NavRoute
   '/version': typeof VersionRoute
   '/auth/forgor': typeof AuthForgorRoute
   '/auth/login': typeof AuthLoginRoute
@@ -93,7 +84,6 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/nav'
     | '/version'
     | '/auth/forgor'
     | '/auth/login'
@@ -103,7 +93,6 @@ export interface FileRouteTypes {
     | '/store/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/nav'
     | '/version'
     | '/auth/forgor'
     | '/auth/login'
@@ -113,7 +102,6 @@ export interface FileRouteTypes {
     | '/store'
   id:
     | '__root__'
-    | '/nav'
     | '/version'
     | '/auth/forgor'
     | '/auth/login'
@@ -124,7 +112,6 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  NavRoute: typeof NavRoute
   VersionRoute: typeof VersionRoute
   AuthForgorRoute: typeof AuthForgorRoute
   AuthLoginRoute: typeof AuthLoginRoute
@@ -136,13 +123,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/nav': {
-      id: '/nav'
-      path: '/nav'
-      fullPath: '/nav'
-      preLoaderRoute: typeof NavRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/version': {
       id: '/version'
       path: '/version'
@@ -196,7 +176,6 @@ declare module '@tanstack/react-router' {
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  NavRoute: NavRoute,
   VersionRoute: VersionRoute,
   AuthForgorRoute: AuthForgorRoute,
   AuthLoginRoute: AuthLoginRoute,

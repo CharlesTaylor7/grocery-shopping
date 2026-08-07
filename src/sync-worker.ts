@@ -15,15 +15,15 @@ const syncArgs = { db, client, log };
 onmessage = (msg) => {
   const token = msg.data;
   if (token) {
-    client.authHeader = `Bearer ${token}`;
+    client.token = token;
     processQueue();
   } else {
-    client.authHeader = "";
+    client.token = "";
   }
 };
 
 async function processQueue() {
-  if (!client.authHeader) return;
+  if (!client.token) return;
 
   let didWork = true;
   while (didWork) {

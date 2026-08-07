@@ -1,36 +1,25 @@
 import { NEON_DATA_URL } from "@/config.ts";
 import { atom } from "jotai";
-// import { authClient } from "@/auth";
+import { authClient } from "./auth";
 
-// async function authHeader(): Promise<string> {
-//   const token = await authClient.getJWT();
-//   if (!token) throw new Error("not logged in");
-//
-//   return `Bearer ${token}`;
-// }
 
-// TODO: use this so we can catch specific codes
-interface PostgrestResult {
-  error?: { code: string; message: string };
-  data?: unknown;
-}
 
 // https://docs.postgrest.org/en/v14/references/api/tables_views.html
 export class DataClient {
-  constructor(public authHeader?: string) { }
-
+  constructor(public token?: string) { }
   static async new(): Promise<DataClient> {
-    return new DataClient();
-    //return authHeader().then((header) => new DataClient(header));
+    // const session = await authClient.getSession();
+    // if (session.data.session) {
+    //   return new DataClient(session.data?.session.token);
+    // }
+    const token = await authClient.getAnonymousToken();
+    return new DataClient(token.data!.token);
   }
   private headers(): HeadersInit {
-    const headers: HeadersInit = {
+    return {
       "Content-Type": "application/json",
-    };
-    if (this.authHeader) {
-      headers["Authorization"] = this.authHeader;
+      "Authorization": `Bearer ${this.token}`,
     }
-    return headers;
   }
 
   async get<T = any>(
@@ -46,9 +35,6 @@ export class DataClient {
     const json = await response.json();
     if (json.message && json.message.includes("JWT token has expired")) {
       console.error("expired");
-      this.authHeader = undefined;
-      sessionStorage.removeItem("jwt");
-      return this.get(table, query);
     }
     return json;
   }

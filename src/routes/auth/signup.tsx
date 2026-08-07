@@ -21,7 +21,7 @@ function RouteComponent() {
       password: data.get("password")?.toString()!,
     };
     try {
-      await authClient.signupWithEmail(payload);
+      await authClient.signUp.email(payload);
 
       navigate({ to: lastVisitedUrl() });
     } catch (e) {

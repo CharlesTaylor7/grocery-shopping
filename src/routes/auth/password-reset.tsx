@@ -6,15 +6,16 @@ import { useSearch } from "@tanstack/react-router";
 
 export const Route = createFileRoute('/auth/password-reset')({
   component: RouteComponent,
+  validateSearch: (search) => {
+    return { token: search["token"] as string }
+  }
 })
 
 function RouteComponent() {
   const params = Route.useSearch();
-  console.log(params);
-  const token = params["token"];
   const navigate = useNavigate();
   useEffect(() => {
-    if (!token) {
+    if (!params.token) {
       navigate({ to: "/auth/login" });
     }
   });
@@ -26,7 +27,7 @@ function RouteComponent() {
 
     const payload = {
       newPassword: data.get("password")?.toString()!,
-      token: token!,
+      token: params.token!,
     };
     await authClient.resetPassword(payload);
 

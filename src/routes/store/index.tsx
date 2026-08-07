@@ -1,7 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import type { Action, Store } from "@/types";
 import { useEffect, useState } from "react";
-import { openIndexedDB } from "@/indexed-db.ts";
 import { Link } from "@tanstack/react-router";
 import { v4 as newId } from "uuid";
 import { createStore, useAtomValue } from "jotai";
@@ -88,6 +87,7 @@ function RouteComponent() {
           <Link
             className="py-2 underline cursor-pointer"
             key={s.id}
+            // @ts-ignore
             to={`/store/${s.id}`}
           >
             <h2 id={s.id}>

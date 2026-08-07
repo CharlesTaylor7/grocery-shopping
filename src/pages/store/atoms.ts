@@ -84,8 +84,14 @@ export const applyAndSyncAtom = atom(null, (_get, set, action: Action) => {
 });
 
 const syncActionAtom = atom(null, (get, _set, action: Action) => {
-  (action.entity as any).store_id = get(storeIdAtom);
-  get(syncModelAtom).then((sync) => sync.send(action))
+  const storeId = get(storeIdAtom);
+  get(syncModelAtom).then((sync) => sync.send({
+    ...action,
+    entity: {
+      ...action.entity,
+      store_id: storeId
+    }
+  }))
 });
 
 export const appendNewItemAtom = atom(null, (get, set) => {
