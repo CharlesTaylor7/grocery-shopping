@@ -7,7 +7,6 @@
       --tw-rotate-z: initial;
       --tw-skew-x: initial;
       --tw-skew-y: initial;
-      --tw-font-weight: initial;
     }
   }
 }
@@ -20,9 +19,10 @@
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
     --spacing: .25rem;
+    --text-sm: .875rem;
+    --text-sm--line-height: calc(1.25 / .875);
     --text-xl: 1.25rem;
     --text-xl--line-height: calc(1.75 / 1.25);
-    --font-weight-bold: 700;
     --default-transition-duration: .15s;
     --default-transition-timing-function: cubic-bezier(.4, 0, .2, 1);
     --default-font-family: var(--font-sans);
@@ -487,6 +487,108 @@
 
 @layer utilities {
   @layer daisyui.l1.l2.l3 {
+    .tab:is(.tabs > .tab) {
+      cursor: pointer;
+      appearance: none;
+      text-align: center;
+      webkit-user-select: none;
+      -webkit-user-select: none;
+      user-select: none;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      display: inline-flex;
+      position: relative;
+    }
+
+    @media (hover: hover) {
+      .tab:is(.tabs > .tab):hover {
+        color: var(--color-base-content);
+      }
+    }
+
+    .tab:is(.tabs > .tab) {
+      --tab-p: .75rem;
+      --tab-bg: var(--color-base-100);
+      --tab-border-color: var(--color-base-300);
+      --tab-radius-ss: 0;
+      --tab-radius-se: 0;
+      --tab-radius-es: 0;
+      --tab-radius-ee: 0;
+      --tab-order: 0;
+      --tab-radius-min: calc(.75rem - var(--border));
+      --tab-radius-limit: min(var(--radius-field), var(--tab-radius-min));
+      --tab-radius-grad: #0000 calc(69% - var(--border)), var(--tab-border-color) calc(69% - var(--border) + .25px),
+        var(--tab-border-color) 69%, var(--tab-bg) calc(69% + .25px);
+      order: var(--tab-order);
+      height: var(--tab-height);
+      padding-inline: var(--tab-p);
+      border-color: #0000;
+      font-size: .875rem;
+    }
+
+    .tab:is(.tabs > .tab):is(input[type="radio"]) {
+      min-width: fit-content;
+    }
+
+    .tab:is(.tabs > .tab):is(input[type="radio"]):after {
+      --tw-content: attr(aria-label);
+      content: var(--tw-content);
+    }
+
+    .tab:is(.tabs > .tab):is(label) {
+      position: relative;
+    }
+
+    .tab:is(.tabs > .tab):is(label) input {
+      cursor: pointer;
+      appearance: none;
+      opacity: 0;
+      position: absolute;
+      inset: 0;
+    }
+
+    :is(.tab:is(.tabs > .tab):checked, .tab:is(.tabs > .tab):is(label:has(:checked)), .tab:is(.tabs > .tab):is(.tab-active, [aria-selected="true"], [aria-current="true"], [aria-current="page"])) + .tab-content {
+      display: block;
+    }
+
+    .tab:is(.tabs > .tab):not(:checked, label:has(:checked), :hover, .tab-active, [aria-selected="true"], [aria-current="true"], [aria-current="page"]) {
+      color: var(--color-base-content);
+    }
+
+    @supports (color: color-mix(in lab, red, red)) {
+      .tab:is(.tabs > .tab):not(:checked, label:has(:checked), :hover, .tab-active, [aria-selected="true"], [aria-current="true"], [aria-current="page"]) {
+        color: color-mix(in oklab, var(--color-base-content) 50%, transparent);
+      }
+    }
+
+    .tab:is(.tabs > .tab):not(input):empty {
+      cursor: default;
+      flex-grow: 1;
+    }
+
+    .tab:is(.tabs > .tab):focus {
+      --tw-outline-style: none;
+      outline-style: none;
+    }
+
+    @media (forced-colors: active) {
+      .tab:is(.tabs > .tab):focus {
+        outline-offset: 2px;
+        outline: 2px solid #0000;
+      }
+    }
+
+    .tab:is(.tabs > .tab):focus-visible, .tab:is(.tabs > .tab):is(label:has(:checked:focus-visible)) {
+      outline-offset: -5px;
+      outline: 2px solid;
+    }
+
+    .tab:is(.tabs > .tab)[disabled] {
+      pointer-events: none;
+      opacity: .4;
+    }
+
     :where(.btn) {
       width: unset;
     }
@@ -998,6 +1100,16 @@
       rotate: 0deg;
     }
 
+    .tabs {
+      --tabs-height: auto;
+      --tabs-direction: row;
+      --tab-height: calc(var(--size-field, .25rem) * 10);
+      height: var(--tabs-height);
+      flex-wrap: wrap;
+      flex-direction: var(--tabs-direction);
+      display: flex;
+    }
+
     .btn-ghost {
       --btn-bg: #0000;
       color: var(--btn-rest-fg, var(--btn-color, var(--color-base-content, currentColor)));
@@ -1174,6 +1286,12 @@
       --btn-soft-bg: initial;
     }
 
+    .btn-error {
+      --btn-color: var(--color-error);
+      --btn-fg: var(--color-error-content);
+      --btn-soft-bg: initial;
+    }
+
     .btn-primary {
       --btn-color: var(--color-primary);
       --btn-fg: var(--color-primary-content);
@@ -1184,6 +1302,12 @@
       --fontsize: .75rem;
       --btn-p: .75rem;
       --size: calc(var(--size-field, .25rem) * 8);
+    }
+
+    .btn-xs {
+      --fontsize: .6875rem;
+      --btn-p: .5rem;
+      --size: calc(var(--size-field, .25rem) * 6);
     }
   }
 
@@ -1207,6 +1331,10 @@
     margin-block: calc(var(--spacing) * 3);
   }
 
+  .mr-3 {
+    margin-right: calc(var(--spacing) * 3);
+  }
+
   .ml-4 {
     margin-left: calc(var(--spacing) * 4);
   }
@@ -1227,8 +1355,8 @@
     width: calc(var(--spacing) * 100);
   }
 
-  .flex-1 {
-    flex: 1;
+  .w-full {
+    width: 100%;
   }
 
   .transform {
@@ -1271,10 +1399,6 @@
     gap: calc(var(--spacing) * 2);
   }
 
-  .gap-3 {
-    gap: calc(var(--spacing) * 3);
-  }
-
   .overflow-x-hidden {
     overflow-x: hidden;
   }
@@ -1303,6 +1427,10 @@
     padding-inline: calc(var(--spacing) * 2);
   }
 
+  .px-3 {
+    padding-inline: calc(var(--spacing) * 3);
+  }
+
   .px-4 {
     padding-inline: calc(var(--spacing) * 4);
   }
@@ -1311,8 +1439,17 @@
     padding-block: calc(var(--spacing) * 2);
   }
 
+  .pt-3 {
+    padding-top: calc(var(--spacing) * 3);
+  }
+
   .text-center {
     text-align: center;
+  }
+
+  .text-sm {
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
   }
 
   .text-xl {
@@ -1344,11 +1481,6 @@
     transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
     transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
     transition-duration: var(--tw-duration, var(--default-transition-duration));
-  }
-
-  .\[\&\.active\]\:font-bold.active {
-    --tw-font-weight: var(--font-weight-bold);
-    font-weight: var(--font-weight-bold);
   }
 }
 
@@ -1475,11 +1607,6 @@
 }
 
 @property --tw-skew-y {
-  syntax: "*";
-  inherits: false
-}
-
-@property --tw-font-weight {
   syntax: "*";
   inherits: false
 }

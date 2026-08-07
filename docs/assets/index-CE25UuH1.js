@@ -1,16 +1,20 @@
-import { n as __toESM } from "./rolldown-runtime-DBMA93yC.js";
-import { i as require_react } from "./@dnd-kit/accessibility-BX73M05g.js";
-import { t as require_client } from "./react-dom-BfQNMHPu.js";
-import { d as CSS, g as require_react_dom, i as closestCenter, l as useSensor, r as PointerSensor, t as DndContext, u as useSensors } from "./@dnd-kit/core-HCsU9H8M.js";
-import { a as createFileRoute, c as useNavigate, i as Outlet, l as require_jsx_runtime, n as RouterProvider, o as createRootRoute, r as createRouter, s as Link, t as useLocation } from "./@tanstack/react-router-0MzEfOEg.js";
+import { r as __toESM } from "./rolldown-runtime-BBzN7mU7.js";
+import { i as require_react } from "./@dnd-kit/accessibility-Cp455YLW.js";
+import { t as require_client } from "./react-dom-CTl4TmXd.js";
+import { d as CSS, g as require_react_dom, i as closestCenter, l as useSensor, r as PointerSensor, t as DndContext, u as useSensors } from "./@dnd-kit/core-CsMv1_OU.js";
+import { a as createFileRoute, c as useNavigate, i as Outlet, l as ErrorComponent, n as RouterProvider, o as createRootRoute, r as createRouter, s as Link, t as useLocation } from "./@tanstack/react-router-B9cjwm3j.js";
 import { n as createHashHistory } from "./@tanstack/history-uEhFT_8-.js";
-import { t as require_compiler_runtime } from "./react-3z6xboo-.js";
-import { n as toast$1, t as Toaster$1 } from "./sonner-BaknPY3F.js";
-import { a as atom, i as useSetAtom, n as useAtom, o as createStore, r as useAtomValue, t as Provider } from "./jotai-lp-HJVUG.js";
-import { t as TanStackRouterDevtools } from "./@tanstack/react-router-devtools-CN5wzfIQ.js";
+import { n as require_jsx_runtime, t as QueryClientProvider } from "./@tanstack/react-query-BY6ydLyl.js";
+import { t as require_compiler_runtime } from "./react-PEUjiTgh.js";
+import { n as toast$1, t as Toaster$1 } from "./sonner-CTp0qRmA.js";
+import { a as atom, i as useSetAtom, n as useAtom, o as createStore, r as useAtomValue, t as Provider } from "./jotai-BBxBeiW-.js";
+import { t as createAuthClient } from "./@neondatabase/auth-BT8gROfT.js";
+import { t as TanStackRouterDevtools } from "./@tanstack/react-router-devtools-BvTBnZI7.js";
+import { t as QueryClient } from "./@tanstack/query-core-Ckdck6tV.js";
+import { t as ReactQueryDevtools2 } from "./@tanstack/react-query-devtools-wFDCXlfO.js";
 import { t as v4 } from "./uuid-BtdgrrNB.js";
-import { n as useSortable, r as verticalListSortingStrategy, t as SortableContext } from "./@dnd-kit/sortable-CiIM32Fl.js";
-import { t as atomWithImmer } from "./jotai-immer-7dVJZR8_.js";
+import { n as useSortable, r as verticalListSortingStrategy, t as SortableContext } from "./@dnd-kit/sortable-CX16qnHs.js";
+import { t as atomWithImmer } from "./jotai-immer-heCAeLnc.js";
 import { t as Temporal } from "./temporal-polyfill-Dsm9fIVe.js";
 
 //#region \0vite/modulepreload-polyfill.js
@@ -71,133 +75,41 @@ function Toaster() {
 
 //#endregion
 //#region src/auth.ts
-async function getAccessToken() {
-	return await authClient.getJWT();
-}
-var AuthClient = class {
-	headers;
-	constructor() {
-		this.headers = new Headers({ "Content-Type": "application/json" });
-	}
-	useSession() {
-		return {
-			isPending: false,
-			error: "Not implemented"
-		};
-	}
-	async getJWT() {
-		const url = `${NEON_AUTH_URL}/token`;
-		const response = await fetch(url, {
-			method: "GET",
-			headers: this.headers,
-			credentials: "include"
-		});
-		console.log(response.status);
-		const body = await response.text();
-		return JSON.parse(body).token;
-	}
-	async getSession() {
-		const url = `${NEON_AUTH_URL}/get-session`;
-		return await (await fetch(url, {
-			method: "GET",
-			headers: this.headers,
-			credentials: "include"
-		})).json();
-	}
-	async loginWithEmail(args) {
-		const url = `${NEON_AUTH_URL}/sign-in/email`;
-		return (await fetch(url, {
-			method: "POST",
-			headers: this.headers,
-			credentials: "include",
-			body: JSON.stringify({
-				email: args.email,
-				password: args.password,
-				rememberMe: true
-			})
-		})).statusText;
-	}
-	async signupWithEmail(args) {
-		const url = `${NEON_AUTH_URL}/sign-up/email`;
-		return (await fetch(url, {
-			method: "POST",
-			headers: this.headers,
-			credentials: "include",
-			body: JSON.stringify({
-				name: args.name,
-				email: args.email,
-				password: args.password
-			})
-		})).statusText;
-	}
-	async resetPassword(args) {
-		const url = `${NEON_AUTH_URL}/sign-out`;
-		return (await fetch(url, {
-			method: "POST",
-			headers: this.headers,
-			credentials: "include",
-			body: JSON.stringify({
-				newPassword: args.newPassword,
-				token: args.token
-			})
-		})).statusText;
-	}
-	async requestPasswordReset(args) {
-		const url = `${NEON_AUTH_URL}/request-password-reset`;
-		return (await fetch(url, {
-			method: "POST",
-			headers: this.headers,
-			credentials: "include",
-			body: JSON.stringify({
-				email: args.email,
-				redirectTo: "/grocery-shopping/#/auth/password-reset"
-			})
-		})).statusText;
-	}
-	async signOut() {
-		const url = `${NEON_AUTH_URL}/sign-out`;
-		return (await fetch(url, {
-			method: "POST",
-			headers: this.headers,
-			credentials: "include",
-			body: JSON.stringify({})
-		})).statusText;
-	}
-};
-var authClient = new AuthClient();
+var authClient = createAuthClient(NEON_AUTH_URL, { allowAnonymous: true });
 
 //#endregion
 //#region src/neon.ts
-async function authHeader() {
-	const token = await authClient.getJWT();
-	if (!token) throw new Error("not logged in");
-	return `Bearer ${token}`;
-}
 var DataClient = class DataClient {
-	authHeader;
-	constructor(authHeader) {
-		this.authHeader = authHeader;
+	token;
+	constructor(token) {
+		this.token = token;
 	}
-	static new() {
-		return authHeader().then((header) => new DataClient(header));
+	static async new() {
+		const token = await authClient.getAnonymousToken();
+		return new DataClient(token.data.token);
+	}
+	headers() {
+		return {
+			"Content-Type": "application/json",
+			"Authorization": `Bearer ${this.token}`
+		};
 	}
 	async get(table, query) {
 		const queryString = new URLSearchParams(query);
 		const url = `${NEON_DATA_URL}/${table}?${queryString}`;
-		return await (await fetch(url, {
+		const json = await (await fetch(url, {
 			method: "GET",
-			headers: { "Authorization": this.authHeader }
+			headers: this.headers()
 		})).json();
+		if (json.message && json.message.includes("JWT token has expired")) console.error("expired");
+		return json;
 	}
 	async patch(table, query, data) {
 		const queryString = new URLSearchParams(query);
 		const url = `${NEON_DATA_URL}/${table}?${queryString}`;
 		await fetch(url, {
 			method: "PATCH",
-			headers: {
-				"Authorization": this.authHeader,
-				"Content-Type": "application/json"
-			},
+			headers: this.headers(),
 			body: JSON.stringify(data)
 		});
 	}
@@ -205,10 +117,7 @@ var DataClient = class DataClient {
 		const url = `${NEON_DATA_URL}/${table}`;
 		await fetch(url, {
 			method: "POST",
-			headers: {
-				"Authorization": this.authHeader,
-				"Content-Type": "application/json"
-			},
+			headers: this.headers(),
 			body: JSON.stringify(data)
 		});
 	}
@@ -217,7 +126,7 @@ var DataClient = class DataClient {
 		const url = `${NEON_DATA_URL}/${table}?${queryString}`;
 		await fetch(url, {
 			method: "DELETE",
-			headers: { "Authorization": this.authHeader }
+			headers: this.headers()
 		});
 	}
 };
@@ -364,7 +273,7 @@ var syncAtom = atom(SyncModel.new({ useIndexedDB: false }));
 //#endregion
 //#region src/sync-worker.ts?worker
 function WorkerWrapper(options) {
-	return new Worker("/grocery-shopping/assets/sync-worker-Cf0z_O5O.js", {
+	return new Worker("/grocery-shopping/assets/sync-worker-Cb3pSe-c.js", {
 		type: "module",
 		name: options?.name
 	});
@@ -409,9 +318,6 @@ function runOnWorkerThread() {
 	const worker = new WorkerWrapper();
 	worker.addEventListener("message", (ev) => {
 		console.log("from worker", ev.data);
-	});
-	getAccessToken().then((token) => {
-		worker.postMessage(token);
 	});
 	return () => worker.terminate();
 }
@@ -471,130 +377,133 @@ function LastVisitSave() {
 }
 
 //#endregion
-//#region src/components/toast.tsx
-function toast(render) {
-	toast$1.custom((id) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_jsx_runtime.Fragment, { children: render(() => toast$1.dismiss(id)) }));
-}
-
-//#endregion
-//#region src/components/ClickMe.tsx
-function ClickMe_default() {
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-		className: "btn btn-accent",
-		onClick: () => toast(() => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-			className: "p-3 bg-base-300 rounded-full",
-			children: "greetings traveler"
-		})),
-		children: "Click Me"
-	});
-}
+//#region src/query-client.ts
+var query_client_default = new QueryClient({});
 
 //#endregion
 //#region src/routes/__root.tsx
-var Route$8 = createRootRoute({
+var Route$7 = createRootRoute({
 	component: RootComponent,
-	errorComponent: ErrorComponent
+	loader: async () => {
+		return await authClient.getSession();
+	}
 });
-function ErrorComponent(props) {
-	const $ = (0, import_compiler_runtime.c)(4);
-	let t0;
-	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
-		t0 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("br", {});
-		$[0] = t0;
-	} else t0 = $[0];
-	let t1;
-	if ($[1] !== props.error.message || $[2] !== props.error.stack) {
-		t1 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-			className: "flex flex-col",
-			children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("code", {
-				className: "italic",
-				children: [
-					props.error.message,
-					t0,
-					props.error.stack
-				]
-			})
-		});
-		$[1] = props.error.message;
-		$[2] = props.error.stack;
-		$[3] = t1;
-	} else t1 = $[3];
-	return t1;
-}
 function RootComponent() {
-	const $ = (0, import_compiler_runtime.c)(3);
-	let t0;
+	const $ = (0, import_compiler_runtime.c)(19);
+	const { data } = Route$7.useLoaderData();
+	const t0 = data?.user?.name ?? "Guest";
 	let t1;
-	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
-		t0 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			className: "flex justify-between items-center p-2",
-			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "flex gap-2",
-				children: [
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
-						to: "/store",
-						className: "[&.active]:font-bold",
-						children: "Stores"
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
-						to: "/auth/login",
-						className: "[&.active]:font-bold",
-						children: "Login"
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
-						to: "/auth/signup",
-						className: "[&.active]:font-bold",
-						children: "Signup"
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
-						to: "/auth/signout",
-						className: "[&.active]:font-bold",
-						children: "Logout"
-					})
-				]
-			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ClickMe_default, { class: true })]
+	if ($[0] !== t0) {
+		t1 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("header", {
+			className: "px-3 pt-3 text-sm flex flex-row justify-between w-full",
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: ["Hello ", t0] })
 		});
-		t1 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("hr", {});
 		$[0] = t0;
 		$[1] = t1;
-	} else {
-		t0 = $[0];
-		t1 = $[1];
-	}
+	} else t1 = $[1];
 	let t2;
 	if ($[2] === Symbol.for("react.memo_cache_sentinel")) {
-		t2 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SyncActionProvider, {
-			mode: SYNC_MODE,
-			children: [
-				t0,
-				t1,
-				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "p-3 flex-1 overflow-y-scroll overflow-x-hidden",
-					children: [
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Outlet, {}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(LastVisitSave, {}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Toaster, {})
-					]
-				}),
-				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TanStackRouterDevtools, {})
-			]
+		t2 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+			to: "/store",
+			className: "tab",
+			children: "Stores"
 		});
 		$[2] = t2;
 	} else t2 = $[2];
-	return t2;
+	let t3;
+	if ($[3] !== data?.user) {
+		t3 = data?.user != null ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+			to: "/auth/login",
+			className: "tab",
+			children: "Login"
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+			to: "/auth/signup",
+			className: "tab",
+			children: "Signup"
+		})] });
+		$[3] = data?.user;
+		$[4] = t3;
+	} else t3 = $[4];
+	let t4;
+	if ($[5] !== t3) {
+		t4 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("nav", {
+			className: "tabs items-center",
+			children: [t2, t3]
+		});
+		$[5] = t3;
+		$[6] = t4;
+	} else t4 = $[6];
+	let t5;
+	if ($[7] !== data?.user) {
+		t5 = data?.user == null ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+			className: "btn btn-error btn-xs mr-3",
+			onClick: _temp$2,
+			children: "Log out"
+		});
+		$[7] = data?.user;
+		$[8] = t5;
+	} else t5 = $[8];
+	let t6;
+	if ($[9] !== t4 || $[10] !== t5) {
+		t6 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "flex justify-between w-full",
+			children: [t4, t5]
+		});
+		$[9] = t4;
+		$[10] = t5;
+		$[11] = t6;
+	} else t6 = $[11];
+	let t7;
+	if ($[12] === Symbol.for("react.memo_cache_sentinel")) {
+		t7 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("hr", {});
+		$[12] = t7;
+	} else t7 = $[12];
+	let t10;
+	let t8;
+	let t9;
+	if ($[13] === Symbol.for("react.memo_cache_sentinel")) {
+		t8 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", {
+			className: "p-3 overflow-y-scroll overflow-x-hidden",
+			children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Outlet, {}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(LastVisitSave, {}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Toaster, {})
+			]
+		});
+		t9 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TanStackRouterDevtools, {});
+		t10 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReactQueryDevtools2, {});
+		$[13] = t10;
+		$[14] = t8;
+		$[15] = t9;
+	} else {
+		t10 = $[13];
+		t8 = $[14];
+		t9 = $[15];
+	}
+	let t11;
+	if ($[16] !== t1 || $[17] !== t6) {
+		t11 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(QueryClientProvider, {
+			client: query_client_default,
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SyncActionProvider, {
+				mode: SYNC_MODE,
+				children: [
+					t1,
+					t6,
+					t7,
+					t8,
+					t9,
+					t10
+				]
+			})
+		});
+		$[16] = t1;
+		$[17] = t6;
+		$[18] = t11;
+	} else t11 = $[18];
+	return t11;
 }
-
-//#endregion
-//#region src/routes/nav.tsx
-var Route$7 = createFileRoute("/nav")({ component: RouteComponent$7 });
-function RouteComponent$7() {
-	const $ = (0, import_compiler_runtime.c)(1);
-	let t0;
-	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
-		t0 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: "Hello \"/nav\"!" });
-		$[0] = t0;
-	} else t0 = $[0];
-	return t0;
+function _temp$2() {
+	return authClient.signOut;
 }
 
 //#endregion
@@ -604,10 +513,16 @@ function RouteComponent$6() {
 	const $ = (0, import_compiler_runtime.c)(1);
 	let t0;
 	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
-		t0 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("ul", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", { children: ["Version: ", "2026-08-02_1"] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", { children: ["Git Commit: ", "687d89a"] })] });
+		t0 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("ul", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", { children: ["Version: ", "2026-08-07_0"] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", { children: ["Git Commit: ", "9ebbbe9"] })] });
 		$[0] = t0;
 	} else t0 = $[0];
 	return t0;
+}
+
+//#endregion
+//#region src/components/toast.tsx
+function toast(render) {
+	toast$1.custom((id) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_jsx_runtime.Fragment, { children: render(() => toast$1.dismiss(id)) }));
 }
 
 //#endregion
@@ -672,7 +587,7 @@ function RouteComponent$4() {
 			rememberMe: true
 		};
 		try {
-			await authClient.loginWithEmail(payload);
+			await authClient.signIn.email(payload);
 			navigate({ to: lastVisitedUrl() });
 		} catch (e) {
 			console.error(e);
@@ -714,37 +629,40 @@ function RouteComponent$4() {
 
 //#endregion
 //#region src/routes/auth/password-reset.tsx
-var Route$3 = createFileRoute("/auth/password-reset")({ component: RouteComponent$3 });
+var Route$3 = createFileRoute("/auth/password-reset")({
+	component: RouteComponent$3,
+	validateSearch: (search) => {
+		return { token: search["token"] };
+	}
+});
 function RouteComponent$3() {
 	const $ = (0, import_compiler_runtime.c)(10);
 	const params = Route$3.useSearch();
-	console.log(params);
-	const token = params.token;
 	const navigate = useNavigate();
 	let t0;
-	if ($[0] !== navigate || $[1] !== token) {
+	if ($[0] !== navigate || $[1] !== params.token) {
 		t0 = () => {
-			if (!token) navigate({ to: "/auth/login" });
+			if (!params.token) navigate({ to: "/auth/login" });
 		};
 		$[0] = navigate;
-		$[1] = token;
+		$[1] = params.token;
 		$[2] = t0;
 	} else t0 = $[2];
 	(0, import_react.useEffect)(t0);
 	const formRef = (0, import_react.useRef)(null);
 	let t1;
-	if ($[3] !== navigate || $[4] !== token) {
+	if ($[3] !== navigate || $[4] !== params.token) {
 		t1 = async function handleSubmit(e) {
 			e.preventDefault();
 			const payload = {
 				newPassword: new FormData(e.currentTarget).get("password")?.toString(),
-				token
+				token: params.token
 			};
 			await authClient.resetPassword(payload);
 			navigate({ to: "/auth/login" });
 		};
 		$[3] = navigate;
-		$[4] = token;
+		$[4] = params.token;
 		$[5] = t1;
 	} else t1 = $[5];
 	const handleSubmit = t1;
@@ -796,7 +714,7 @@ function RouteComponent$2() {
 			password: data.get("password")?.toString()
 		};
 		try {
-			await authClient.signupWithEmail(payload);
+			await authClient.signUp.email(payload);
 			navigate({ to: lastVisitedUrl() });
 		} catch (e) {
 			toast(() => {
@@ -841,10 +759,12 @@ createStore();
 var Route$1 = createFileRoute("/store/")({
 	component: RouteComponent$1,
 	loader: async () => {
-		return await (await DataClient.new()).get("stores", {
+		const result = await (await DataClient.new()).get("stores", {
 			select: "id,name",
 			order: "name.asc"
 		});
+		console.log(result);
+		return result;
 	}
 });
 function RouteComponent$1() {
@@ -1037,8 +957,14 @@ var applyAndSyncAtom = atom(null, (_get, set, action) => {
 	set(syncActionAtom, action);
 });
 var syncActionAtom = atom(null, (get, _set, action) => {
-	action.entity.store_id = get(storeIdAtom);
-	get(syncAtom).then((sync) => sync.send(action));
+	const storeId = get(storeIdAtom);
+	get(syncAtom).then((sync) => sync.send({
+		...action,
+		entity: {
+			...action.entity,
+			store_id: storeId
+		}
+	}));
 });
 var appendNewItemAtom = atom(null, (get, set) => {
 	const lastOrder = get(lastInOrderAtom)?.order ?? 0;
@@ -1553,43 +1479,37 @@ function Sortable(props) {
 
 //#endregion
 //#region src/routeTree.gen.ts
-var NavRoute = Route$7.update({
-	id: "/nav",
-	path: "/nav",
-	getParentRoute: () => Route$8
-});
 var VersionRoute = Route$6.update({
 	id: "/version",
 	path: "/version",
-	getParentRoute: () => Route$8
+	getParentRoute: () => Route$7
 });
 var AuthForgorRoute = Route$5.update({
 	id: "/auth/forgor",
 	path: "/auth/forgor",
-	getParentRoute: () => Route$8
+	getParentRoute: () => Route$7
 });
 var AuthLoginRoute = Route$4.update({
 	id: "/auth/login",
 	path: "/auth/login",
-	getParentRoute: () => Route$8
+	getParentRoute: () => Route$7
 });
 var AuthPasswordResetRoute = Route$3.update({
 	id: "/auth/password-reset",
 	path: "/auth/password-reset",
-	getParentRoute: () => Route$8
+	getParentRoute: () => Route$7
 });
 var AuthSignupRoute = Route$2.update({
 	id: "/auth/signup",
 	path: "/auth/signup",
-	getParentRoute: () => Route$8
+	getParentRoute: () => Route$7
 });
 var StoreIndexRoute = Route$1.update({
 	id: "/store/",
 	path: "/store/",
-	getParentRoute: () => Route$8
+	getParentRoute: () => Route$7
 });
 var rootRouteChildren = {
-	NavRoute,
 	VersionRoute,
 	AuthForgorRoute,
 	AuthLoginRoute,
@@ -1598,20 +1518,28 @@ var rootRouteChildren = {
 	StoreStoreIdRoute: Route.update({
 		id: "/store/$storeId",
 		path: "/store/$storeId",
-		getParentRoute: () => Route$8
+		getParentRoute: () => Route$7
 	}),
 	StoreIndexRoute
 };
-var routeTree = Route$8._addFileChildren(rootRouteChildren)._addFileTypes();
+var routeTree = Route$7._addFileChildren(rootRouteChildren)._addFileTypes();
+
+//#endregion
+//#region src/router.ts
+var router = createRouter({
+	routeTree,
+	history: createHashHistory(),
+	scrollRestoration: false,
+	defaultViewTransition: true,
+	defaultErrorComponent: ErrorComponent,
+	defaultPendingComponent: () => "the suspense is killing me...",
+	defaultPendingMs: 200,
+	defaultPendingMinMs: 400
+});
 
 //#endregion
 //#region src/main.tsx
-var hashHistory = createHashHistory();
-var router = createRouter({
-	routeTree,
-	history: hashHistory
-});
-if (false) navigator.serviceWorker.register("/grocery-shopping/service-worker.js").catch(console.error);
+if (false) navigator.serviceWorker.register("/grocery-shopping/service-worker.js");
 (0, import_client.createRoot)(document.getElementById("root")).render(/* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.StrictMode, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(RouterProvider, { router }) }));
 
 //#endregion

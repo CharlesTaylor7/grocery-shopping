@@ -1,5 +1,5 @@
-import { n as __toESM, t as __commonJSMin } from "../rolldown-runtime-DBMA93yC.js";
-import { i as require_react, n as LiveRegion, r as useAnnouncement, t as HiddenText } from "./accessibility-BX73M05g.js";
+import { r as __toESM, t as __commonJSMin } from "../rolldown-runtime-BBzN7mU7.js";
+import { i as require_react, n as LiveRegion, r as useAnnouncement, t as HiddenText } from "./accessibility-Cp455YLW.js";
 
 //#region node_modules/.pnpm/react-dom@19.2.8_react@19.2.8/node_modules/react-dom/cjs/react-dom.production.js
 var require_react_dom_production = /* @__PURE__ */ __commonJSMin(((exports) => {

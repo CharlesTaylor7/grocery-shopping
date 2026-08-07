@@ -1,7 +1,8 @@
-import { n as __toESM, t as __commonJSMin } from "../rolldown-runtime-DBMA93yC.js";
-import { i as require_react } from "../@dnd-kit/accessibility-BX73M05g.js";
-import { g as require_react_dom } from "../@dnd-kit/core-HCsU9H8M.js";
+import { r as __toESM, t as __commonJSMin } from "../rolldown-runtime-BBzN7mU7.js";
+import { i as require_react } from "../@dnd-kit/accessibility-Cp455YLW.js";
+import { g as require_react_dom } from "../@dnd-kit/core-CsMv1_OU.js";
 import { r as parseHref, t as createBrowserHistory } from "./history-uEhFT_8-.js";
+import { n as require_jsx_runtime } from "./react-query-BY6ydLyl.js";
 
 //#region node_modules/.pnpm/@tanstack+react-router@1.170.18_react-dom@19.2.8_react@19.2.8__react@19.2.8/node_modules/@tanstack/react-router/dist/esm/utils.js
 var import_react = /* @__PURE__ */ __toESM(require_react(), 1);
@@ -3458,39 +3459,6 @@ var BaseRootRoute = class extends BaseRoute {
 };
 
 //#endregion
-//#region node_modules/.pnpm/react@19.2.8/node_modules/react/cjs/react-jsx-runtime.production.js
-var require_react_jsx_runtime_production = /* @__PURE__ */ __commonJSMin(((exports) => {
-	var REACT_ELEMENT_TYPE = Symbol.for("react.transitional.element");
-	var REACT_FRAGMENT_TYPE = Symbol.for("react.fragment");
-	function jsxProd(type, config, maybeKey) {
-		var key = null;
-		void 0 !== maybeKey && (key = "" + maybeKey);
-		void 0 !== config.key && (key = "" + config.key);
-		if ("key" in config) {
-			maybeKey = {};
-			for (var propName in config) "key" !== propName && (maybeKey[propName] = config[propName]);
-		} else maybeKey = config;
-		config = maybeKey.ref;
-		return {
-			$$typeof: REACT_ELEMENT_TYPE,
-			type,
-			key,
-			ref: void 0 !== config ? config : null,
-			props: maybeKey
-		};
-	}
-	exports.Fragment = REACT_FRAGMENT_TYPE;
-	exports.jsx = jsxProd;
-	exports.jsxs = jsxProd;
-}));
-
-//#endregion
-//#region node_modules/.pnpm/react@19.2.8/node_modules/react/jsx-runtime.js
-var require_jsx_runtime = /* @__PURE__ */ __commonJSMin(((exports, module) => {
-	module.exports = require_react_jsx_runtime_production();
-}));
-
-//#endregion
 //#region node_modules/.pnpm/@tanstack+react-router@1.170.18_react-dom@19.2.8_react@19.2.8__react@19.2.8/node_modules/@tanstack/react-router/dist/esm/CatchBoundary.js
 var import_react_dom = /* @__PURE__ */ __toESM(require_react_dom(), 1);
 var import_jsx_runtime = require_jsx_runtime();
@@ -5244,4 +5212,4 @@ function useLocation(opts) {
 }
 
 //#endregion
-export { createFileRoute as a, useNavigate as c, Outlet as i, require_jsx_runtime as l, RouterProvider as n, createRootRoute as o, createRouter as r, Link as s, useLocation as t };
+export { createFileRoute as a, useNavigate as c, Outlet as i, ErrorComponent as l, RouterProvider as n, createRootRoute as o, createRouter as r, Link as s, useLocation as t };
