@@ -2,33 +2,32 @@ import { openIndexedDb } from "@/indexed-db.ts";
 import { syncNextAction } from "@/sync.ts";
 import { DataClient } from "@/neon";
 
-const client = await DataClient.new();
-
+const client = new DataClient();
 const db = await openIndexedDb();
-
 const syncArgs = { db, client, log };
 
-// token is passed on app startup
-// todo: everytime a new message is synced
-// todo: everytime the session auto-renews
-// todo: on logout
-onmessage = (msg) => {
+
+onmessage = msg => {
   const token = msg.data;
-  if (token) {
-    client.token = token;
-    processQueue();
-  } else {
-    client.token = "";
-  }
-};
+  client.token = token;
+}
+
+processQueue();
 
 async function processQueue() {
-  if (!client.token) return;
+  while (true) {
+    if (!client.token) {
+      await sleep(10_000)
+    }
 
-  let didWork = true;
-  while (didWork) {
-    didWork = await syncNextAction(syncArgs);
+    const didWork = await syncNextAction(syncArgs);
+    if (!didWork) {
+      await sleep(10_000)
+    }
   }
+}
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function log(...args: any[]) {

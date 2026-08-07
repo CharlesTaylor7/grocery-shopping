@@ -6,6 +6,9 @@ import { SyncMode } from '@/config';
 import SyncWorker from "@/sync-worker.ts?worker";
 
 
+// fixme: the web worker is broken right now because it doesn't have an access token
+// main-loop is broken for the same reason
+// use immediate until this gets fixed
 interface Props {
   mode: SyncMode;
 }
@@ -29,6 +32,7 @@ function runOnWorkerThread(): EffectCleanup {
   worker.addEventListener("message", (ev) => {
     console.log("from worker", ev.data);
   });
+
   return () => worker.terminate();
 }
 

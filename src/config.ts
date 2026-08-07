@@ -7,7 +7,7 @@ export const NEON_DATA_URL: string =
 
 export const ENABLE_SERVICE_WORKER: boolean = true;
 
-export const SYNC_MODE: SyncMode = "web-worker";
+export const SYNC_MODE: SyncMode = "immediate";
 
 // immediate means publish to postgrest immediately and ignore indexeddb
 // offline-sim means publish to indexed db and don't start any worker to process those events

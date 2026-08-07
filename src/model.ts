@@ -20,7 +20,6 @@ export class SyncModel {
   async send<TOp extends Op, TName extends TableName>(
     action: Action<TName, TOp>,
   ): Promise<unknown> {
-    console.log("Send", action, this.db, this.client);
     if (this.db) {
       return await promisify(
         writeTransaction(this.db, "actions").put(action)

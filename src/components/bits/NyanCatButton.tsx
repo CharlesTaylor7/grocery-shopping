@@ -7,9 +7,7 @@ export default function NyanCatButton() {
       className="btn btn-accent btn-xs"
       onClick={() =>
         toast(() => (
-          <div className="p-3 bg-base-300 rounded-full">
-            <img src="/grocery-shopping/nyan.gif" />
-          </div>
+          <img src="/grocery-shopping/nyan.gif" />
         ))}
     >
       Click Me

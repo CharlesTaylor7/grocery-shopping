@@ -47,19 +47,16 @@ export async function pushToPostgrest(
     case "new": {
       const { table, entity } = action;
       return await client.post(table, entity);
-      break;
     }
 
     case "edit": {
       const { table, entity: { id, ...data } } = action;
       return await client.patch(table, { id: `eq.${id}` }, data);
-      break;
     }
 
     case "delete": {
       const { table, entity: { id } } = action;
       return await client.delete(table, { id: `eq.${id}` });
-      break;
     }
     default:
       console.log("unknown op", action.op);

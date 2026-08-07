@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import ClickMe from "@/bits/NyanCatButton";
+import ClickMe from "@/components/bits/NyanCatButton";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
