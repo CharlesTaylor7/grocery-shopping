@@ -1,13 +1,12 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 import { authClient } from "@/auth";
 import { toast } from "@/components/toast";
 import { lastVisitedUrl } from "@/last-visited-url";
 import { useNavigate } from "@tanstack/react-router";
 
-
-export const Route = createFileRoute('/auth/signup')({
+export const Route = createFileRoute("/auth/signup")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
   const navigate = useNavigate();

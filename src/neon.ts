@@ -2,11 +2,9 @@ import { NEON_DATA_URL } from "@/config.ts";
 import { atom } from "jotai";
 import { authClient } from "./auth";
 
-
-
 // https://docs.postgrest.org/en/v14/references/api/tables_views.html
 export class DataClient {
-  constructor(public token?: string) { }
+  constructor(public token?: string) {}
   static async new(): Promise<DataClient> {
     // const session = await authClient.getSession();
     // if (session.data.session) {
@@ -19,13 +17,13 @@ export class DataClient {
     return {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${this.token}`,
-    }
+    };
   }
 
   async get<T = any>(
     table: string,
     query: Record<string, string>,
-    signal?: AbortSignal
+    signal?: AbortSignal,
   ): Promise<T[]> {
     const queryString = new URLSearchParams(query);
     const url = `${NEON_DATA_URL}/${table}?${queryString}`;

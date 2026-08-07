@@ -1,20 +1,23 @@
 import { DB_NAME, migrate, VERSION } from "@/migrate.ts";
 
-
-export type StoreName =
-  | "actions"
+export type StoreName = "actions";
 
 type ReadonlyObjectStore = Omit<
   IDBObjectStore,
   "add" | "delete" | "put" | "deleteIndex"
 >;
 
-export function readTransaction(db: IDBDatabase, store: StoreName): ReadonlyObjectStore {
+export function readTransaction(
+  db: IDBDatabase,
+  store: StoreName,
+): ReadonlyObjectStore {
   return db.transaction(store, "readonly").objectStore(store);
 }
 
-export function writeTransaction(db: IDBDatabase, store: StoreName): IDBObjectStore {
-
+export function writeTransaction(
+  db: IDBDatabase,
+  store: StoreName,
+): IDBObjectStore {
   return db.transaction(store, "readwrite").objectStore(store);
 }
 

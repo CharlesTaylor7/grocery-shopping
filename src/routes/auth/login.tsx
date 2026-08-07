@@ -1,13 +1,13 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 import { authClient } from "@/auth";
 import { toast } from "@/components/toast";
 import { useRef } from "react";
 import { lastVisitedUrl } from "@/last-visited-url";
-import { useNavigate, Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/auth/login')({
+export const Route = createFileRoute("/auth/login")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
   const navigate = useNavigate();
@@ -76,4 +76,3 @@ function RouteComponent() {
     </form>
   );
 }
-

@@ -2,15 +2,15 @@ import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { defineConfig } from "vite";
 import tailwindcss from "@tailwindcss/vite";
-import { tanstackRouter } from '@tanstack/router-plugin/vite'
-import react, { reactCompilerPreset } from '@vitejs/plugin-react'
-import babel from '@rolldown/plugin-babel'
+import { tanstackRouter } from "@tanstack/router-plugin/vite";
+import react, { reactCompilerPreset } from "@vitejs/plugin-react";
+import babel from "@rolldown/plugin-babel";
 
 export default defineConfig(({ command }) => ({
   plugins: [
     tanstackRouter({
-      target: 'react',
-      autoCodeSpliting: true
+      target: "react",
+      autoCodeSpliting: true,
     }),
     react(),
     babel({ presets: [reactCompilerPreset()] }),
@@ -31,8 +31,7 @@ export default defineConfig(({ command }) => ({
     copyPublicDir: true,
     cssMinify: false,
     rolldownOptions: {
-      plugins: [
-      ],
+      plugins: [],
       output: {
         minify: false,
         manualChunks(id: string) {

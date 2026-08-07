@@ -1,11 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 import { authClient } from "@/auth";
 import { toast } from "@/components/toast";
 import { useRef } from "react";
 
-export const Route = createFileRoute('/auth/forgor')({
+export const Route = createFileRoute("/auth/forgor")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
   const formRef = useRef<HTMLFormElement>(null);
@@ -36,8 +36,6 @@ function RouteComponent() {
       >
         Send Password Reset Email
       </button>
-
     </form>
   );
 }
-

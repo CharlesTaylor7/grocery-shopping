@@ -1,4 +1,10 @@
-import { createHashHistory, createRouter, DefaultGlobalNotFound, ErrorComponent, NotFoundRoute } from "@tanstack/react-router";
+import {
+  createHashHistory,
+  createRouter,
+  DefaultGlobalNotFound,
+  ErrorComponent,
+  NotFoundRoute,
+} from "@tanstack/react-router";
 import { routeTree } from "@/routeTree.gen";
 
 const router = createRouter({

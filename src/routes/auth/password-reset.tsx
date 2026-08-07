@@ -3,13 +3,12 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 import { useSearch } from "@tanstack/react-router";
 
-
-export const Route = createFileRoute('/auth/password-reset')({
+export const Route = createFileRoute("/auth/password-reset")({
   component: RouteComponent,
   validateSearch: (search) => {
-    return { token: search["token"] as string }
-  }
-})
+    return { token: search["token"] as string };
+  },
+});
 
 function RouteComponent() {
   const params = Route.useSearch();

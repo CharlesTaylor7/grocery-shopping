@@ -1,7 +1,9 @@
 # Todo
+
 - [ ] slide drawer to delete store
 
 # Features
+
 - [ ] start a trip from a store
 - [ ] update a trip list
 - [ ] select multiple stores for a trip

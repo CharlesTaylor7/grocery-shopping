@@ -1,6 +1,6 @@
-import { toast } from "@/components/toast"
+import { toast } from "@/components/toast";
 
-export default function() {
+export default function () {
   // greetings traveler
   return (
     <button
@@ -14,6 +14,5 @@ export default function() {
     >
       Click Me
     </button>
-  )
+  );
 }
-

@@ -1,6 +1,6 @@
-import { useNavigate, createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type ReactNode, useEffect } from "react";
-import { syncAtom } from '@/model';
+import { syncAtom } from "@/model";
 import {
   closestCenter,
   DndContext,
@@ -15,7 +15,14 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import Input from "@/components/Input";
-import { atom, createStore, Provider, useAtom, useAtomValue, useSetAtom } from "jotai";
+import {
+  atom,
+  createStore,
+  Provider,
+  useAtom,
+  useAtomValue,
+  useSetAtom,
+} from "jotai";
 
 import {
   appendNewItemAtom,
@@ -32,11 +39,11 @@ import {
   storeItemsAtom,
 } from "@/pages/store/atoms";
 import { Temporal } from "temporal-polyfill";
-import { DataClient } from '@/neon';
-import { StoreItem } from '@/types';
+import { DataClient } from "@/neon";
+import { StoreItem } from "@/types";
 
 const jotaiStore = createStore();
-export const Route = createFileRoute('/store/$storeId')({
+export const Route = createFileRoute("/store/$storeId")({
   component: RouteComponent,
   loader: async ({ params: { storeId }, abortController }) => {
     const dataClient = await DataClient.new();
@@ -50,7 +57,7 @@ export const Route = createFileRoute('/store/$storeId')({
       }, abortController.signal);
 
     const items: Record<string, StoreItem> = {};
-    if (!stores.length) return { id: storeId, name: '', items }
+    if (!stores.length) return { id: storeId, name: "", items };
     const store = stores[0];
     const result = { id: storeId, name: store.name, items };
 
@@ -62,9 +69,9 @@ export const Route = createFileRoute('/store/$storeId')({
       result.items[item.id] = item;
     }
     // TODO: load indexed db actions
-    return result
-  }
-})
+    return result;
+  },
+});
 const nowAtom = atom(toPlainDate(new Date()));
 
 function toPlainDate(date: Date): Temporal.PlainDate {
@@ -91,13 +98,15 @@ function RouteComponent() {
     jotaiStore.set(storeItemsAtom, items);
     // oxlint-disable-next-line
   }, [id]);
-  return <Provider store={jotaiStore} >
-    <StoreItems />
-  </Provider>
+  return (
+    <Provider store={jotaiStore}>
+      <StoreItems />
+    </Provider>
+  );
 }
 
 function StoreItems() {
-  const { name, id, } = Route.useLoaderData();
+  const { name, id } = Route.useLoaderData();
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
   );
@@ -135,7 +144,8 @@ function StoreItems() {
               <button
                 className="btn btn-error"
                 onClick={() => {
-                  sync.send({ table: "stores", op: "delete", entity: { id } }).then(() => navigate({ to: "/store" }));
+                  sync.send({ table: "stores", op: "delete", entity: { id } })
+                    .then(() => navigate({ to: "/store" }));
                 }}
               >
                 delete
@@ -261,4 +271,3 @@ function Sortable(props: SortableProps) {
     </div>
   );
 }
-

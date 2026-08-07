@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 import type { Action, Store } from "@/types";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
@@ -7,19 +7,23 @@ import { atom, createStore, Provider, useAtomValue } from "jotai";
 import { syncAtom } from "@/model";
 import { DataClient } from "@/neon";
 
-import { openIndexedDb, promisify, readTransaction } from '@/indexed-db';
+import { openIndexedDb, promisify, readTransaction } from "@/indexed-db";
 
 const storesAtom = atom<Store[]>([]);
 const sortedStoresAtom = atom(
-  get => get(storesAtom).toSorted((a, b) => a.name.localeCompare(b.name)));
+  (get) => get(storesAtom).toSorted((a, b) => a.name.localeCompare(b.name)),
+);
 
 const jotaiStore = createStore();
-export const Route = createFileRoute('/store/')({
+export const Route = createFileRoute("/store/")({
   component: RouteComponent,
   loader: async () => {
     const dataClient = await DataClient.new();
     // fetch from postgrest
-    const result: Store[] = await dataClient.get("stores", { select: "id,name", order: "name.asc" });
+    const result: Store[] = await dataClient.get("stores", {
+      select: "id,name",
+      order: "name.asc",
+    });
 
     jotaiStore.set(storesAtom, result);
     const db = await openIndexedDb();
@@ -28,15 +32,17 @@ export const Route = createFileRoute('/store/')({
     for (const action of actions) {
       applyAction(action);
     }
-  }
-})
+  },
+});
 
 function applyAction(action: Action) {
   if (action.table != "stores") return;
   switch (action.op) {
     case "new": {
-      jotaiStore.set(storesAtom,
-        (stores) => [...stores, action.entity as Store]);
+      jotaiStore.set(
+        storesAtom,
+        (stores) => [...stores, action.entity as Store],
+      );
       break;
     }
     case "edit": {
@@ -51,11 +57,12 @@ function applyAction(action: Action) {
   }
 }
 
-
 function RouteComponent() {
-  return <Provider store={jotaiStore} >
-    <Page />
-  </Provider>
+  return (
+    <Provider store={jotaiStore}>
+      <Page />
+    </Provider>
+  );
 }
 
 function Page() {
@@ -86,11 +93,13 @@ function Page() {
       />
       <button
         disabled={!name}
-        type="button" className="btn btn-primary" onClick={onNewStore}>
+        type="button"
+        className="btn btn-primary"
+        onClick={onNewStore}
+      >
         + New Store
       </button>
       <div className="flex flex-col items-start">
-
         {stores.filter((s) => s.name).map((s) => (
           <Link
             className="btn btn-ghost"

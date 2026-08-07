@@ -85,13 +85,15 @@ export const applyAndSyncAtom = atom(null, (_get, set, action: Action) => {
 
 const syncActionAtom = atom(null, (get, _set, action: Action) => {
   const storeId = get(storeIdAtom);
-  get(syncModelAtom).then((sync) => sync.send({
-    ...action,
-    entity: {
-      ...action.entity,
-      store_id: storeId
-    }
-  }))
+  get(syncModelAtom).then((sync) =>
+    sync.send({
+      ...action,
+      entity: {
+        ...action.entity,
+        store_id: storeId,
+      },
+    })
+  );
 });
 
 export const appendNewItemAtom = atom(null, (get, set) => {
@@ -169,9 +171,7 @@ export const handleDragEndAtom = atom(null, (get, set, event: any) => {
   const oldIndex = items.findIndex((i) => i.id === active.id);
   const newIndex = items.findIndex((i) => i.id === over.id);
 
-
   if (newIndex === 0) {
-
     const order = items[0].order - 1000;
     set(applyAndSyncAtom, {
       op: "edit",
@@ -179,9 +179,8 @@ export const handleDragEndAtom = atom(null, (get, set, event: any) => {
       entity: { id: activeItem.id, order },
     });
 
-    return
+    return;
   } else if (newIndex === items.length - 1) {
-
     const order = items[items.length - 1].order + 1000;
 
     set(applyAndSyncAtom, {
@@ -190,12 +189,11 @@ export const handleDragEndAtom = atom(null, (get, set, event: any) => {
       entity: { id: activeItem.id, order },
     });
 
-    return
+    return;
   }
 
-
   // batch
-  const edits: DndEdit[] = []
+  const edits: DndEdit[] = [];
 
   if (newIndex > oldIndex) {
     const adjacentIndex = newIndex + 1;
@@ -209,10 +207,8 @@ export const handleDragEndAtom = atom(null, (get, set, event: any) => {
         if (items[i].order - order < 1000) {
           order += 1000;
           edits.push({ id: items[i].id, order });
-        }
-        else break;
+        } else break;
       }
-
     }
   }
 
@@ -228,8 +224,7 @@ export const handleDragEndAtom = atom(null, (get, set, event: any) => {
         if (order - items[i].order < 1000) {
           order -= 1000;
           edits.push({ id: items[i].id, order });
-        }
-        else break;
+        } else break;
       }
     }
   }
@@ -238,12 +233,12 @@ export const handleDragEndAtom = atom(null, (get, set, event: any) => {
 });
 
 interface DndEdit {
-  id: string,
-  order: number
+  id: string;
+  order: number;
 }
 const batchDndUpdateAtom = atom(null, (get, set, edits: DndEdit[]) => {
-  // make all edits first 
-  set(storeItemsAtom, draft => {
+  // make all edits first
+  set(storeItemsAtom, (draft) => {
     for (const edit of edits) {
       draft[edit.id].order = edit.order;
     }
@@ -257,7 +252,6 @@ const batchDndUpdateAtom = atom(null, (get, set, edits: DndEdit[]) => {
     });
   }
 });
-
 
 type ChangeEvent = React.ChangeEvent<HTMLInputElement>;
 export const handleCheckboxAtom = atom(
