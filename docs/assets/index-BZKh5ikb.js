@@ -54,7 +54,7 @@ var import_react = /* @__PURE__ */ __toESM(require_react(), 1);
 var import_client = require_client();
 var NEON_AUTH_URL = "https://ep-red-morning-awzkc1lp.neonauth.c-12.us-east-1.aws.neon.tech/neondb/auth";
 var NEON_DATA_URL = "https://ep-red-morning-awzkc1lp.apirest.c-12.us-east-1.aws.neon.tech/neondb/rest/v1";
-var SYNC_MODE = "main-loop";
+var SYNC_MODE = "web-worker";
 
 //#endregion
 //#region src/components/Toaster.tsx
@@ -94,15 +94,14 @@ var DataClient = class DataClient {
 			"Authorization": `Bearer ${this.token}`
 		};
 	}
-	async get(table, query) {
+	async get(table, query, signal) {
 		const queryString = new URLSearchParams(query);
 		const url = `${NEON_DATA_URL}/${table}?${queryString}`;
-		const json = await (await fetch(url, {
+		return await (await fetch(url, {
 			method: "GET",
-			headers: this.headers()
+			headers: this.headers(),
+			signal
 		})).json();
-		if (json.message && json.message.includes("JWT token has expired")) console.error("expired");
-		return json;
 	}
 	async patch(table, query, data) {
 		const queryString = new URLSearchParams(query);
@@ -182,14 +181,17 @@ function migrate(event) {
 
 //#endregion
 //#region src/indexed-db.ts
-function openIndexedDB() {
+function readTransaction(db, store) {
+	return db.transaction(store, "readonly").objectStore(store);
+}
+function openIndexedDb() {
 	return new Promise((resolve, reject) => {
 		const request = indexedDB.open(DB_NAME, 7);
 		request.onerror = (event) => {
 			reject(event);
 		};
-		request.onsuccess = (event) => {
-			resolve(event.target.result);
+		request.onsuccess = () => {
+			resolve(request.result);
 		};
 		request.onupgradeneeded = (event) => {
 			migrate(event);
@@ -256,7 +258,7 @@ var SyncModel = class SyncModel {
 	}
 	static async new(opts) {
 		if (opts.useIndexedDB) {
-			const db = await openIndexedDB();
+			const db = await openIndexedDb();
 			return new SyncModel(db);
 		} else {
 			const client = await DataClient.new();
@@ -273,7 +275,7 @@ var syncAtom = atom(SyncModel.new({ useIndexedDB: false }));
 //#endregion
 //#region src/sync-worker.ts?worker
 function WorkerWrapper(options) {
-	return new Worker("/grocery-shopping/assets/sync-worker-Cb3pSe-c.js", {
+	return new Worker("/grocery-shopping/assets/sync-worker-Csx_Nsvi.js", {
 		type: "module",
 		name: options?.name
 	});
@@ -333,7 +335,7 @@ var MainThreadWorker = class {
 		this.terminated = true;
 	}
 	async run() {
-		const db = await openIndexedDB();
+		const db = await openIndexedDb();
 		const client = await DataClient.new();
 		while (!this.terminated) {
 			if (!navigator.onLine) {
@@ -389,7 +391,7 @@ var Route$7 = createRootRoute({
 	}
 });
 function RootComponent() {
-	const $ = (0, import_compiler_runtime.c)(19);
+	const $ = (0, import_compiler_runtime.c)(20);
 	const { data } = Route$7.useLoaderData();
 	const t0 = data?.user?.name ?? "Guest";
 	let t1;
@@ -402,17 +404,27 @@ function RootComponent() {
 		$[1] = t1;
 	} else t1 = $[1];
 	let t2;
+	let t3;
 	if ($[2] === Symbol.for("react.memo_cache_sentinel")) {
 		t2 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+			to: "/",
+			className: "tab",
+			children: "Home"
+		});
+		t3 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
 			to: "/store",
 			className: "tab",
 			children: "Stores"
 		});
 		$[2] = t2;
-	} else t2 = $[2];
-	let t3;
-	if ($[3] !== data?.user) {
-		t3 = data?.user != null ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+		$[3] = t3;
+	} else {
+		t2 = $[2];
+		t3 = $[3];
+	}
+	let t4;
+	if ($[4] !== data?.user) {
+		t4 = data?.user != null ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
 			to: "/auth/login",
 			className: "tab",
 			children: "Login"
@@ -421,48 +433,52 @@ function RootComponent() {
 			className: "tab",
 			children: "Signup"
 		})] });
-		$[3] = data?.user;
-		$[4] = t3;
-	} else t3 = $[4];
-	let t4;
-	if ($[5] !== t3) {
-		t4 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("nav", {
-			className: "tabs items-center",
-			children: [t2, t3]
-		});
-		$[5] = t3;
-		$[6] = t4;
-	} else t4 = $[6];
+		$[4] = data?.user;
+		$[5] = t4;
+	} else t4 = $[5];
 	let t5;
-	if ($[7] !== data?.user) {
-		t5 = data?.user == null ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+	if ($[6] !== t4) {
+		t5 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("nav", {
+			className: "tabs items-center",
+			children: [
+				t2,
+				t3,
+				t4
+			]
+		});
+		$[6] = t4;
+		$[7] = t5;
+	} else t5 = $[7];
+	let t6;
+	if ($[8] !== data?.user) {
+		t6 = data?.user == null ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 			className: "btn btn-error btn-xs mr-3",
 			onClick: _temp$2,
 			children: "Log out"
 		});
-		$[7] = data?.user;
-		$[8] = t5;
-	} else t5 = $[8];
-	let t6;
-	if ($[9] !== t4 || $[10] !== t5) {
-		t6 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		$[8] = data?.user;
+		$[9] = t6;
+	} else t6 = $[9];
+	let t7;
+	if ($[10] !== t5 || $[11] !== t6) {
+		t7 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 			className: "flex justify-between w-full",
-			children: [t4, t5]
+			children: [t5, t6]
 		});
-		$[9] = t4;
 		$[10] = t5;
 		$[11] = t6;
-	} else t6 = $[11];
-	let t7;
-	if ($[12] === Symbol.for("react.memo_cache_sentinel")) {
-		t7 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("hr", {});
 		$[12] = t7;
 	} else t7 = $[12];
-	let t10;
 	let t8;
-	let t9;
 	if ($[13] === Symbol.for("react.memo_cache_sentinel")) {
-		t8 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", {
+		t8 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("hr", {});
+		$[13] = t8;
+	} else t8 = $[13];
+	let t10;
+	let t11;
+	let t9;
+	if ($[14] === Symbol.for("react.memo_cache_sentinel")) {
+		t9 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", {
 			className: "p-3 overflow-y-scroll overflow-x-hidden",
 			children: [
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Outlet, {}),
@@ -470,59 +486,87 @@ function RootComponent() {
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Toaster, {})
 			]
 		});
-		t9 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TanStackRouterDevtools, {});
-		t10 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReactQueryDevtools2, {});
-		$[13] = t10;
-		$[14] = t8;
-		$[15] = t9;
+		t10 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TanStackRouterDevtools, {});
+		t11 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReactQueryDevtools2, {});
+		$[14] = t10;
+		$[15] = t11;
+		$[16] = t9;
 	} else {
-		t10 = $[13];
-		t8 = $[14];
-		t9 = $[15];
+		t10 = $[14];
+		t11 = $[15];
+		t9 = $[16];
 	}
-	let t11;
-	if ($[16] !== t1 || $[17] !== t6) {
-		t11 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(QueryClientProvider, {
+	let t12;
+	if ($[17] !== t1 || $[18] !== t7) {
+		t12 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(QueryClientProvider, {
 			client: query_client_default,
 			children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SyncActionProvider, {
 				mode: SYNC_MODE,
 				children: [
 					t1,
-					t6,
 					t7,
 					t8,
 					t9,
-					t10
+					t10,
+					t11
 				]
 			})
 		});
-		$[16] = t1;
-		$[17] = t6;
-		$[18] = t11;
-	} else t11 = $[18];
-	return t11;
+		$[17] = t1;
+		$[18] = t7;
+		$[19] = t12;
+	} else t12 = $[19];
+	return t12;
 }
 function _temp$2() {
 	return authClient.signOut;
 }
 
 //#endregion
-//#region src/routes/version.tsx
-var Route$6 = createFileRoute("/version")({ component: RouteComponent$6 });
-function RouteComponent$6() {
-	const $ = (0, import_compiler_runtime.c)(1);
-	let t0;
-	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
-		t0 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("ul", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", { children: ["Version: ", "2026-08-07_0"] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", { children: ["Git Commit: ", "9ebbbe9"] })] });
-		$[0] = t0;
-	} else t0 = $[0];
-	return t0;
-}
-
-//#endregion
 //#region src/components/toast.tsx
 function toast(render) {
 	toast$1.custom((id) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_jsx_runtime.Fragment, { children: render(() => toast$1.dismiss(id)) }));
+}
+
+//#endregion
+//#region src/components/ClickMe.tsx
+function ClickMe_default() {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+		className: "btn btn-accent btn-xs",
+		onClick: () => toast(() => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+			className: "p-3 bg-base-300 rounded-full",
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { src: "/grocery-shopping/nyan.gif" })
+		})),
+		children: "Click Me"
+	});
+}
+
+//#endregion
+//#region src/routes/index.tsx
+var Route$6 = createFileRoute("/")({ component: RouteComponent$6 });
+function RouteComponent$6() {
+	const $ = (0, import_compiler_runtime.c)(2);
+	let t0;
+	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
+		t0 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("summary", { children: "Release info:" });
+		$[0] = t0;
+	} else t0 = $[0];
+	let t1;
+	if ($[1] === Symbol.for("react.memo_cache_sentinel")) {
+		t1 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+			"Welcome to my web zone!",
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("details", {
+				className: "m-4",
+				children: [t0, /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "italics",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["Version: ", "2026-08-07_1"] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["Git Commit: ", "7a9fd41"] })]
+				})]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ClickMe_default, {})
+		] });
+		$[1] = t1;
+	} else t1 = $[1];
+	return t1;
 }
 
 //#endregion
@@ -755,7 +799,9 @@ function RouteComponent$2() {
 
 //#endregion
 //#region src/routes/store/index.tsx
-createStore();
+var storesAtom = atom([]);
+var sortedStoresAtom = atom((get) => get(storesAtom).toSorted((a, b) => a.name.localeCompare(b.name)));
+var jotaiStore$1 = createStore();
 var Route$1 = createFileRoute("/store/")({
 	component: RouteComponent$1,
 	loader: async () => {
@@ -763,14 +809,34 @@ var Route$1 = createFileRoute("/store/")({
 			select: "id,name",
 			order: "name.asc"
 		});
-		console.log(result);
-		return result;
+		jotaiStore$1.set(storesAtom, result);
+		const db = await openIndexedDb();
+		const actions = await promisify(readTransaction(db, "actions").getAll());
+		for (const action of actions) applyAction(action);
 	}
 });
+function applyAction(action) {
+	if (action.table != "stores") return;
+	switch (action.op) {
+		case "new": jotaiStore$1.set(storesAtom, (stores) => [...stores, action.entity]);
+	}
+}
 function RouteComponent$1() {
+	const $ = (0, import_compiler_runtime.c)(1);
+	let t0;
+	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
+		t0 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Provider, {
+			store: jotaiStore$1,
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Page, {})
+		});
+		$[0] = t0;
+	} else t0 = $[0];
+	return t0;
+}
+function Page() {
 	const $ = (0, import_compiler_runtime.c)(19);
 	const sync = useAtomValue(syncAtom);
-	const stores = Route$1.useLoaderData();
+	const stores = useAtomValue(sortedStoresAtom);
 	const [name, setName] = (0, import_react.useState)("");
 	let t0;
 	if ($[0] !== name || $[1] !== sync) {
@@ -785,6 +851,7 @@ function RouteComponent$1() {
 			};
 			setName("");
 			sync.send(action);
+			applyAction(action);
 		};
 		$[0] = name;
 		$[1] = sync;
@@ -837,7 +904,7 @@ function RouteComponent$1() {
 	let t6;
 	if ($[13] !== t5) {
 		t6 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-			className: "flex flex-col p-2 px-2 ",
+			className: "flex flex-col items-start",
 			children: t5
 		});
 		$[13] = t5;
@@ -859,7 +926,7 @@ function RouteComponent$1() {
 }
 function _temp2(s_0) {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
-		className: "py-2 underline cursor-pointer",
+		className: "btn btn-ghost",
 		to: `/store/${s_0.id}`,
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
 			id: s_0.id,
@@ -1133,7 +1200,7 @@ var Route = createFileRoute("/store/$storeId")({
 			"select": "name,items:store_items(id, description, got, order, last_got_at)",
 			"id": `eq.${storeId}`,
 			"store_items.order": "order.asc"
-		});
+		}, abortController.signal);
 		const items = {};
 		if (!stores.length) return {
 			id: storeId,
@@ -1196,7 +1263,7 @@ function RouteComponent() {
 	return t2;
 }
 function StoreItems() {
-	const $ = (0, import_compiler_runtime.c)(47);
+	const $ = (0, import_compiler_runtime.c)(55);
 	const { name, id } = Route.useLoaderData();
 	let t0;
 	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
@@ -1214,11 +1281,13 @@ function StoreItems() {
 	const handleTextbox = useSetAtom(handleTextboxAtom);
 	const handleCheckbox = useSetAtom(handleCheckboxAtom);
 	const addNewItem = useSetAtom(appendNewItemAtom);
+	const navigate = useNavigate();
+	const sync = useAtomValue(syncAtom);
 	let t1;
 	if ($[1] !== id || $[2] !== name) {
 		t1 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
 			id,
-			className: "text-center underline w-100",
+			className: "text-center underline",
 			children: name
 		});
 		$[1] = id;
@@ -1227,23 +1296,68 @@ function StoreItems() {
 	} else t1 = $[3];
 	let t2;
 	if ($[4] === Symbol.for("react.memo_cache_sentinel")) {
-		t2 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-			className: "my-3 text-xl",
-			children: "Need"
+		t2 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("summary", {
+			className: "btn m-1",
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+				src: "/grocery-shopping/wrench.svg",
+				alt: "settings"
+			})
 		});
 		$[4] = t2;
 	} else t2 = $[4];
 	let t3;
-	if ($[5] !== need) {
-		t3 = need.map(_temp);
-		$[5] = need;
-		$[6] = t3;
-	} else t3 = $[6];
+	if ($[5] !== id || $[6] !== navigate || $[7] !== sync) {
+		t3 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("details", {
+			className: "dropdown dropdown-end absolute right-0",
+			children: [t2, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+				className: "menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+					className: "btn btn-error",
+					onClick: () => {
+						sync.send({
+							table: "stores",
+							op: "delete",
+							entity: { id }
+						}).then(() => navigate({ to: "/store" }));
+					},
+					children: "delete"
+				}) })
+			})]
+		});
+		$[5] = id;
+		$[6] = navigate;
+		$[7] = sync;
+		$[8] = t3;
+	} else t3 = $[8];
 	let t4;
-	if ($[7] !== focusIndex || $[8] !== handleCheckbox || $[9] !== handleKeydown || $[10] !== handleTextbox || $[11] !== need || $[12] !== setFocusIndex) {
-		let t5;
-		if ($[14] !== focusIndex || $[15] !== handleCheckbox || $[16] !== handleKeydown || $[17] !== handleTextbox || $[18] !== setFocusIndex) {
-			t5 = (item_0, index) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Sortable, {
+	if ($[9] !== t1 || $[10] !== t3) {
+		t4 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", {
+			className: "relative flex items-center justify-center w-full",
+			children: [t1, t3]
+		});
+		$[9] = t1;
+		$[10] = t3;
+		$[11] = t4;
+	} else t4 = $[11];
+	let t5;
+	if ($[12] === Symbol.for("react.memo_cache_sentinel")) {
+		t5 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+			className: "my-3 text-xl",
+			children: "Need"
+		});
+		$[12] = t5;
+	} else t5 = $[12];
+	let t6;
+	if ($[13] !== need) {
+		t6 = need.map(_temp);
+		$[13] = need;
+		$[14] = t6;
+	} else t6 = $[14];
+	let t7;
+	if ($[15] !== focusIndex || $[16] !== handleCheckbox || $[17] !== handleKeydown || $[18] !== handleTextbox || $[19] !== need || $[20] !== setFocusIndex) {
+		let t8;
+		if ($[22] !== focusIndex || $[23] !== handleCheckbox || $[24] !== handleKeydown || $[25] !== handleTextbox || $[26] !== setFocusIndex) {
+			t8 = (item_0, index) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Sortable, {
 				id: item_0.id,
 				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 					id: item_0.id,
@@ -1271,73 +1385,73 @@ function StoreItems() {
 					]
 				})
 			}, item_0.id);
-			$[14] = focusIndex;
-			$[15] = handleCheckbox;
-			$[16] = handleKeydown;
-			$[17] = handleTextbox;
-			$[18] = setFocusIndex;
-			$[19] = t5;
-		} else t5 = $[19];
-		t4 = need.map(t5);
-		$[7] = focusIndex;
-		$[8] = handleCheckbox;
-		$[9] = handleKeydown;
-		$[10] = handleTextbox;
-		$[11] = need;
-		$[12] = setFocusIndex;
-		$[13] = t4;
-	} else t4 = $[13];
-	let t5;
-	if ($[20] !== t3 || $[21] !== t4) {
-		t5 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SortableContext, {
-			items: t3,
+			$[22] = focusIndex;
+			$[23] = handleCheckbox;
+			$[24] = handleKeydown;
+			$[25] = handleTextbox;
+			$[26] = setFocusIndex;
+			$[27] = t8;
+		} else t8 = $[27];
+		t7 = need.map(t8);
+		$[15] = focusIndex;
+		$[16] = handleCheckbox;
+		$[17] = handleKeydown;
+		$[18] = handleTextbox;
+		$[19] = need;
+		$[20] = setFocusIndex;
+		$[21] = t7;
+	} else t7 = $[21];
+	let t8;
+	if ($[28] !== t6 || $[29] !== t7) {
+		t8 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SortableContext, {
+			items: t6,
 			strategy: verticalListSortingStrategy,
-			children: t4
+			children: t7
 		});
-		$[20] = t3;
-		$[21] = t4;
-		$[22] = t5;
-	} else t5 = $[22];
-	let t6;
-	if ($[23] !== handleDragEnd || $[24] !== handleDragStart || $[25] !== sensors || $[26] !== t5) {
-		t6 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DndContext, {
+		$[28] = t6;
+		$[29] = t7;
+		$[30] = t8;
+	} else t8 = $[30];
+	let t9;
+	if ($[31] !== handleDragEnd || $[32] !== handleDragStart || $[33] !== sensors || $[34] !== t8) {
+		t9 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DndContext, {
 			sensors,
 			collisionDetection: closestCenter,
 			onDragStart: handleDragStart,
 			onDragEnd: handleDragEnd,
-			children: t5
+			children: t8
 		});
-		$[23] = handleDragEnd;
-		$[24] = handleDragStart;
-		$[25] = sensors;
-		$[26] = t5;
-		$[27] = t6;
-	} else t6 = $[27];
-	let t7;
-	if ($[28] !== addNewItem) {
-		t7 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+		$[31] = handleDragEnd;
+		$[32] = handleDragStart;
+		$[33] = sensors;
+		$[34] = t8;
+		$[35] = t9;
+	} else t9 = $[35];
+	let t10;
+	if ($[36] !== addNewItem) {
+		t10 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 			type: "button",
 			className: "btn btn-ghost w-100",
 			onClick: addNewItem,
 			children: "+"
 		});
-		$[28] = addNewItem;
-		$[29] = t7;
-	} else t7 = $[29];
-	let t8;
-	if ($[30] !== gots.length) {
-		t8 = gots.length ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+		$[36] = addNewItem;
+		$[37] = t10;
+	} else t10 = $[37];
+	let t11;
+	if ($[38] !== gots.length) {
+		t11 = gots.length ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
 			className: "my-3 text-xl",
 			children: "Got"
 		}) : null;
-		$[30] = gots.length;
-		$[31] = t8;
-	} else t8 = $[31];
-	let t9;
-	if ($[32] !== gots || $[33] !== handleCheckbox || $[34] !== now) {
-		let t10;
-		if ($[36] !== handleCheckbox || $[37] !== now) {
-			t10 = (item_1) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		$[38] = gots.length;
+		$[39] = t11;
+	} else t11 = $[39];
+	let t12;
+	if ($[40] !== gots || $[41] !== handleCheckbox || $[42] !== now) {
+		let t13;
+		if ($[44] !== handleCheckbox || $[45] !== now) {
+			t13 = (item_1) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 				id: item_1.id,
 				className: "flex flex-row m-2",
 				children: [
@@ -1362,40 +1476,40 @@ function StoreItems() {
 					})
 				]
 			}, item_1.id);
-			$[36] = handleCheckbox;
-			$[37] = now;
-			$[38] = t10;
-		} else t10 = $[38];
-		t9 = gots.map(t10);
-		$[32] = gots;
-		$[33] = handleCheckbox;
-		$[34] = now;
-		$[35] = t9;
-	} else t9 = $[35];
-	let t10;
-	if ($[39] !== t9) {
-		t10 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: t9 });
-		$[39] = t9;
-		$[40] = t10;
-	} else t10 = $[40];
-	let t11;
-	if ($[41] !== t1 || $[42] !== t10 || $[43] !== t6 || $[44] !== t7 || $[45] !== t8) {
-		t11 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-			t1,
-			t2,
-			t6,
-			t7,
-			t8,
-			t10
+			$[44] = handleCheckbox;
+			$[45] = now;
+			$[46] = t13;
+		} else t13 = $[46];
+		t12 = gots.map(t13);
+		$[40] = gots;
+		$[41] = handleCheckbox;
+		$[42] = now;
+		$[43] = t12;
+	} else t12 = $[43];
+	let t13;
+	if ($[47] !== t12) {
+		t13 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: t12 });
+		$[47] = t12;
+		$[48] = t13;
+	} else t13 = $[48];
+	let t14;
+	if ($[49] !== t10 || $[50] !== t11 || $[51] !== t13 || $[52] !== t4 || $[53] !== t9) {
+		t14 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+			t4,
+			t5,
+			t9,
+			t10,
+			t11,
+			t13
 		] });
-		$[41] = t1;
-		$[42] = t10;
-		$[43] = t6;
-		$[44] = t7;
-		$[45] = t8;
-		$[46] = t11;
-	} else t11 = $[46];
-	return t11;
+		$[49] = t10;
+		$[50] = t11;
+		$[51] = t13;
+		$[52] = t4;
+		$[53] = t9;
+		$[54] = t14;
+	} else t14 = $[54];
+	return t14;
 }
 function _temp(item) {
 	return item.id;
@@ -1479,9 +1593,9 @@ function Sortable(props) {
 
 //#endregion
 //#region src/routeTree.gen.ts
-var VersionRoute = Route$6.update({
-	id: "/version",
-	path: "/version",
+var IndexRoute = Route$6.update({
+	id: "/",
+	path: "/",
 	getParentRoute: () => Route$7
 });
 var AuthForgorRoute = Route$5.update({
@@ -1510,7 +1624,7 @@ var StoreIndexRoute = Route$1.update({
 	getParentRoute: () => Route$7
 });
 var rootRouteChildren = {
-	VersionRoute,
+	IndexRoute,
 	AuthForgorRoute,
 	AuthLoginRoute,
 	AuthPasswordResetRoute,
