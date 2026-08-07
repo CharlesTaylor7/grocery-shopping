@@ -545,28 +545,50 @@ function ClickMe_default() {
 //#region src/routes/index.tsx
 var Route$6 = createFileRoute("/")({ component: RouteComponent$6 });
 function RouteComponent$6() {
-	const $ = (0, import_compiler_runtime.c)(2);
+	const $ = (0, import_compiler_runtime.c)(5);
 	let t0;
-	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
-		t0 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("summary", { children: "Release info:" });
-		$[0] = t0;
-	} else t0 = $[0];
 	let t1;
-	if ($[1] === Symbol.for("react.memo_cache_sentinel")) {
-		t1 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-			"Welcome to my web zone!",
-			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("details", {
-				className: "m-4",
-				children: [t0, /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "italics",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["Version: ", "2026-08-07_1"] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["Git Commit: ", "7a9fd41"] })]
-				})]
-			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ClickMe_default, {})
-		] });
+	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
+		t0 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: "Welcome to my web zone!" });
+		t1 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ClickMe_default, {});
+		$[0] = t0;
 		$[1] = t1;
-	} else t1 = $[1];
-	return t1;
+	} else {
+		t0 = $[0];
+		t1 = $[1];
+	}
+	let t2;
+	if ($[2] === Symbol.for("react.memo_cache_sentinel")) {
+		t2 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("summary", { children: "Release info" });
+		$[2] = t2;
+	} else t2 = $[2];
+	let t3;
+	if ($[3] === Symbol.for("react.memo_cache_sentinel")) {
+		t3 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["Last Released: ", "2026-08-07 at  5:12pm"] });
+		$[3] = t3;
+	} else t3 = $[3];
+	let t4;
+	if ($[4] === Symbol.for("react.memo_cache_sentinel")) {
+		t4 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "flex flex-col gap-4 items-start",
+			children: [
+				t0,
+				t1,
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("details", {
+					className: "mt-10 cursor-pointer",
+					children: [t2, /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "italic",
+						children: [t3, /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
+							href: `https://github.com/charlestaylor7/grocery-shopping/commit/git rev-parse --short HEAD}`,
+							children: ["Git Commit: ", "git rev-parse --short HEAD"]
+						})]
+					})]
+				})
+			]
+		});
+		$[4] = t4;
+	} else t4 = $[4];
+	return t4;
 }
 
 //#endregion
@@ -834,7 +856,7 @@ function RouteComponent$1() {
 	return t0;
 }
 function Page() {
-	const $ = (0, import_compiler_runtime.c)(19);
+	const $ = (0, import_compiler_runtime.c)(20);
 	const sync = useAtomValue(syncAtom);
 	const stores = useAtomValue(sortedStoresAtom);
 	const [name, setName] = (0, import_react.useState)("");
@@ -884,9 +906,11 @@ function Page() {
 		$[7] = t2;
 		$[8] = t3;
 	} else t3 = $[8];
-	let t4;
-	if ($[9] !== onNewStore) {
-		t4 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+	const t4 = !name;
+	let t5;
+	if ($[9] !== onNewStore || $[10] !== t4) {
+		t5 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+			disabled: t4,
 			type: "button",
 			className: "btn btn-primary",
 			onClick: onNewStore,
@@ -894,35 +918,36 @@ function Page() {
 		});
 		$[9] = onNewStore;
 		$[10] = t4;
-	} else t4 = $[10];
-	let t5;
-	if ($[11] !== stores) {
-		t5 = stores.filter(_temp$1).map(_temp2);
-		$[11] = stores;
-		$[12] = t5;
-	} else t5 = $[12];
+		$[11] = t5;
+	} else t5 = $[11];
 	let t6;
-	if ($[13] !== t5) {
-		t6 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-			className: "flex flex-col items-start",
-			children: t5
-		});
-		$[13] = t5;
-		$[14] = t6;
-	} else t6 = $[14];
+	if ($[12] !== stores) {
+		t6 = stores.filter(_temp$1).map(_temp2);
+		$[12] = stores;
+		$[13] = t6;
+	} else t6 = $[13];
 	let t7;
-	if ($[15] !== t3 || $[16] !== t4 || $[17] !== t6) {
-		t7 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+	if ($[14] !== t6) {
+		t7 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+			className: "flex flex-col items-start",
+			children: t6
+		});
+		$[14] = t6;
+		$[15] = t7;
+	} else t7 = $[15];
+	let t8;
+	if ($[16] !== t3 || $[17] !== t5 || $[18] !== t7) {
+		t8 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
 			t3,
-			t4,
-			t6
+			t5,
+			t7
 		] });
-		$[15] = t3;
-		$[16] = t4;
-		$[17] = t6;
+		$[16] = t3;
+		$[17] = t5;
 		$[18] = t7;
-	} else t7 = $[18];
-	return t7;
+		$[19] = t8;
+	} else t8 = $[19];
+	return t8;
 }
 function _temp2(s_0) {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
