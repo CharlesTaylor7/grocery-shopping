@@ -1,3 +1,5 @@
+# Todo
+- [ ] slide drawer to delete store
 
 # Features
 - [ ] start a trip from a store
@@ -6,7 +8,6 @@
 - [ ] Collapsible regions for multi store trips
 - [ ] realtime notifications from server to device
 - [ ] Import existing lists from markdown
-
 - [ ] enable social signin with discord:
       https://better-auth.com/docs/authentication/discord
 

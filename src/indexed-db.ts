@@ -1,13 +1,31 @@
-import { migrate, DB_NAME, VERSION } from "@/migrate.ts";
+import { DB_NAME, migrate, VERSION } from "@/migrate.ts";
 
-export function openIndexedDB(): Promise<IDBDatabase> {
+
+export type StoreName =
+  | "actions"
+
+type ReadonlyObjectStore = Omit<
+  IDBObjectStore,
+  "add" | "delete" | "put" | "deleteIndex"
+>;
+
+export function readTransaction(db: IDBDatabase, store: StoreName): ReadonlyObjectStore {
+  return db.transaction(store, "readonly").objectStore(store);
+}
+
+export function writeTransaction(db: IDBDatabase, store: StoreName): IDBObjectStore {
+
+  return db.transaction(store, "readwrite").objectStore(store);
+}
+
+export function openIndexedDb(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, VERSION);
     request.onerror = (event) => {
       reject(event);
     };
-    request.onsuccess = (event) => {
-      resolve((event.target! as any).result);
+    request.onsuccess = () => {
+      resolve(request.result);
     };
     request.onupgradeneeded = (event) => {
       migrate(event);

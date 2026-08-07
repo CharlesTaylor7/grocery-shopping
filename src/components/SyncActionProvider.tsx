@@ -3,7 +3,7 @@ import { syncAtom, SyncModel } from "@/model.ts";
 import { type ReactNode, useEffect, useState } from "react";
 import { DataClient } from "@/neon.ts";
 import { syncNextAction } from "@/sync.ts";
-import { openIndexedDB } from "@/indexed-db.ts";
+import { openIndexedDb } from "@/indexed-db.ts";
 import SyncWorker from "@/sync-worker.ts?worker";
 import { createStore, Provider } from "jotai";
 
@@ -71,7 +71,7 @@ class MainThreadWorker {
   }
 
   async run() {
-    const db = await openIndexedDB();
+    const db = await openIndexedDb();
     const client = await DataClient.new();
 
     while (!this.terminated) {

@@ -1,6 +1,6 @@
 import type { Action, Op, TableName } from "@/types";
 import { DataClient } from "@/neon.ts";
-import { openIndexedDB, promisify } from "@/indexed-db.ts";
+import { openIndexedDb, promisify } from "@/indexed-db.ts";
 import { pushToPostgrest } from "@/sync.ts";
 import { atom } from "jotai";
 
@@ -16,7 +16,7 @@ export class SyncModel {
 
   static async new(opts: SyncOptions): Promise<SyncModel> {
     if (opts.useIndexedDB) {
-      const db = await openIndexedDB();
+      const db = await openIndexedDb();
       return new SyncModel(db);
     } else {
       const client = await DataClient.new();

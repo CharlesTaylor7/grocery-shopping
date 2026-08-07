@@ -9,7 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as VersionRouteImport } from './routes/version'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthForgorRouteImport } from './routes/auth/forgor'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthPasswordResetRouteImport } from './routes/auth/password-reset'
@@ -17,9 +17,9 @@ import { Route as AuthSignupRouteImport } from './routes/auth/signup'
 import { Route as StoreIndexRouteImport } from './routes/store/index'
 import { Route as StoreStoreIdRouteImport } from './routes/store/$storeId'
 
-const VersionRoute = VersionRouteImport.update({
-  id: '/version',
-  path: '/version',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthForgorRoute = AuthForgorRouteImport.update({
@@ -54,7 +54,7 @@ const StoreStoreIdRoute = StoreStoreIdRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/version': typeof VersionRoute
+  '/': typeof IndexRoute
   '/auth/forgor': typeof AuthForgorRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/password-reset': typeof AuthPasswordResetRoute
@@ -63,7 +63,7 @@ export interface FileRoutesByFullPath {
   '/store/': typeof StoreIndexRoute
 }
 export interface FileRoutesByTo {
-  '/version': typeof VersionRoute
+  '/': typeof IndexRoute
   '/auth/forgor': typeof AuthForgorRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/password-reset': typeof AuthPasswordResetRoute
@@ -73,7 +73,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/version': typeof VersionRoute
+  '/': typeof IndexRoute
   '/auth/forgor': typeof AuthForgorRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/password-reset': typeof AuthPasswordResetRoute
@@ -84,7 +84,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/version'
+    | '/'
     | '/auth/forgor'
     | '/auth/login'
     | '/auth/password-reset'
@@ -93,7 +93,7 @@ export interface FileRouteTypes {
     | '/store/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/version'
+    | '/'
     | '/auth/forgor'
     | '/auth/login'
     | '/auth/password-reset'
@@ -102,7 +102,7 @@ export interface FileRouteTypes {
     | '/store'
   id:
     | '__root__'
-    | '/version'
+    | '/'
     | '/auth/forgor'
     | '/auth/login'
     | '/auth/password-reset'
@@ -112,7 +112,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  VersionRoute: typeof VersionRoute
+  IndexRoute: typeof IndexRoute
   AuthForgorRoute: typeof AuthForgorRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthPasswordResetRoute: typeof AuthPasswordResetRoute
@@ -123,11 +123,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/version': {
-      id: '/version'
-      path: '/version'
-      fullPath: '/version'
-      preLoaderRoute: typeof VersionRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/forgor': {
@@ -176,7 +176,7 @@ declare module '@tanstack/react-router' {
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  VersionRoute: VersionRoute,
+  IndexRoute: IndexRoute,
   AuthForgorRoute: AuthForgorRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthPasswordResetRoute: AuthPasswordResetRoute,

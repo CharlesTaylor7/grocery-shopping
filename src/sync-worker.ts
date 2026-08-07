@@ -1,10 +1,10 @@
-import { openIndexedDB } from "@/indexed-db.ts";
+import { openIndexedDb } from "@/indexed-db.ts";
 import { syncNextAction } from "@/sync.ts";
 import { DataClient } from "@/neon";
 
 const client = await DataClient.new();
 
-const db = await openIndexedDB();
+const db = await openIndexedDb();
 
 const syncArgs = { db, client, log };
 

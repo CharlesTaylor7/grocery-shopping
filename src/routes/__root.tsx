@@ -31,11 +31,12 @@ function RootComponent() {
         </header>
         <div className='flex justify-between w-full'>
           <nav className='tabs items-center'>
-
+            <Link to="/" className="tab">
+              Home
+            </Link>
             <Link to="/store" className="tab">
               Stores
             </Link>
-
             {data?.user != null ? null :
               <>
                 <Link to="/auth/login" className="tab">
