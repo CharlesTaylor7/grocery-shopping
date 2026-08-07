@@ -25,17 +25,16 @@ export class DataClient {
   async get<T = any>(
     table: string,
     query: Record<string, string>,
+    signal?: AbortSignal
   ): Promise<T[]> {
     const queryString = new URLSearchParams(query);
     const url = `${NEON_DATA_URL}/${table}?${queryString}`;
     const response = await fetch(url, {
       method: "GET",
       headers: this.headers(),
+      signal: signal,
     });
     const json = await response.json();
-    if (json.message && json.message.includes("JWT token has expired")) {
-      console.error("expired");
-    }
     return json;
   }
 

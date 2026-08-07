@@ -87,10 +87,11 @@ function Page() {
       <button type="button" className="btn btn-primary" onClick={onNewStore}>
         + New Store
       </button>
-      <div className="flex flex-col p-2 px-2 ">
+      <div className="flex flex-col items-start">
+
         {stores.filter((s) => s.name).map((s) => (
           <Link
-            className="py-2 underline cursor-pointer"
+            className="btn btn-ghost"
             key={s.id}
             // @ts-ignore
             to={`/store/${s.id}`}

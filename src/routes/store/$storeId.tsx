@@ -1,5 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { useNavigate, createFileRoute } from '@tanstack/react-router'
 import { type ReactNode, useEffect } from "react";
+import { syncAtom } from '@/model';
 import {
   closestCenter,
   DndContext,
@@ -30,7 +31,6 @@ import {
   storeIdAtom,
   storeItemsAtom,
 } from "@/pages/store/atoms";
-import { useNavigate } from "@tanstack/react-router";
 import { Temporal } from "temporal-polyfill";
 import { DataClient } from '@/neon';
 import { StoreItem } from '@/types';
@@ -47,7 +47,7 @@ export const Route = createFileRoute('/store/$storeId')({
           "name,items:store_items(id, description, got, order, last_got_at)",
         "id": `eq.${storeId}`,
         "store_items.order": "order.asc",
-      });
+      }, abortController.signal);
 
     const items: Record<string, StoreItem> = {};
     if (!stores.length) return { id: storeId, name: '', items }
@@ -112,16 +112,38 @@ function StoreItems() {
   const handleTextbox = useSetAtom(handleTextboxAtom);
   const handleCheckbox = useSetAtom(handleCheckboxAtom);
   const addNewItem = useSetAtom(appendNewItemAtom);
+  const navigate = useNavigate();
+  const sync = useAtomValue(syncAtom);
 
   // render
   return (
     <div>
-      <h2
-        id={id}
-        className="text-center underline w-100"
-      >
-        {name}
-      </h2>
+      <header className="relative flex items-center justify-center w-full">
+        <h2
+          id={id}
+          className="text-center underline"
+        >
+          {name}
+        </h2>
+
+        <details className="dropdown dropdown-end absolute right-0">
+          <summary className="btn m-1">
+            <img src="/grocery-shopping/wrench.svg" alt="settings" />
+          </summary>
+          <ul className="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+            <li>
+              <button
+                className="btn btn-error"
+                onClick={() => {
+                  sync.send({ table: "stores", op: "delete", entity: { id } }).then(() => navigate({ to: "/store" }));
+                }}
+              >
+                delete
+              </button>
+            </li>
+          </ul>
+        </details>
+      </header>
 
       <h3 className="my-3 text-xl">Need</h3>
       <DndContext
