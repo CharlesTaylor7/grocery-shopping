@@ -1,13 +1,13 @@
 import { NEON_DATA_URL } from "@/config.ts";
 import { atom } from "jotai";
-import { authClient } from "@/auth";
+// import { authClient } from "@/auth";
 
-async function authHeader(): Promise<string> {
-  const token = await authClient.getJWT();
-  if (!token) throw new Error("not logged in");
-
-  return `Bearer ${token}`;
-}
+// async function authHeader(): Promise<string> {
+//   const token = await authClient.getJWT();
+//   if (!token) throw new Error("not logged in");
+//
+//   return `Bearer ${token}`;
+// }
 
 // TODO: use this so we can catch specific codes
 interface PostgrestResult {
@@ -17,10 +17,20 @@ interface PostgrestResult {
 
 // https://docs.postgrest.org/en/v14/references/api/tables_views.html
 export class DataClient {
-  constructor(public authHeader: string) {}
+  constructor(public authHeader?: string) { }
 
-  static new() {
-    return authHeader().then((header) => new DataClient(header));
+  static async new(): Promise<DataClient> {
+    return new DataClient();
+    //return authHeader().then((header) => new DataClient(header));
+  }
+  private headers(): HeadersInit {
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+    };
+    if (this.authHeader) {
+      headers["Authorization"] = this.authHeader;
+    }
+    return headers;
   }
 
   async get<T = any>(
@@ -31,11 +41,15 @@ export class DataClient {
     const url = `${NEON_DATA_URL}/${table}?${queryString}`;
     const response = await fetch(url, {
       method: "GET",
-      headers: {
-        "Authorization": this.authHeader,
-      },
+      headers: this.headers(),
     });
     const json = await response.json();
+    if (json.message && json.message.includes("JWT token has expired")) {
+      console.error("expired");
+      this.authHeader = undefined;
+      sessionStorage.removeItem("jwt");
+      return this.get(table, query);
+    }
     return json;
   }
 
@@ -44,10 +58,7 @@ export class DataClient {
     const url = `${NEON_DATA_URL}/${table}?${queryString}`;
     await fetch(url, {
       method: "PATCH",
-      headers: {
-        "Authorization": this.authHeader,
-        "Content-Type": "application/json",
-      },
+      headers: this.headers(),
       body: JSON.stringify(data),
     });
   }
@@ -56,10 +67,7 @@ export class DataClient {
     const url = `${NEON_DATA_URL}/${table}`;
     await fetch(url, {
       method: "POST",
-      headers: {
-        "Authorization": this.authHeader,
-        "Content-Type": "application/json",
-      },
+      headers: this.headers(),
       body: JSON.stringify(data),
     });
   }
@@ -69,9 +77,7 @@ export class DataClient {
     const url = `${NEON_DATA_URL}/${table}?${queryString}`;
     await fetch(url, {
       method: "DELETE",
-      headers: {
-        "Authorization": this.authHeader,
-      },
+      headers: this.headers(),
     });
   }
 }

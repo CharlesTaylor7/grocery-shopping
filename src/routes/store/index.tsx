@@ -16,6 +16,7 @@ export const Route = createFileRoute('/store/')({
     const dataClient = await DataClient.new();
     // fetch from postgrest
     const result: Store[] = await dataClient.get("stores", { select: "id,name", order: "name.asc" });
+    console.log(result);
     return result;
   }
 })
