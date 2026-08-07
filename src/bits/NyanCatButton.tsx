@@ -1,6 +1,6 @@
 import { toast } from "@/components/toast";
 
-export default function () {
+export default function NyanCatButton() {
   // greetings traveler
   return (
     <button

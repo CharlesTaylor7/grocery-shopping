@@ -24,3 +24,10 @@ fix the pwa ios bug by using an iframe
 - [ ] re-enable vendored dnd-kit
 - [ ] trim daisuui themes, to keep bundle size down
 - [ ] vendor as much as is reasonable
+
+# bits
+- [ ] bouncing dvd logo
+- [ ] fly by plane with text
+- [ ] fitness graham pacer test
+- [ ] cursed push notification
+- [ ] button that zooms away as you click it.
