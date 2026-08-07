@@ -6,24 +6,7 @@ import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import babel from '@rolldown/plugin-babel'
 
-
-function getCommitSHA() {
-  return execSync("git rev-parse --short HEAD").toString().trim();
-}
-
-function readReleaseVersion() {
-  return readFileSync("release.txt", "utf8").trim();
-}
 export default defineConfig(({ command }) => ({
-  define: {
-    __RELEASE_VERSION__: command === "build"
-      ? JSON.stringify(readReleaseVersion())
-      : '"dev"',
-
-    __COMMIT_SHA__: command === "build"
-      ? JSON.stringify(getCommitSHA())
-      : '"dev"',
-  },
   plugins: [
     tanstackRouter({
       target: 'react',

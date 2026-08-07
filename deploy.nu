@@ -3,22 +3,17 @@ if ($status | is-not-empty) {
     print $status
     exit
 }
-let prev = try { open release.txt } catch { '' }
-let today = date now | format date $"%Y-%m-%d"
+let build_time = date now | format date "%Y-%m-%d at %l:%M%P"
+let commit = "git rev-parse --short HEAD"
 
-let i = if ($prev | str starts-with $today) {
-    $prev | split row "_" | get 1 | into int | $in + 1
-} else {
-    0
+with-env { 
+  VITE_BUILD_TIME: $build_time
+  VITE_COMMIT_SHA: $commit 
+} { 
+  pnpm run build
 }
 
-let release = $"($today)_($i)"
-$release | save -f release.txt
-print $"Building release: ($release)"
-
-pnpm run build
-
-jj ci -m $"Build: ($release)"
+jj ci -m $"Build: ($build_time)"
 jj bookmark set -r @- main
 
 ## builds with deployment of docs folder

@@ -7,19 +7,21 @@ export const Route = createFileRoute('/')({
 
 function RouteComponent() {
   return (
-    <div>
-      Welcome to my web zone!
-      <details className='m-4'>
-        <summary>
-          Release info:
-        </summary>
-        <div className='italics'>
-          <div>Version: {__RELEASE_VERSION__}</div>
-          <div>Git Commit: {__COMMIT_SHA__}</div>
-        </div >
-
-      </details>
+    <div className='flex flex-col gap-4 items-start'>
+      <div>
+        Welcome to my web zone!
+      </div>
       <ClickMe />
+
+      <details className='mt-10 cursor-pointer'>
+        <summary>
+          Release info
+        </summary>
+        <div className='italic'>
+          <div>Last Released: {import.meta.env.VITE_BUILD_TIME}</div>
+          <a href={`https://github.com/charlestaylor7/grocery-shopping/commit/${import.meta.env.VITE_COMMIT_SHA}}`}>Git Commit: {import.meta.env.VITE_COMMIT_SHA}</a>
+        </div>
+      </details>
     </div>
   );
 }

@@ -84,7 +84,9 @@ function Page() {
         onChange={(e) => void setName(e.currentTarget.value)}
         onKeyDown={(e) => void (e.code === "Enter" ? onNewStore() : null)}
       />
-      <button type="button" className="btn btn-primary" onClick={onNewStore}>
+      <button
+        disabled={!name}
+        type="button" className="btn btn-primary" onClick={onNewStore}>
         + New Store
       </button>
       <div className="flex flex-col items-start">
