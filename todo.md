@@ -1,7 +1,7 @@
 # Todo
 - [x] inline nav bar
+- [x] Unhighlight stores in nav
 - [ ] autofocus new item
-- [ ] Unhighlight stores in nav
 - [ ] Make it clear to user when offline
 - [ ] Fix item alignment in got list
 - [ ] Implement start & end trip buttons to separate “need not “ from “got “

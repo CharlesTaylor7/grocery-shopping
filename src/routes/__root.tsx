@@ -34,7 +34,7 @@ function RootComponent() {
               <Link to="/" className="tab">
                 Home
               </Link>
-              <Link to="/store" className="tab">
+              <Link to="/stores" className="tab">
                 Stores
               </Link>
               {data?.user != null ? null : (

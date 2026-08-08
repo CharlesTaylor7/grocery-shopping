@@ -17,18 +17,16 @@ import { CSS } from "@dnd-kit/utilities";
 import Input from "@/components/Input";
 import {
   atom,
-  createStore,
-  Provider,
   useAtom,
   useAtomValue,
   useSetAtom,
 } from "jotai";
 
 import {
+  GotItem,
   appendNewItemAtom,
   applyActionAtom,
   focusIndexAtom,
-  GotItem,
   gotItemsAtom,
   handleCheckboxAtom,
   handleDragEndAtom,

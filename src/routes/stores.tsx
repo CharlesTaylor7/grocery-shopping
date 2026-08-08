@@ -15,7 +15,7 @@ const sortedStoresAtom = atom(
   (get) => get(storesAtom).toSorted((a, b) => a.name.localeCompare(b.name)),
 );
 
-export const Route = createFileRoute("/store/")({
+export const Route = createFileRoute("/stores")({
   component: RouteComponent,
   loader: async () => {
     const dataClient = await DataClient.new();

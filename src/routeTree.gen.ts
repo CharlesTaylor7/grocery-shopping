@@ -10,16 +10,21 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as StoresRouteImport } from './routes/stores'
 import { Route as AuthForgorRouteImport } from './routes/auth/forgor'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthPasswordResetRouteImport } from './routes/auth/password-reset'
 import { Route as AuthSignupRouteImport } from './routes/auth/signup'
-import { Route as StoreIndexRouteImport } from './routes/store/index'
 import { Route as StoreStoreIdRouteImport } from './routes/store/$storeId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StoresRoute = StoresRouteImport.update({
+  id: '/stores',
+  path: '/stores',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthForgorRoute = AuthForgorRouteImport.update({
@@ -42,11 +47,6 @@ const AuthSignupRoute = AuthSignupRouteImport.update({
   path: '/auth/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
-const StoreIndexRoute = StoreIndexRouteImport.update({
-  id: '/store/',
-  path: '/store/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const StoreStoreIdRoute = StoreStoreIdRouteImport.update({
   id: '/store/$storeId',
   path: '/store/$storeId',
@@ -55,70 +55,70 @@ const StoreStoreIdRoute = StoreStoreIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/stores': typeof StoresRoute
   '/auth/forgor': typeof AuthForgorRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/password-reset': typeof AuthPasswordResetRoute
   '/auth/signup': typeof AuthSignupRoute
   '/store/$storeId': typeof StoreStoreIdRoute
-  '/store/': typeof StoreIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/stores': typeof StoresRoute
   '/auth/forgor': typeof AuthForgorRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/password-reset': typeof AuthPasswordResetRoute
   '/auth/signup': typeof AuthSignupRoute
   '/store/$storeId': typeof StoreStoreIdRoute
-  '/store': typeof StoreIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/stores': typeof StoresRoute
   '/auth/forgor': typeof AuthForgorRoute
   '/auth/login': typeof AuthLoginRoute
   '/auth/password-reset': typeof AuthPasswordResetRoute
   '/auth/signup': typeof AuthSignupRoute
   '/store/$storeId': typeof StoreStoreIdRoute
-  '/store/': typeof StoreIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/stores'
     | '/auth/forgor'
     | '/auth/login'
     | '/auth/password-reset'
     | '/auth/signup'
     | '/store/$storeId'
-    | '/store/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/stores'
     | '/auth/forgor'
     | '/auth/login'
     | '/auth/password-reset'
     | '/auth/signup'
     | '/store/$storeId'
-    | '/store'
   id:
     | '__root__'
     | '/'
+    | '/stores'
     | '/auth/forgor'
     | '/auth/login'
     | '/auth/password-reset'
     | '/auth/signup'
     | '/store/$storeId'
-    | '/store/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  StoresRoute: typeof StoresRoute
   AuthForgorRoute: typeof AuthForgorRoute
   AuthLoginRoute: typeof AuthLoginRoute
   AuthPasswordResetRoute: typeof AuthPasswordResetRoute
   AuthSignupRoute: typeof AuthSignupRoute
   StoreStoreIdRoute: typeof StoreStoreIdRoute
-  StoreIndexRoute: typeof StoreIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -128,6 +128,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/stores': {
+      id: '/stores'
+      path: '/stores'
+      fullPath: '/stores'
+      preLoaderRoute: typeof StoresRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth/forgor': {
@@ -158,13 +165,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignupRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/store/': {
-      id: '/store/'
-      path: '/store'
-      fullPath: '/store/'
-      preLoaderRoute: typeof StoreIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/store/$storeId': {
       id: '/store/$storeId'
       path: '/store/$storeId'
@@ -177,12 +177,12 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  StoresRoute: StoresRoute,
   AuthForgorRoute: AuthForgorRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthPasswordResetRoute: AuthPasswordResetRoute,
   AuthSignupRoute: AuthSignupRoute,
   StoreStoreIdRoute: StoreStoreIdRoute,
-  StoreIndexRoute: StoreIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
