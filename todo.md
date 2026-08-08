@@ -2,9 +2,9 @@
 - [x] inline nav bar
 - [x] Unhighlight stores in nav
 - [x] combined nav link for signup / login
+- [x] Fix item alignment in got list
 - [ ] autofocus new item
 - [ ] Make it clear to user when offline
-- [ ] Fix item alignment in got list
 - [ ] Implement start & end trip buttons to separate “need not “ from “got “
 
 # Features

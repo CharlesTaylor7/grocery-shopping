@@ -177,7 +177,7 @@ function RouteComponent() {
                   data-id={item.id}
                   focus={index === focusIndex}
                   type="text"
-                  className="w-80 ml-4 outline-hidden"
+                  className="w-80 mx-2 outline-hidden"
                   onFocus={() => setFocusIndex(index)}
                   onKeyDown={handleKeydown}
                   onChange={handleTextbox}
@@ -206,18 +206,18 @@ function RouteComponent() {
               data-id={item.id}
               tabIndex={-1}
               type="checkbox"
-              className="checkbox p-2"
+              className="checkbox p-2 "
               checked={item.got}
               onChange={handleCheckbox}
             />
             <input
               data-id={item.id}
               type="text"
-              className="w-80 mx-4 outline-hidden"
+              className="mx-2 flex-1 outline-hidden overflow-x-hidden"
               value={item.description}
               readOnly
             />
-            <div className="italic">
+            <div className="italic text-nowrap">
               {ago(item, now)}
             </div>
           </div>
