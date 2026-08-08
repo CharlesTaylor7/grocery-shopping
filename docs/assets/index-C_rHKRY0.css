@@ -1750,8 +1750,8 @@
     margin: calc(var(--spacing) * 2);
   }
 
-  .mx-4 {
-    margin-inline: calc(var(--spacing) * 4);
+  .mx-2 {
+    margin-inline: calc(var(--spacing) * 2);
   }
 
   .my-3 {
@@ -1764,10 +1764,6 @@
 
   .mr-3 {
     margin-right: calc(var(--spacing) * 3);
-  }
-
-  .ml-4 {
-    margin-left: calc(var(--spacing) * 4);
   }
 
   .flex {
@@ -1792,6 +1788,10 @@
 
   .w-full {
     width: 100%;
+  }
+
+  .flex-1 {
+    flex: 1;
   }
 
   .transform {
@@ -1886,6 +1886,10 @@
   .text-xl {
     font-size: var(--text-xl);
     line-height: var(--tw-leading, var(--text-xl--line-height));
+  }
+
+  .text-nowrap {
+    text-wrap: nowrap;
   }
 
   .italic {

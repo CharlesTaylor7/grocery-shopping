@@ -578,7 +578,7 @@ function RouteComponent$7() {
 	} else t2 = $[2];
 	let t3;
 	if ($[3] === Symbol.for("react.memo_cache_sentinel")) {
-		t3 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["Last Released: ", "2026-08-08 at  1:29pm"] });
+		t3 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["Last Released: ", "2026-08-08 at  5:08pm"] });
 		$[3] = t3;
 	} else t3 = $[3];
 	let t4;
@@ -593,8 +593,8 @@ function RouteComponent$7() {
 					children: [t2, /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 						className: "italic",
 						children: [t3, /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
-							href: `https://github.com/charlestaylor7/grocery-shopping/commit/git rev-parse --short HEAD}`,
-							children: ["Git Commit: ", "git rev-parse --short HEAD"]
+							href: `https://github.com/charlestaylor7/grocery-shopping/commit/1103465}`,
+							children: ["Git Commit: ", "1103465"]
 						})]
 					})]
 				})
@@ -1412,7 +1412,7 @@ function RouteComponent() {
 							"data-id": item_0.id,
 							focus: index === focusIndex,
 							type: "text",
-							className: "w-80 ml-4 outline-hidden",
+							className: "w-80 mx-2 outline-hidden",
 							onFocus: () => setFocusIndex(index),
 							onKeyDown: handleKeydown,
 							onChange: handleTextbox,
@@ -1496,19 +1496,19 @@ function RouteComponent() {
 						"data-id": item_1.id,
 						tabIndex: -1,
 						type: "checkbox",
-						className: "checkbox p-2",
+						className: "checkbox p-2 ",
 						checked: item_1.got,
 						onChange: handleCheckbox
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
 						"data-id": item_1.id,
 						type: "text",
-						className: "w-80 mx-4 outline-hidden",
+						className: "mx-2 flex-1 outline-hidden overflow-x-hidden",
 						value: item_1.description,
 						readOnly: true
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-						className: "italic",
+						className: "italic text-nowrap",
 						children: ago(item_1, now)
 					})
 				]
