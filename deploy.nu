@@ -4,7 +4,7 @@ if ($status | is-not-empty) {
     exit
 }
 let build_time = date now | format date "%Y-%m-%d at %l:%M%P"
-let commit = "git rev-parse --short HEAD"
+let commit = git rev-parse --short HEAD
 
 with-env { 
   VITE_BUILD_TIME: $build_time
