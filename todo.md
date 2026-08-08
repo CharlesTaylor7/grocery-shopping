@@ -1,23 +1,20 @@
 # Todo
-
-- [ ] slide drawer to delete store
+- [x] inline nav bar
+- [ ] autofocus new item
+- [ ] Unhighlight stores in nav
+- [ ] Make it clear to user when offline
+- [ ] Fix item alignment in got list
+- [ ] Implement start & end trip buttons to separate “need not “ from “got “
 
 # Features
 
 - [ ] start a trip from a store
 - [ ] update a trip list
-- [ ] select multiple stores for a trip
-- [ ] Collapsible regions for multi store trips
 - [ ] realtime notifications from server to device
-- [ ] Import existing lists from markdown
+
 - [ ] enable social signin with discord:
       https://better-auth.com/docs/authentication/discord
 
-# long shot
-
-fix the pwa ios bug by using an iframe
-
-- [ ] try using an iframe for login
 
 # Tech debt
 

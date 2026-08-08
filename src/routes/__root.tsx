@@ -25,41 +25,40 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <JotaiProvider>
-        <header className="px-3 pt-3 text-sm flex flex-row justify-between w-full">
-          <span>
-            Hello {data?.user?.name ?? "Guest"}
-          </span>
-        </header>
-        <div className="flex justify-between w-full">
-          <nav className="tabs items-center">
-            <Link to="/" className="tab">
-              Home
-            </Link>
-            <Link to="/store" className="tab">
-              Stores
-            </Link>
-            {data?.user != null ? null : (
-              <>
-                <Link to="/auth/login" className="tab">
-                  Login
-                </Link>
-                <Link to="/auth/signup" className="tab">
-                  Signup
-                </Link>
-              </>
-            )}
-          </nav>
+        <header className="bg-base-300 p-3 text-sm flex flex-row justify-between w-full">
+          <div className="flex items-center justify-between w-full">
+            <span>
+              Hello, {data?.user?.name ?? "Guest"}
+            </span>
+            <nav className="tabs items-center">
+              <Link to="/" className="tab">
+                Home
+              </Link>
+              <Link to="/store" className="tab">
+                Stores
+              </Link>
+              {data?.user != null ? null : (
+                <>
+                  <Link to="/auth/login" className="tab">
+                    Login
+                  </Link>
+                  <Link to="/auth/signup" className="tab">
+                    Signup
+                  </Link>
+                </>
+              )}
+            </nav>
 
-          {data?.user == null ? null : (
-            <button
-              className="btn btn-error btn-xs mr-3"
-              onClick={() => authClient.signOut}
-            >
-              Log out
-            </button>
-          )}
-        </div>
-        <hr />
+            {data?.user == null ? null : (
+              <button
+                className="btn btn-error btn-xs mr-3"
+                onClick={() => authClient.signOut}
+              >
+                Log out
+              </button>
+            )}
+          </div>
+        </header>
         <main className="p-3 overflow-y-scroll overflow-x-hidden">
           <Outlet />
           <LastVisitSave />
