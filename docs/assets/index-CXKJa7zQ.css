@@ -1611,6 +1611,29 @@
   }
 
   @layer daisyui.l1.l2 {
+    .tabs-border > .tab {
+      --tab-border-color: #0000 #0000 var(--tab-border-color) #0000;
+      border-radius: var(--radius-field);
+      position: relative;
+    }
+
+    .tabs-border > .tab:before {
+      content: "";
+      background-color: var(--tab-border-color);
+      width: calc(100% - var(--tab-p) * 2);
+      border-radius: var(--radius-field);
+      height: 3px;
+      bottom: 0;
+      left: var(--tab-p);
+      transition: background-color .2s;
+      position: absolute;
+    }
+
+    :is(.tabs-border > .tab:is(.tab-active, [aria-selected="true"], [aria-current="true"], [aria-current="page"]):not(.tab-disabled, [disabled]), .tabs-border > .tab:is(input:checked), .tabs-border > .tab:is(label:has(:checked))):before {
+      --tab-border-color: currentColor;
+      border-top: 3px solid;
+    }
+
     .select {
       --sl-size-mul: 10;
       --font-size-min: .875rem;
@@ -1693,6 +1716,10 @@
 
   .absolute {
     position: absolute;
+  }
+
+  .fixed {
+    position: fixed;
   }
 
   .relative {
@@ -1827,10 +1854,6 @@
     border-radius: var(--radius-box);
   }
 
-  .rounded-full {
-    border-radius: 3.40282e38px;
-  }
-
   .bg-base-100 {
     background-color: var(--color-base-100);
   }
@@ -1847,16 +1870,8 @@
     padding: calc(var(--spacing) * 3);
   }
 
-  .px-3 {
-    padding-inline: calc(var(--spacing) * 3);
-  }
-
   .px-4 {
     padding-inline: calc(var(--spacing) * 4);
-  }
-
-  .pt-3 {
-    padding-top: calc(var(--spacing) * 3);
   }
 
   .text-center {

@@ -6,8 +6,8 @@ import { a as createFileRoute, c as useNavigate, i as Outlet, l as ErrorComponen
 import { n as createHashHistory } from "./@tanstack/history-uEhFT_8-.js";
 import { n as require_jsx_runtime, t as QueryClientProvider } from "./@tanstack/react-query-BY6ydLyl.js";
 import { t as require_compiler_runtime } from "./react-PEUjiTgh.js";
-import { n as toast$1, t as Toaster$1 } from "./sonner-CTp0qRmA.js";
 import { a as atom, i as useSetAtom, n as useAtom, o as createStore, r as useAtomValue, t as Provider } from "./jotai-BBxBeiW-.js";
+import { n as toast$1, t as Toaster$1 } from "./sonner-CTp0qRmA.js";
 import { t as createAuthClient } from "./@neondatabase/auth-BT8gROfT.js";
 import { t as TanStackRouterDevtools } from "./@tanstack/react-router-devtools-BvTBnZI7.js";
 import { t as QueryClient } from "./@tanstack/query-core-Ckdck6tV.js";
@@ -54,12 +54,29 @@ var import_react = /* @__PURE__ */ __toESM(require_react(), 1);
 var import_client = require_client();
 var NEON_AUTH_URL = "https://ep-red-morning-awzkc1lp.neonauth.c-12.us-east-1.aws.neon.tech/neondb/auth";
 var NEON_DATA_URL = "https://ep-red-morning-awzkc1lp.apirest.c-12.us-east-1.aws.neon.tech/neondb/rest/v1";
-var SYNC_MODE = "web-worker";
+var SYNC_MODE = "immediate";
+
+//#endregion
+//#region src/components/JotaiProvider.tsx
+var import_compiler_runtime = require_compiler_runtime();
+var import_jsx_runtime = require_jsx_runtime();
+var JotaiStore = createStore();
+function JotaiProvider(props) {
+	const $ = (0, import_compiler_runtime.c)(2);
+	let t0;
+	if ($[0] !== props.children) {
+		t0 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Provider, {
+			store: JotaiStore,
+			children: props.children
+		});
+		$[0] = props.children;
+		$[1] = t0;
+	} else t0 = $[1];
+	return t0;
+}
 
 //#endregion
 //#region src/components/Toaster.tsx
-var import_compiler_runtime = require_compiler_runtime();
-var import_jsx_runtime = require_jsx_runtime();
 function Toaster() {
 	const $ = (0, import_compiler_runtime.c)(1);
 	let t0;
@@ -132,6 +149,48 @@ var DataClient = class DataClient {
 var dataClientAtom = atom(DataClient.new());
 
 //#endregion
+//#region src/sync.ts
+function syncNextAction({ db, client, log }) {
+	return new Promise((resolve, reject) => {
+		const request = db.transaction("actions", "readonly").objectStore("actions").openCursor();
+		request.onsuccess = async (event) => {
+			const cursor = event.target.result;
+			if (!cursor) {
+				resolve(false);
+				return;
+			}
+			const { primaryKey, value } = cursor;
+			try {
+				await pushToPostgrest(client, value);
+				log("success", value);
+			} catch (e) {
+				log("error", e);
+				reject(e);
+			}
+			db.transaction("actions", "readwrite").objectStore("actions").delete(primaryKey);
+			resolve(true);
+		};
+	});
+}
+async function pushToPostgrest(client, action) {
+	switch (action.op) {
+		case "new": {
+			const { table, entity } = action;
+			return await client.post(table, entity);
+		}
+		case "edit": {
+			const { table, entity: { id, ...data } } = action;
+			return await client.patch(table, { id: `eq.${id}` }, data);
+		}
+		case "delete": {
+			const { table, entity: { id } } = action;
+			return await client.delete(table, { id: `eq.${id}` });
+		}
+		default: console.log("unknown op", action.op);
+	}
+}
+
+//#endregion
 //#region src/migrate.ts
 var DB_NAME = "groceries";
 function migrate(event) {
@@ -184,6 +243,9 @@ function migrate(event) {
 function readTransaction(db, store) {
 	return db.transaction(store, "readonly").objectStore(store);
 }
+function writeTransaction(db, store) {
+	return db.transaction(store, "readwrite").objectStore(store);
+}
 function openIndexedDb() {
 	return new Promise((resolve, reject) => {
 		const request = indexedDB.open(DB_NAME, 7);
@@ -206,115 +268,35 @@ function promisify(request) {
 }
 
 //#endregion
-//#region src/sync.ts
-function syncNextAction({ db, client, log }) {
-	return new Promise((resolve, reject) => {
-		const request = db.transaction("actions", "readonly").objectStore("actions").openCursor();
-		request.onsuccess = async (event) => {
-			const cursor = event.target.result;
-			if (!cursor) {
-				resolve(false);
-				return;
-			}
-			const { primaryKey, value } = cursor;
-			try {
-				await pushToPostgrest(client, value);
-				log("success", value);
-			} catch (e) {
-				log("error", e);
-				reject(e);
-			}
-			db.transaction("actions", "readwrite").objectStore("actions").delete(primaryKey);
-			resolve(true);
-		};
-	});
-}
-async function pushToPostgrest(client, action) {
-	switch (action.op) {
-		case "new": {
-			const { table, entity } = action;
-			return await client.post(table, entity);
-		}
-		case "edit": {
-			const { table, entity: { id, ...data } } = action;
-			return await client.patch(table, { id: `eq.${id}` }, data);
-		}
-		case "delete": {
-			const { table, entity: { id } } = action;
-			return await client.delete(table, { id: `eq.${id}` });
-		}
-		default: console.log("unknown op", action.op);
-	}
-}
-
-//#endregion
-//#region src/model.ts
-var SyncModel = class SyncModel {
-	db;
-	client;
-	constructor(db, client) {
-		this.db = db;
-		this.client = client;
-	}
-	static async new(opts) {
-		if (opts.useIndexedDB) {
-			const db = await openIndexedDb();
-			return new SyncModel(db);
-		} else {
-			const client = await DataClient.new();
-			return new SyncModel(void 0, client);
-		}
-	}
-	async send(action) {
-		if (this.db) return await promisify(this.db.transaction("actions", "readwrite").objectStore("actions").put(action));
-		else if (this.client) return await pushToPostgrest(this.client, action);
-	}
-};
-var syncAtom = atom(SyncModel.new({ useIndexedDB: false }));
-
-//#endregion
 //#region src/sync-worker.ts?worker
 function WorkerWrapper(options) {
-	return new Worker("/grocery-shopping/assets/sync-worker-Csx_Nsvi.js", {
+	return new Worker("/grocery-shopping/assets/sync-worker-B2ef81oP.js", {
 		type: "module",
 		name: options?.name
 	});
 }
 
 //#endregion
-//#region src/components/SyncActionProvider.tsx
-function SyncActionProvider(props) {
-	const $ = (0, import_compiler_runtime.c)(7);
-	const [store] = (0, import_react.useState)(createStore);
+//#region src/components/SyncActionRunner.tsx
+function SyncActionRunner(props) {
+	const $ = (0, import_compiler_runtime.c)(3);
 	let t0;
 	let t1;
-	if ($[0] !== props.mode || $[1] !== store) {
+	if ($[0] !== props.mode) {
 		t0 = () => {
 			if (props.mode === "web-worker") return runOnWorkerThread();
 			else if (props.mode === "main-loop") return runOnMainThread();
-			store.set(syncAtom, SyncModel.new({ useIndexedDB: props.mode !== "immediate" }));
 		};
-		t1 = [props.mode, store];
+		t1 = [props.mode];
 		$[0] = props.mode;
-		$[1] = store;
-		$[2] = t0;
-		$[3] = t1;
+		$[1] = t0;
+		$[2] = t1;
 	} else {
-		t0 = $[2];
-		t1 = $[3];
+		t0 = $[1];
+		t1 = $[2];
 	}
 	(0, import_react.useEffect)(t0, t1);
-	let t2;
-	if ($[4] !== props.children || $[5] !== store) {
-		t2 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Provider, {
-			store,
-			children: props.children
-		});
-		$[4] = props.children;
-		$[5] = store;
-		$[6] = t2;
-	} else t2 = $[6];
-	return t2;
+	return null;
 }
 function runOnWorkerThread() {
 	const worker = new WorkerWrapper();
@@ -383,28 +365,48 @@ function LastVisitSave() {
 var query_client_default = new QueryClient({});
 
 //#endregion
+//#region src/model.ts
+var SyncModel = class SyncModel {
+	db;
+	client;
+	constructor(db, client) {
+		this.db = db;
+		this.client = client;
+	}
+	static async new(mode) {
+		if (mode === "immediate") return new SyncModel(void 0, await DataClient.new());
+		else return new SyncModel(await openIndexedDb());
+	}
+	async send(action) {
+		if (this.db) return await promisify(writeTransaction(this.db, "actions").put(action));
+		else if (this.client) return await pushToPostgrest(this.client, action);
+		console.warn("dropping", action);
+	}
+};
+var syncAtom = atom(new SyncModel());
+
+//#endregion
 //#region src/routes/__root.tsx
-var Route$7 = createRootRoute({
+var Route$8 = createRootRoute({
 	component: RootComponent,
 	loader: async () => {
+		JotaiStore.set(syncAtom, await SyncModel.new(SYNC_MODE));
 		return await authClient.getSession();
 	}
 });
 function RootComponent() {
-	const $ = (0, import_compiler_runtime.c)(20);
-	const { data } = Route$7.useLoaderData();
+	const $ = (0, import_compiler_runtime.c)(21);
+	const { data } = Route$8.useLoaderData();
 	const t0 = data?.user?.name ?? "Guest";
 	let t1;
 	if ($[0] !== t0) {
-		t1 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("header", {
-			className: "px-3 pt-3 text-sm flex flex-row justify-between w-full",
-			children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: ["Hello ", t0] })
-		});
+		t1 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: ["Hello, ", t0] });
 		$[0] = t0;
 		$[1] = t1;
 	} else t1 = $[1];
 	let t2;
 	let t3;
+	let t4;
 	if ($[2] === Symbol.for("react.memo_cache_sentinel")) {
 		t2 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
 			to: "/",
@@ -412,72 +414,77 @@ function RootComponent() {
 			children: "Home"
 		});
 		t3 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
-			to: "/store",
+			to: "/stores",
 			className: "tab",
 			children: "Stores"
 		});
+		t4 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+			to: "/trips",
+			className: "tab",
+			children: "Trips"
+		});
 		$[2] = t2;
 		$[3] = t3;
+		$[4] = t4;
 	} else {
 		t2 = $[2];
 		t3 = $[3];
+		t4 = $[4];
 	}
-	let t4;
-	if ($[4] !== data?.user) {
-		t4 = data?.user != null ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+	let t5;
+	if ($[5] !== data?.user) {
+		t5 = data?.user != null ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
 			to: "/auth/login",
 			className: "tab",
 			children: "Login"
-		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
-			to: "/auth/signup",
-			className: "tab",
-			children: "Signup"
-		})] });
-		$[4] = data?.user;
-		$[5] = t4;
-	} else t4 = $[5];
-	let t5;
-	if ($[6] !== t4) {
-		t5 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("nav", {
+		});
+		$[5] = data?.user;
+		$[6] = t5;
+	} else t5 = $[6];
+	let t6;
+	if ($[7] !== data?.user) {
+		t6 = data?.user == null ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+			className: "btn btn-error btn-xs mr-3",
+			onClick: _temp$3,
+			children: "Log out"
+		});
+		$[7] = data?.user;
+		$[8] = t6;
+	} else t6 = $[8];
+	let t7;
+	if ($[9] !== t5 || $[10] !== t6) {
+		t7 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("nav", {
 			className: "tabs items-center",
 			children: [
 				t2,
 				t3,
-				t4
+				t4,
+				t5,
+				t6
 			]
 		});
-		$[6] = t4;
-		$[7] = t5;
-	} else t5 = $[7];
-	let t6;
-	if ($[8] !== data?.user) {
-		t6 = data?.user == null ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-			className: "btn btn-error btn-xs mr-3",
-			onClick: _temp$2,
-			children: "Log out"
-		});
-		$[8] = data?.user;
-		$[9] = t6;
-	} else t6 = $[9];
-	let t7;
-	if ($[10] !== t5 || $[11] !== t6) {
-		t7 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			className: "flex justify-between w-full",
-			children: [t5, t6]
-		});
-		$[10] = t5;
-		$[11] = t6;
-		$[12] = t7;
-	} else t7 = $[12];
+		$[9] = t5;
+		$[10] = t6;
+		$[11] = t7;
+	} else t7 = $[11];
 	let t8;
-	if ($[13] === Symbol.for("react.memo_cache_sentinel")) {
-		t8 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("hr", {});
-		$[13] = t8;
-	} else t8 = $[13];
+	if ($[12] !== t1 || $[13] !== t7) {
+		t8 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("header", {
+			className: "bg-base-300 p-3 text-sm flex flex-row justify-between w-full",
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "flex items-center justify-between w-full",
+				children: [t1, t7]
+			})
+		});
+		$[12] = t1;
+		$[13] = t7;
+		$[14] = t8;
+	} else t8 = $[14];
 	let t10;
 	let t11;
+	let t12;
 	let t9;
-	if ($[14] === Symbol.for("react.memo_cache_sentinel")) {
+	if ($[15] === Symbol.for("react.memo_cache_sentinel")) {
 		t9 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", {
 			className: "p-3 overflow-y-scroll overflow-x-hidden",
 			children: [
@@ -488,37 +495,35 @@ function RootComponent() {
 		});
 		t10 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TanStackRouterDevtools, {});
 		t11 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReactQueryDevtools2, {});
-		$[14] = t10;
-		$[15] = t11;
-		$[16] = t9;
+		t12 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SyncActionRunner, { mode: SYNC_MODE });
+		$[15] = t10;
+		$[16] = t11;
+		$[17] = t12;
+		$[18] = t9;
 	} else {
-		t10 = $[14];
-		t11 = $[15];
-		t9 = $[16];
+		t10 = $[15];
+		t11 = $[16];
+		t12 = $[17];
+		t9 = $[18];
 	}
-	let t12;
-	if ($[17] !== t1 || $[18] !== t7) {
-		t12 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(QueryClientProvider, {
+	let t13;
+	if ($[19] !== t8) {
+		t13 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(QueryClientProvider, {
 			client: query_client_default,
-			children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(SyncActionProvider, {
-				mode: SYNC_MODE,
-				children: [
-					t1,
-					t7,
-					t8,
-					t9,
-					t10,
-					t11
-				]
-			})
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(JotaiProvider, { children: [
+				t8,
+				t9,
+				t10,
+				t11,
+				t12
+			] })
 		});
-		$[17] = t1;
-		$[18] = t7;
-		$[19] = t12;
-	} else t12 = $[19];
-	return t12;
+		$[19] = t8;
+		$[20] = t13;
+	} else t13 = $[20];
+	return t13;
 }
-function _temp$2() {
+function _temp$3() {
 	return authClient.signOut;
 }
 
@@ -529,28 +534,37 @@ function toast(render) {
 }
 
 //#endregion
-//#region src/components/ClickMe.tsx
-function ClickMe_default() {
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-		className: "btn btn-accent btn-xs",
-		onClick: () => toast(() => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-			className: "p-3 bg-base-300 rounded-full",
-			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { src: "/grocery-shopping/nyan.gif" })
-		})),
-		children: "Click Me"
-	});
+//#region src/components/bits/NyanCatButton.tsx
+function NyanCatButton() {
+	const $ = (0, import_compiler_runtime.c)(1);
+	let t0;
+	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
+		t0 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+			className: "btn btn-accent btn-xs",
+			onClick: _temp2$1,
+			children: "Click Me"
+		});
+		$[0] = t0;
+	} else t0 = $[0];
+	return t0;
+}
+function _temp2$1() {
+	return toast(_temp$2);
+}
+function _temp$2() {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", { src: "/grocery-shopping/nyan.gif" });
 }
 
 //#endregion
 //#region src/routes/index.tsx
-var Route$6 = createFileRoute("/")({ component: RouteComponent$6 });
-function RouteComponent$6() {
+var Route$7 = createFileRoute("/")({ component: RouteComponent$7 });
+function RouteComponent$7() {
 	const $ = (0, import_compiler_runtime.c)(5);
 	let t0;
 	let t1;
 	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
 		t0 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: "Welcome to my web zone!" });
-		t1 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ClickMe_default, {});
+		t1 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(NyanCatButton, {});
 		$[0] = t0;
 		$[1] = t1;
 	} else {
@@ -564,7 +578,7 @@ function RouteComponent$6() {
 	} else t2 = $[2];
 	let t3;
 	if ($[3] === Symbol.for("react.memo_cache_sentinel")) {
-		t3 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["Last Released: ", "2026-08-07 at  5:12pm"] });
+		t3 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["Last Released: ", "2026-08-08 at  1:29pm"] });
 		$[3] = t3;
 	} else t3 = $[3];
 	let t4;
@@ -592,246 +606,53 @@ function RouteComponent$6() {
 }
 
 //#endregion
-//#region src/routes/auth/forgor.tsx
-var Route$5 = createFileRoute("/auth/forgor")({ component: RouteComponent$5 });
-function RouteComponent$5() {
-	const $ = (0, import_compiler_runtime.c)(2);
-	const formRef = (0, import_react.useRef)(null);
+//#region src/routes/auth.tsx
+var Route$6 = createFileRoute("/auth")({ component: RouteComponent$6 });
+function RouteComponent$6() {
+	const $ = (0, import_compiler_runtime.c)(1);
 	let t0;
 	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
-		t0 = async function resetPassword() {
-			const email = new FormData(formRef.current).get("email")?.toString();
-			await authClient.requestPasswordReset({ email });
-			toast(() => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: ["Password reset sent to ", /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-				className: "underline",
-				children: email
-			})] }));
-		};
+		t0 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			role: "tablist",
+			className: "tabs tabs-border",
+			children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+					to: "./login",
+					from: Route$6.to,
+					className: "tab",
+					children: "Login"
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+					to: "./signup",
+					from: Route$6.to,
+					className: "tab",
+					children: "Signup"
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+					to: "./forgor",
+					from: Route$6.to,
+					className: "tab",
+					children: "Forgor"
+				})
+			]
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Outlet, {})] });
 		$[0] = t0;
 	} else t0 = $[0];
-	const resetPassword = t0;
-	let t1;
-	if ($[1] === Symbol.for("react.memo_cache_sentinel")) {
-		t1 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
-			ref: formRef,
-			className: "flex flex-col gap-2 items-start p-2",
-			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-				type: "email",
-				placeholder: "Email",
-				name: "email",
-				required: true
-			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-				type: "button",
-				className: "btn btn-primary",
-				onClick: resetPassword,
-				children: "Send Password Reset Email"
-			})]
-		});
-		$[1] = t1;
-	} else t1 = $[1];
-	return t1;
+	return t0;
 }
 
 //#endregion
-//#region src/last-visited-url.ts
-function lastVisitedUrl() {
-	return localStorage.getItem("last_visited_url") ?? "/store";
-}
-
-//#endregion
-//#region src/routes/auth/login.tsx
-var Route$4 = createFileRoute("/auth/login")({ component: RouteComponent$4 });
-function RouteComponent$4() {
-	const navigate = useNavigate();
-	const formRef = (0, import_react.useRef)(null);
-	async function handleSubmit(event) {
-		event.preventDefault();
-		const data = new FormData(event.currentTarget);
-		const payload = {
-			email: data.get("email")?.toString(),
-			password: data.get("password")?.toString(),
-			rememberMe: true
-		};
-		try {
-			await authClient.signIn.email(payload);
-			navigate({ to: lastVisitedUrl() });
-		} catch (e) {
-			console.error(e);
-			toast(() => {
-				return e.message;
-			});
-		}
-	}
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
-		ref: formRef,
-		className: "flex flex-col gap-2 items-start p-2",
-		onSubmit: handleSubmit,
-		children: [
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-				type: "email",
-				placeholder: "Email",
-				name: "email",
-				required: true
-			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-				type: "password",
-				placeholder: "Password",
-				name: "password",
-				required: true
-			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
-				type: "button",
-				className: "btn btn-ghost btn-sm",
-				to: "/auth/forgor",
-				children: "💀 I forgor (reset password)"
-			})] }),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-				type: "submit",
-				className: "btn btn-primary",
-				children: "Login"
-			})
-		]
-	});
-}
-
-//#endregion
-//#region src/routes/auth/password-reset.tsx
-var Route$3 = createFileRoute("/auth/password-reset")({
-	component: RouteComponent$3,
-	validateSearch: (search) => {
-		return { token: search["token"] };
-	}
-});
-function RouteComponent$3() {
-	const $ = (0, import_compiler_runtime.c)(10);
-	const params = Route$3.useSearch();
-	const navigate = useNavigate();
-	let t0;
-	if ($[0] !== navigate || $[1] !== params.token) {
-		t0 = () => {
-			if (!params.token) navigate({ to: "/auth/login" });
-		};
-		$[0] = navigate;
-		$[1] = params.token;
-		$[2] = t0;
-	} else t0 = $[2];
-	(0, import_react.useEffect)(t0);
-	const formRef = (0, import_react.useRef)(null);
-	let t1;
-	if ($[3] !== navigate || $[4] !== params.token) {
-		t1 = async function handleSubmit(e) {
-			e.preventDefault();
-			const payload = {
-				newPassword: new FormData(e.currentTarget).get("password")?.toString(),
-				token: params.token
-			};
-			await authClient.resetPassword(payload);
-			navigate({ to: "/auth/login" });
-		};
-		$[3] = navigate;
-		$[4] = params.token;
-		$[5] = t1;
-	} else t1 = $[5];
-	const handleSubmit = t1;
-	let t2;
-	let t3;
-	if ($[6] === Symbol.for("react.memo_cache_sentinel")) {
-		t2 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-			type: "password",
-			placeholder: "New Password",
-			name: "password",
-			required: true
-		}) });
-		t3 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-			type: "submit",
-			className: "btn btn-primary",
-			children: "Confirm"
-		});
-		$[6] = t2;
-		$[7] = t3;
-	} else {
-		t2 = $[6];
-		t3 = $[7];
-	}
-	let t4;
-	if ($[8] !== handleSubmit) {
-		t4 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
-			ref: formRef,
-			className: "flex flex-col gap-2 items-start p-2",
-			onSubmit: handleSubmit,
-			children: [t2, t3]
-		});
-		$[8] = handleSubmit;
-		$[9] = t4;
-	} else t4 = $[9];
-	return t4;
-}
-
-//#endregion
-//#region src/routes/auth/signup.tsx
-var Route$2 = createFileRoute("/auth/signup")({ component: RouteComponent$2 });
-function RouteComponent$2() {
-	const navigate = useNavigate();
-	async function handleSubmit(event) {
-		event.preventDefault();
-		const data = new FormData(event.currentTarget);
-		const payload = {
-			name: data.get("username")?.toString(),
-			email: data.get("email")?.toString(),
-			password: data.get("password")?.toString()
-		};
-		try {
-			await authClient.signUp.email(payload);
-			navigate({ to: lastVisitedUrl() });
-		} catch (e) {
-			toast(() => {
-				return e.message;
-			});
-		}
-	}
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
-		className: "flex flex-col gap-2 items-start p-2",
-		onSubmit: handleSubmit,
-		children: [
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-				type: "text",
-				placeholder: "Username",
-				name: "username",
-				required: true
-			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-				type: "email",
-				placeholder: "Email",
-				name: "email",
-				required: true
-			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-				type: "password",
-				placeholder: "Password",
-				name: "password",
-				required: true
-			}),
-			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-				type: "submit",
-				className: "btn btn-primary",
-				children: "Sign up"
-			})
-		]
-	});
-}
-
-//#endregion
-//#region src/routes/store/index.tsx
+//#region src/routes/stores.tsx
 var storesAtom = atom([]);
 var sortedStoresAtom = atom((get) => get(storesAtom).toSorted((a, b) => a.name.localeCompare(b.name)));
-var jotaiStore$1 = createStore();
-var Route$1 = createFileRoute("/store/")({
-	component: RouteComponent$1,
+var Route$5 = createFileRoute("/stores")({
+	component: RouteComponent$5,
 	loader: async () => {
 		const result = await (await DataClient.new()).get("stores", {
 			select: "id,name",
 			order: "name.asc"
 		});
-		jotaiStore$1.set(storesAtom, result);
+		JotaiStore.set(storesAtom, result);
 		const db = await openIndexedDb();
 		const actions = await promisify(readTransaction(db, "actions").getAll());
 		for (const action of actions) applyAction(action);
@@ -840,22 +661,10 @@ var Route$1 = createFileRoute("/store/")({
 function applyAction(action) {
 	if (action.table != "stores") return;
 	switch (action.op) {
-		case "new": jotaiStore$1.set(storesAtom, (stores) => [...stores, action.entity]);
+		case "new": JotaiStore.set(storesAtom, (stores) => [...stores, action.entity]);
 	}
 }
-function RouteComponent$1() {
-	const $ = (0, import_compiler_runtime.c)(1);
-	let t0;
-	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
-		t0 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Provider, {
-			store: jotaiStore$1,
-			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Page, {})
-		});
-		$[0] = t0;
-	} else t0 = $[0];
-	return t0;
-}
-function Page() {
+function RouteComponent$5() {
 	const $ = (0, import_compiler_runtime.c)(20);
 	const sync = useAtomValue(syncAtom);
 	const stores = useAtomValue(sortedStoresAtom);
@@ -964,6 +773,234 @@ function _temp$1(s) {
 }
 
 //#endregion
+//#region src/routes/auth/forgor.tsx
+var Route$4 = createFileRoute("/auth/forgor")({ component: RouteComponent$4 });
+function RouteComponent$4() {
+	const $ = (0, import_compiler_runtime.c)(2);
+	const formRef = (0, import_react.useRef)(null);
+	let t0;
+	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
+		t0 = async function resetPassword() {
+			const email = new FormData(formRef.current).get("email")?.toString();
+			await authClient.requestPasswordReset({ email });
+			toast(() => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: ["Password reset sent to ", /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+				className: "underline",
+				children: email
+			})] }));
+		};
+		$[0] = t0;
+	} else t0 = $[0];
+	const resetPassword = t0;
+	let t1;
+	if ($[1] === Symbol.for("react.memo_cache_sentinel")) {
+		t1 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
+			ref: formRef,
+			className: "flex flex-col gap-2 items-start p-2",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+				type: "email",
+				placeholder: "Email",
+				name: "email",
+				required: true
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+				type: "button",
+				className: "btn btn-primary",
+				onClick: resetPassword,
+				children: "Send Password Reset Email"
+			})]
+		});
+		$[1] = t1;
+	} else t1 = $[1];
+	return t1;
+}
+
+//#endregion
+//#region src/last-visited-url.ts
+function lastVisitedUrl() {
+	return localStorage.getItem("last_visited_url") ?? "/store";
+}
+
+//#endregion
+//#region src/routes/auth/login.tsx
+var Route$3 = createFileRoute("/auth/login")({ component: RouteComponent$3 });
+function RouteComponent$3() {
+	const navigate = useNavigate();
+	const formRef = (0, import_react.useRef)(null);
+	async function handleSubmit(event) {
+		event.preventDefault();
+		const data = new FormData(event.currentTarget);
+		const payload = {
+			email: data.get("email")?.toString(),
+			password: data.get("password")?.toString(),
+			rememberMe: true
+		};
+		try {
+			await authClient.signIn.email(payload);
+			navigate({ to: lastVisitedUrl() });
+		} catch (e) {
+			console.error(e);
+			toast(() => {
+				return e.message;
+			});
+		}
+	}
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
+		ref: formRef,
+		className: "flex flex-col gap-2 items-start p-2",
+		onSubmit: handleSubmit,
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+				type: "email",
+				placeholder: "Email",
+				name: "email",
+				required: true
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+				type: "password",
+				placeholder: "Password",
+				name: "password",
+				required: true
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+				type: "button",
+				className: "btn btn-ghost btn-sm",
+				to: "/auth/forgor",
+				children: "💀 I forgor (reset password)"
+			})] }),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+				type: "submit",
+				className: "btn btn-primary",
+				children: "Login"
+			})
+		]
+	});
+}
+
+//#endregion
+//#region src/routes/auth/password-reset.tsx
+var Route$2 = createFileRoute("/auth/password-reset")({
+	component: RouteComponent$2,
+	validateSearch: (search) => {
+		return { token: search["token"] };
+	}
+});
+function RouteComponent$2() {
+	const $ = (0, import_compiler_runtime.c)(10);
+	const params = Route$2.useSearch();
+	const navigate = useNavigate();
+	let t0;
+	if ($[0] !== navigate || $[1] !== params.token) {
+		t0 = () => {
+			if (!params.token) navigate({ to: "/auth/login" });
+		};
+		$[0] = navigate;
+		$[1] = params.token;
+		$[2] = t0;
+	} else t0 = $[2];
+	(0, import_react.useEffect)(t0);
+	const formRef = (0, import_react.useRef)(null);
+	let t1;
+	if ($[3] !== navigate || $[4] !== params.token) {
+		t1 = async function handleSubmit(e) {
+			e.preventDefault();
+			const payload = {
+				newPassword: new FormData(e.currentTarget).get("password")?.toString(),
+				token: params.token
+			};
+			await authClient.resetPassword(payload);
+			navigate({ to: "/auth/login" });
+		};
+		$[3] = navigate;
+		$[4] = params.token;
+		$[5] = t1;
+	} else t1 = $[5];
+	const handleSubmit = t1;
+	let t2;
+	let t3;
+	if ($[6] === Symbol.for("react.memo_cache_sentinel")) {
+		t2 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+			type: "password",
+			placeholder: "New Password",
+			name: "password",
+			required: true
+		}) });
+		t3 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+			type: "submit",
+			className: "btn btn-primary",
+			children: "Confirm"
+		});
+		$[6] = t2;
+		$[7] = t3;
+	} else {
+		t2 = $[6];
+		t3 = $[7];
+	}
+	let t4;
+	if ($[8] !== handleSubmit) {
+		t4 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
+			ref: formRef,
+			className: "flex flex-col gap-2 items-start p-2",
+			onSubmit: handleSubmit,
+			children: [t2, t3]
+		});
+		$[8] = handleSubmit;
+		$[9] = t4;
+	} else t4 = $[9];
+	return t4;
+}
+
+//#endregion
+//#region src/routes/auth/signup.tsx
+var Route$1 = createFileRoute("/auth/signup")({ component: RouteComponent$1 });
+function RouteComponent$1() {
+	const navigate = useNavigate();
+	async function handleSubmit(event) {
+		event.preventDefault();
+		const data = new FormData(event.currentTarget);
+		const payload = {
+			name: data.get("username")?.toString(),
+			email: data.get("email")?.toString(),
+			password: data.get("password")?.toString()
+		};
+		try {
+			await authClient.signUp.email(payload);
+			navigate({ to: lastVisitedUrl() });
+		} catch (e) {
+			toast(() => {
+				return e.message;
+			});
+		}
+	}
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
+		className: "flex flex-col gap-2 items-start p-2",
+		onSubmit: handleSubmit,
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+				type: "text",
+				placeholder: "Username",
+				name: "username",
+				required: true
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+				type: "email",
+				placeholder: "Email",
+				name: "email",
+				required: true
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+				type: "password",
+				placeholder: "Password",
+				name: "password",
+				required: true
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+				type: "submit",
+				className: "btn btn-primary",
+				children: "Sign up"
+			})
+		]
+	});
+}
+
+//#endregion
 //#region src/components/Input.tsx
 function Input(t0) {
 	const $ = (0, import_compiler_runtime.c)(8);
@@ -1050,13 +1087,13 @@ var applyAndSyncAtom = atom(null, (_get, set, action) => {
 });
 var syncActionAtom = atom(null, (get, _set, action) => {
 	const storeId = get(storeIdAtom);
-	get(syncAtom).then((sync) => sync.send({
+	get(syncAtom).send({
 		...action,
 		entity: {
 			...action.entity,
 			store_id: storeId
 		}
-	}));
+	});
 });
 var appendNewItemAtom = atom(null, (get, set) => {
 	const lastOrder = get(lastInOrderAtom)?.order ?? 0;
@@ -1217,7 +1254,7 @@ var handleTextboxAtom = atom(null, (_get, set, event) => {
 
 //#endregion
 //#region src/routes/store/$storeId.tsx
-var jotaiStore = createStore();
+var nowAtom = atom(toPlainDate(/* @__PURE__ */ new Date()));
 var Route = createFileRoute("/store/$storeId")({
 	component: RouteComponent,
 	loader: async ({ params: { storeId }, abortController }) => {
@@ -1243,10 +1280,15 @@ var Route = createFileRoute("/store/$storeId")({
 			item.store_id = storeId;
 			result.items[item.id] = item;
 		}
-		return result;
+		JotaiStore.set(storeIdAtom, storeId);
+		JotaiStore.set(storeItemsAtom, items);
+		JotaiStore.set(nowAtom, toPlainDate(/* @__PURE__ */ new Date()));
+		const db = await openIndexedDb();
+		const actions = await promisify(readTransaction(db, "actions").getAll());
+		for (const action of actions) JotaiStore.set(applyActionAtom, action);
+		return { name: store.name };
 	}
 });
-var nowAtom = atom(toPlainDate(/* @__PURE__ */ new Date()));
 function toPlainDate(date) {
 	return new Temporal.PlainDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
 }
@@ -1257,39 +1299,9 @@ function ago(item, now) {
 	return `${duration.days}d ago`;
 }
 function RouteComponent() {
-	const $ = (0, import_compiler_runtime.c)(6);
-	const { id, items } = Route.useLoaderData();
-	let t0;
-	if ($[0] !== id || $[1] !== items) {
-		t0 = () => {
-			console.log(items);
-			jotaiStore.set(storeIdAtom, id);
-			jotaiStore.set(storeItemsAtom, items);
-		};
-		$[0] = id;
-		$[1] = items;
-		$[2] = t0;
-	} else t0 = $[2];
-	let t1;
-	if ($[3] !== id) {
-		t1 = [id];
-		$[3] = id;
-		$[4] = t1;
-	} else t1 = $[4];
-	(0, import_react.useEffect)(t0, t1);
-	let t2;
-	if ($[5] === Symbol.for("react.memo_cache_sentinel")) {
-		t2 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Provider, {
-			store: jotaiStore,
-			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(StoreItems, {})
-		});
-		$[5] = t2;
-	} else t2 = $[5];
-	return t2;
-}
-function StoreItems() {
 	const $ = (0, import_compiler_runtime.c)(55);
-	const { name, id } = Route.useLoaderData();
+	const { name } = Route.useLoaderData();
+	const id = useAtomValue(storeIdAtom);
 	let t0;
 	if ($[0] === Symbol.for("react.memo_cache_sentinel")) {
 		t0 = { activationConstraint: { distance: 5 } };
@@ -1618,50 +1630,59 @@ function Sortable(props) {
 
 //#endregion
 //#region src/routeTree.gen.ts
-var IndexRoute = Route$6.update({
+var IndexRoute = Route$7.update({
 	id: "/",
 	path: "/",
-	getParentRoute: () => Route$7
+	getParentRoute: () => Route$8
 });
-var AuthForgorRoute = Route$5.update({
-	id: "/auth/forgor",
-	path: "/auth/forgor",
-	getParentRoute: () => Route$7
+var AuthRoute = Route$6.update({
+	id: "/auth",
+	path: "/auth",
+	getParentRoute: () => Route$8
 });
-var AuthLoginRoute = Route$4.update({
-	id: "/auth/login",
-	path: "/auth/login",
-	getParentRoute: () => Route$7
+var StoresRoute = Route$5.update({
+	id: "/stores",
+	path: "/stores",
+	getParentRoute: () => Route$8
 });
-var AuthPasswordResetRoute = Route$3.update({
-	id: "/auth/password-reset",
-	path: "/auth/password-reset",
-	getParentRoute: () => Route$7
+var AuthForgorRoute = Route$4.update({
+	id: "/forgor",
+	path: "/forgor",
+	getParentRoute: () => AuthRoute
 });
-var AuthSignupRoute = Route$2.update({
-	id: "/auth/signup",
-	path: "/auth/signup",
-	getParentRoute: () => Route$7
+var AuthLoginRoute = Route$3.update({
+	id: "/login",
+	path: "/login",
+	getParentRoute: () => AuthRoute
 });
-var StoreIndexRoute = Route$1.update({
-	id: "/store/",
-	path: "/store/",
-	getParentRoute: () => Route$7
+var AuthPasswordResetRoute = Route$2.update({
+	id: "/password-reset",
+	path: "/password-reset",
+	getParentRoute: () => AuthRoute
 });
-var rootRouteChildren = {
-	IndexRoute,
+var AuthSignupRoute = Route$1.update({
+	id: "/signup",
+	path: "/signup",
+	getParentRoute: () => AuthRoute
+});
+var StoreStoreIdRoute = Route.update({
+	id: "/store/$storeId",
+	path: "/store/$storeId",
+	getParentRoute: () => Route$8
+});
+var AuthRouteChildren = {
 	AuthForgorRoute,
 	AuthLoginRoute,
 	AuthPasswordResetRoute,
-	AuthSignupRoute,
-	StoreStoreIdRoute: Route.update({
-		id: "/store/$storeId",
-		path: "/store/$storeId",
-		getParentRoute: () => Route$7
-	}),
-	StoreIndexRoute
+	AuthSignupRoute
 };
-var routeTree = Route$7._addFileChildren(rootRouteChildren)._addFileTypes();
+var rootRouteChildren = {
+	IndexRoute,
+	AuthRoute: AuthRoute._addFileChildren(AuthRouteChildren),
+	StoresRoute,
+	StoreStoreIdRoute
+};
+var routeTree = Route$8._addFileChildren(rootRouteChildren)._addFileTypes();
 
 //#endregion
 //#region src/router.ts
@@ -1678,7 +1699,7 @@ var router = createRouter({
 
 //#endregion
 //#region src/main.tsx
-if (false) navigator.serviceWorker.register("/grocery-shopping/service-worker.js");
+if (true) navigator.serviceWorker.register("/grocery-shopping/service-worker.js");
 (0, import_client.createRoot)(document.getElementById("root")).render(/* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react.StrictMode, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(RouterProvider, { router }) }));
 
 //#endregion
