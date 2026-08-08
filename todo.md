@@ -1,7 +1,7 @@
 # Todo
 - [x] inline nav bar
 - [x] Unhighlight stores in nav
-- [ ] combined nav link for signup / login
+- [x] combined nav link for signup / login
 - [ ] autofocus new item
 - [ ] Make it clear to user when offline
 - [ ] Fix item alignment in got list

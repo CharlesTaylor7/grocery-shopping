@@ -37,26 +37,23 @@ function RootComponent() {
               <Link to="/stores" className="tab">
                 Stores
               </Link>
+              <Link to="/trips" className="tab">
+                Trips
+              </Link>
               {data?.user != null ? null : (
-                <>
-                  <Link to="/auth/login" className="tab">
-                    Login
-                  </Link>
-                  <Link to="/auth/signup" className="tab">
-                    Signup
-                  </Link>
-                </>
+                <Link to="/auth/login" className="tab">
+                  Login
+                </Link>
+              )}
+              {data?.user == null ? null : (
+                <button
+                  className="btn btn-error btn-xs mr-3"
+                  onClick={() => authClient.signOut}
+                >
+                  Log out
+                </button>
               )}
             </nav>
-
-            {data?.user == null ? null : (
-              <button
-                className="btn btn-error btn-xs mr-3"
-                onClick={() => authClient.signOut}
-              >
-                Log out
-              </button>
-            )}
           </div>
         </header>
         <main className="p-3 overflow-y-scroll overflow-x-hidden">
