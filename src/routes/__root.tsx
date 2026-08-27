@@ -4,8 +4,6 @@ import Toaster from "@/components/Toaster";
 import SyncActionRunner from "@/components/SyncActionRunner";
 import { SYNC_MODE } from "@/config";
 import LastVisitSave from "@/components/LastVisitSave";
-import { TanStackRouterDevtools as RouterDev } from "@tanstack/react-router-devtools";
-import { ReactQueryDevtools as QueryDev } from "@tanstack/react-query-devtools";
 import { QueryClientProvider } from "@tanstack/react-query";
 import queryClient from "@/query-client";
 import { authClient } from "@/auth";
@@ -37,9 +35,6 @@ function RootComponent() {
               <Link to="/stores" className="tab">
                 Stores
               </Link>
-              <Link to="/trips" className="tab">
-                Trips
-              </Link>
               {data?.user != null ? null : (
                 <Link to="/auth/login" className="tab">
                   Login
@@ -61,8 +56,6 @@ function RootComponent() {
           <LastVisitSave />
           <Toaster />
         </main>
-        <RouterDev />
-        <QueryDev />
         <SyncActionRunner mode={SYNC_MODE} />
       </JotaiProvider>
     </QueryClientProvider>

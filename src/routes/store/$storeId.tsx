@@ -141,7 +141,7 @@ function RouteComponent() {
                 className="btn btn-error"
                 onClick={() => {
                   sync.send({ table: "stores", op: "delete", entity: { id } })
-                    .then(() => navigate({ to: "/store" }));
+                    .then(() => navigate({ to: "/stores" }));
                 }}
               >
                 delete
