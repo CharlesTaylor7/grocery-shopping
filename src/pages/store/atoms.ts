@@ -35,7 +35,7 @@ export const gotItemsAtom = atom((get) => {
     item.got
   ) as GotItem[];
   return filtered.sort((a, b) =>
-    b.last_got_at.valueOf() - a.last_got_at.valueOf()
+    a.description.toLowerCase().localeCompare(b.description.toLowerCase())
   );
 });
 
