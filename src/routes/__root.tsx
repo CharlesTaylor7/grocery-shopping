@@ -1,4 +1,4 @@
-import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
+import { createRootRoute, ErrorComponent, Link, Outlet } from "@tanstack/react-router";
 import JotaiProvider, { JotaiStore } from '@/components/JotaiProvider';
 import Toaster from "@/components/Toaster";
 import SyncActionRunner from "@/components/SyncActionRunner";
@@ -11,8 +11,8 @@ import { syncAtom, SyncModel } from '@/model';
 
 export const Route = createRootRoute({
   component: RootComponent,
+  errorComponent: ErrorComponent,
   loader: async () => {
-
     JotaiStore.set(syncAtom, await SyncModel.new(SYNC_MODE));
     return await authClient.getSession();
   },
@@ -23,7 +23,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <JotaiProvider>
-        <header className="bg-base-300 p-3 text-sm flex flex-row justify-between w-full">
+        <header className="bg-base-200 p-3 text-sm flex flex-row justify-between w-full">
           <div className="flex items-center justify-between w-full">
             <span>
               Hello, {data?.user?.name ?? "Guest"}
