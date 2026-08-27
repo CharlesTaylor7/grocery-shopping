@@ -29,3 +29,10 @@
 - [ ] fitness graham pacer test
 - [ ] cursed push notification
 - [ ] button that zooms away as you click it.
+
+
+### FEEDBACK
+- [ ] alphabetized got list
+- [ ] your shit to not disappear
+
+
