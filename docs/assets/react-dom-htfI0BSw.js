@@ -126,6 +126,7 @@ var require_scheduler_production = /* @__PURE__ */ __commonJSMin(((exports) => {
 					} finally {
 						currentTask = null, currentPriorityLevel = previousPriorityLevel, isPerformingWork = !1;
 					}
+					hasMoreWork = void 0;
 				}
 			} finally {
 				hasMoreWork ? schedulePerformWorkUntilDeadline() : isMessageLoopRunning = !1;

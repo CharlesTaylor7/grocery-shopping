@@ -1,8 +1,8 @@
-//#region node_modules/.pnpm/temporal-polyfill@1.0.2/node_modules/temporal-polyfill/chunks/root.js
+//#region node_modules/.pnpm/temporal-polyfill@1.0.4/node_modules/temporal-polyfill/chunks/root.js
 var NativeTemporal = globalThis.Temporal;
 
 //#endregion
-//#region node_modules/.pnpm/temporal-utils@1.0.1/node_modules/temporal-utils/dist/errorMessages.js
+//#region node_modules/.pnpm/temporal-utils@1.0.2/node_modules/temporal-utils/dist/errorMessages.js
 var expectedPositive = (entityName, num) => `Non-positive ${entityName}: ${num}`;
 var expectedFinite = (entityName, num) => `Non-finite ${entityName}: ${num}`;
 var forbiddenBigIntToNumber = (entityName) => `Cannot convert bigint to ${entityName}`;
@@ -11,7 +11,7 @@ var numberOutOfRange = (entityName, val, min, max) => invalidEntity$1(entityName
 var invalidEntity$1 = (fieldName, val) => `Invalid ${fieldName}: ${val}`;
 
 //#endregion
-//#region node_modules/.pnpm/temporal-utils@1.0.1/node_modules/temporal-utils/dist/utils.js
+//#region node_modules/.pnpm/temporal-utils@1.0.2/node_modules/temporal-utils/dist/utils.js
 var nanoInMicro$1 = 1e3;
 var nanoInMilli$1 = 1e6;
 var nanoInSec$1 = 1e9;
@@ -49,7 +49,7 @@ function requireObjectLike(arg) {
 }
 
 //#endregion
-//#region node_modules/.pnpm/temporal-polyfill@1.0.2/node_modules/temporal-polyfill/chunks/internal.js
+//#region node_modules/.pnpm/temporal-polyfill@1.0.4/node_modules/temporal-polyfill/chunks/internal.js
 var invalidEntity = invalidEntity$1;
 var missingField = (fieldName) => `Missing ${fieldName}`;
 var noValidFields = (validFields) => "No valid fields: " + validFields.join();
@@ -1132,12 +1132,13 @@ function diffZonedDateTimes(invert, calendar, slots0, slots1, options) {
 	const epochNano0 = slots0.epochNanoseconds;
 	const epochNano1 = slots1.epochNanoseconds;
 	let durationFields;
-	if (compareBigInts(epochNano1, epochNano0)) if (largestUnit < 6) durationFields = diffEpochNanos(epochNano0, epochNano1, largestUnit, smallestUnit, roundingInc, roundingMode);
-	else {
-		const timeZone = getCommonTimeZone(slots0.timeZone, slots1.timeZone);
-		durationFields = diffZonedEpochsExact(timeZone, calendar, slots0, slots1, largestUnit), durationFields = roundRelativeDuration(durationFields, epochNano1, largestUnit, smallestUnit, roundingInc, roundingMode, createZonedRelativeOps(calendar, timeZone, slots0), 1);
-	}
-	else durationFields = durationFieldDefaults;
+	if (compareBigInts(epochNano1, epochNano0)) {
+		if (largestUnit < 6) durationFields = diffEpochNanos(epochNano0, epochNano1, largestUnit, smallestUnit, roundingInc, roundingMode);
+		else {
+			const timeZone = getCommonTimeZone(slots0.timeZone, slots1.timeZone);
+			durationFields = diffZonedEpochsExact(timeZone, calendar, slots0, slots1, largestUnit), durationFields = roundRelativeDuration(durationFields, epochNano1, largestUnit, smallestUnit, roundingInc, roundingMode, createZonedRelativeOps(calendar, timeZone, slots0), 1);
+		}
+	} else durationFields = durationFieldDefaults;
 	return createDurationSlots(invert ? negateDurationFields(durationFields) : durationFields);
 }
 function diffPlainDateTimes(invert, calendar, plainDateTimeSlots0, plainDateTimeSlots1, options) {
@@ -1675,7 +1676,7 @@ function createPlainMonthDayFromFields(calendar, fields, options) {
 			day = void 0 !== constrainedDay ? constrainedDay : fields.day;
 		}
 	}
-	isLeapMonth && ((calendar && calendar.U?.[monthCodeNumber]) ?? Infinity) < fields.day && (1 === overflow && throwRangeError(invalidLeapMonth), isLeapMonth = 0, day = constrainToRange(fields.day, 1, (calendar && calendar.R) ?? Infinity));
+	isLeapMonth && ((calendar && calendar.U?.[monthCodeNumber]) ?? 1 / 0) < fields.day && (1 === overflow && throwRangeError(invalidLeapMonth), isLeapMonth = 0, day = constrainToRange(fields.day, 1, (calendar && calendar.R) ?? 1 / 0));
 	let res = calendar ? calendar.u(monthCodeNumber, Boolean(isLeapMonth), day) : computeIsoYearMonthFieldsForMonthDay(monthCodeNumber, Boolean(isLeapMonth));
 	for (; !res && 0 === overflow && day > 1;) day--, res = calendar ? calendar.u(monthCodeNumber, Boolean(isLeapMonth), day) : computeIsoYearMonthFieldsForMonthDay(monthCodeNumber, Boolean(isLeapMonth));
 	res || throwRangeError("Cannot guess year");
@@ -2598,7 +2599,7 @@ function getCurrentTimeZoneId() {
 }
 
 //#endregion
-//#region node_modules/.pnpm/temporal-polyfill@1.0.2/node_modules/temporal-polyfill/chunks/apiHelpers.js
+//#region node_modules/.pnpm/temporal-polyfill@1.0.4/node_modules/temporal-polyfill/chunks/apiHelpers.js
 var PlainYearMonthBranding = "PlainYearMonth";
 var PlainMonthDayBranding = "PlainMonthDay";
 var PlainDateBranding = "PlainDate";
@@ -2718,7 +2719,7 @@ function createNativeGetters(shimGetters) {
 createNativeGetters(yearMonthDerivedGetters), createNativeGetters(dateDerivedGetters);
 
 //#endregion
-//#region node_modules/.pnpm/temporal-polyfill@1.0.2/node_modules/temporal-polyfill/chunks/classApi-basic.js
+//#region node_modules/.pnpm/temporal-polyfill@1.0.4/node_modules/temporal-polyfill/chunks/classApi-basic.js
 function resolveBasicCalendarId(rawCalendarId) {
 	const lowerRawCalendarId = requireString(rawCalendarId).toLowerCase();
 	return lowerRawCalendarId === "iso8601" ? void 0 : lowerRawCalendarId === "gregory" ? 0 : void throwRangeError(exoticCalendarRequired(rawCalendarId, "temporal-polyfill/full"));
@@ -3600,7 +3601,7 @@ var Temporal$1 = /*@__PURE__*/ Object.defineProperties({}, {
 });
 
 //#endregion
-//#region node_modules/.pnpm/temporal-polyfill@1.0.2/node_modules/temporal-polyfill/index.js
+//#region node_modules/.pnpm/temporal-polyfill@1.0.4/node_modules/temporal-polyfill/index.js
 var Temporal = NativeTemporal || Temporal$1;
 var toTemporalInstant = NativeTemporal ? Date.prototype.toTemporalInstant : toTemporalInstant$1;
 

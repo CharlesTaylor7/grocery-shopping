@@ -1,6 +1,6 @@
 import { n as __exportAll } from "../rolldown-runtime-BBzN7mU7.js";
-import { n as capitalizeFirstLetter, r as env, t as BetterAuthError } from "../@better-auth/core-Cpwn0XIh.js";
-import { t as createFetch } from "../@better-fetch/fetch-CPa8JoPN.js";
+import { n as capitalizeFirstLetter, r as env, t as BetterAuthError } from "../@better-auth/core-BQNbWhwS.js";
+import { t as createFetch } from "../@better-fetch/fetch-6ZDvfNkv.js";
 
 //#region node_modules/.pnpm/tslib@2.8.1/node_modules/tslib/tslib.es6.mjs
 function __rest(s, e) {
@@ -2611,10 +2611,12 @@ var GoTrueClient = class GoTrueClient {
 			let currentSession = null;
 			const maybeSession = await getItemAsync(this.storage, this.storageKey);
 			this._debug("#getSession()", "session from storage", maybeSession);
-			if (maybeSession !== null) if (this._isValidSession(maybeSession)) currentSession = maybeSession;
-			else {
-				this._debug("#getSession()", "session from storage is not valid");
-				await this._removeSession();
+			if (maybeSession !== null) {
+				if (this._isValidSession(maybeSession)) currentSession = maybeSession;
+				else {
+					this._debug("#getSession()", "session from storage is not valid");
+					await this._removeSession();
+				}
 			}
 			if (!currentSession) return {
 				data: { session: null },
@@ -3823,7 +3825,7 @@ var GoTrueClient = class GoTrueClient {
 GoTrueClient.nextInstanceID = 0;
 
 //#endregion
-//#region node_modules/.pnpm/@neondatabase+auth@0.4.2-beta_@better-auth+core@1.4.18_@better-auth+utils@0.3.0_@better_b9c8f8e2a8d472d6cb08eed6f5493d50/node_modules/@neondatabase/auth/dist/better-auth-helpers-Bkezghej.mjs
+//#region node_modules/.pnpm/@neondatabase+auth@0.4.2-beta_@better-auth+core@1.4.18_@better-auth+utils@0.3.0_@better_a84a7422724a5ebc4d62a8f0cde384a1/node_modules/@neondatabase/auth/dist/better-auth-helpers-Bkezghej.mjs
 var SESSION_CACHE_TTL_MS = 6e4;
 var CLOCK_SKEW_BUFFER_MS = 1e4;
 var NEON_AUTH_SESSION_VERIFIER_PARAM_NAME = "neon_auth_session_verifier";
@@ -4283,19 +4285,26 @@ function getGlobalOnlineManager() {
 }
 
 //#endregion
-//#region node_modules/.pnpm/nanostores@1.4.2/node_modules/nanostores/atom/index.js
+//#region node_modules/.pnpm/nanostores@1.5.2/node_modules/nanostores/atom/index.js
 var listenerQueue = [];
 var lqIndex = 0;
 var batchSeen = null;
 var QUEUE_ITEMS_PER_LISTENER = 4;
 var nanostoresGlobal = globalThis.nanostoresGlobal ||= { epoch: 0 };
 var drainQueue = () => {
-	for (lqIndex = 0; lqIndex < listenerQueue.length; lqIndex += QUEUE_ITEMS_PER_LISTENER) listenerQueue[lqIndex](listenerQueue[lqIndex + 1].value, listenerQueue[lqIndex + 2], listenerQueue[lqIndex + 3]);
+	let thrown;
+	for (lqIndex = 0; lqIndex < listenerQueue.length; lqIndex += QUEUE_ITEMS_PER_LISTENER) try {
+		listenerQueue[lqIndex](listenerQueue[lqIndex + 1].value, listenerQueue[lqIndex + 2], listenerQueue[lqIndex + 3]);
+	} catch (e) {
+		thrown = e;
+	}
 	listenerQueue.length = 0;
+	if (thrown) throw thrown;
 };
 var atom = /* @__NO_SIDE_EFFECTS__ */ (initialValue) => {
 	let listeners = [];
 	let $atom = {
+		eq: Object.is,
 		get() {
 			if (!$atom.lc) $atom.listen(() => {})();
 			return $atom.value;
@@ -4327,7 +4336,7 @@ var atom = /* @__NO_SIDE_EFFECTS__ */ (initialValue) => {
 		off() {},
 		set(newValue) {
 			let oldValue = $atom.value;
-			if (oldValue !== newValue) {
+			if (!$atom.eq(oldValue, newValue)) {
 				$atom.value = newValue;
 				$atom.notify(oldValue);
 			}
@@ -4343,7 +4352,7 @@ var atom = /* @__NO_SIDE_EFFECTS__ */ (initialValue) => {
 };
 
 //#endregion
-//#region node_modules/.pnpm/nanostores@1.4.2/node_modules/nanostores/lifecycle/index.js
+//#region node_modules/.pnpm/nanostores@1.5.2/node_modules/nanostores/lifecycle/index.js
 var MOUNT = 5;
 var UNMOUNT = 6;
 var REVERT_MUTATION = 10;
@@ -6368,8 +6377,10 @@ var $ZodCheckLessThan = /*@__PURE__*/ $constructor("$ZodCheckLessThan", (inst, d
 	inst._zod.onattach.push((inst) => {
 		const bag = inst._zod.bag;
 		const curr = (def.inclusive ? bag.maximum : bag.exclusiveMaximum) ?? Number.POSITIVE_INFINITY;
-		if (def.value < curr) if (def.inclusive) bag.maximum = def.value;
-		else bag.exclusiveMaximum = def.value;
+		if (def.value < curr) {
+			if (def.inclusive) bag.maximum = def.value;
+			else bag.exclusiveMaximum = def.value;
+		}
 	});
 	inst._zod.check = (payload) => {
 		if (def.inclusive ? payload.value <= def.value : payload.value < def.value) return;
@@ -6390,8 +6401,10 @@ var $ZodCheckGreaterThan = /*@__PURE__*/ $constructor("$ZodCheckGreaterThan", (i
 	inst._zod.onattach.push((inst) => {
 		const bag = inst._zod.bag;
 		const curr = (def.inclusive ? bag.minimum : bag.exclusiveMinimum) ?? Number.NEGATIVE_INFINITY;
-		if (def.value > curr) if (def.inclusive) bag.minimum = def.value;
-		else bag.exclusiveMinimum = def.value;
+		if (def.value > curr) {
+			if (def.inclusive) bag.minimum = def.value;
+			else bag.exclusiveMinimum = def.value;
+		}
 	});
 	inst._zod.check = (payload) => {
 		if (def.inclusive ? payload.value >= def.value : payload.value > def.value) return;
@@ -7535,13 +7548,13 @@ var $ZodObject = /*@__PURE__*/ $constructor("$ZodObject", (inst, def) => {
 		}
 		return propValues;
 	});
-	const isObject$1 = isObject;
+	const isObject$2 = isObject;
 	const catchall = def.catchall;
 	let value;
 	inst._zod.parse = (payload, ctx) => {
 		value ?? (value = _normalized.value);
 		const input = payload.value;
-		if (!isObject$1(input)) {
+		if (!isObject$2(input)) {
 			payload.issues.push({
 				expected: "object",
 				code: "invalid_type",
@@ -7635,7 +7648,7 @@ var $ZodObjectJIT = /*@__PURE__*/ $constructor("$ZodObjectJIT", (inst, def) => {
 		return (payload, ctx) => fn(shape, payload, ctx);
 	};
 	let fastpass;
-	const isObject$2 = isObject;
+	const isObject$1 = isObject;
 	const jit = !globalConfig.jitless;
 	const allowsEval$1 = allowsEval;
 	const fastEnabled = jit && allowsEval$1.value;
@@ -7644,7 +7657,7 @@ var $ZodObjectJIT = /*@__PURE__*/ $constructor("$ZodObjectJIT", (inst, def) => {
 	inst._zod.parse = (payload, ctx) => {
 		value ?? (value = _normalized.value);
 		const input = payload.value;
-		if (!isObject$2(input)) {
+		if (!isObject$1(input)) {
 			payload.issues.push({
 				expected: "object",
 				code: "invalid_type",
@@ -8114,23 +8127,27 @@ var $ZodMap = /*@__PURE__*/ $constructor("$ZodMap", (inst, def) => {
 	};
 });
 function handleMapResult(keyResult, valueResult, final, key, input, inst, ctx) {
-	if (keyResult.issues.length) if (propertyKeyTypes.has(typeof key)) final.issues.push(...prefixIssues(key, keyResult.issues));
-	else final.issues.push({
-		code: "invalid_key",
-		origin: "map",
-		input,
-		inst,
-		issues: keyResult.issues.map((iss) => finalizeIssue(iss, ctx, config()))
-	});
-	if (valueResult.issues.length) if (propertyKeyTypes.has(typeof key)) final.issues.push(...prefixIssues(key, valueResult.issues));
-	else final.issues.push({
-		origin: "map",
-		code: "invalid_element",
-		input,
-		inst,
-		key,
-		issues: valueResult.issues.map((iss) => finalizeIssue(iss, ctx, config()))
-	});
+	if (keyResult.issues.length) {
+		if (propertyKeyTypes.has(typeof key)) final.issues.push(...prefixIssues(key, keyResult.issues));
+		else final.issues.push({
+			code: "invalid_key",
+			origin: "map",
+			input,
+			inst,
+			issues: keyResult.issues.map((iss) => finalizeIssue(iss, ctx, config()))
+		});
+	}
+	if (valueResult.issues.length) {
+		if (propertyKeyTypes.has(typeof key)) final.issues.push(...prefixIssues(key, valueResult.issues));
+		else final.issues.push({
+			origin: "map",
+			code: "invalid_element",
+			input,
+			inst,
+			key,
+			issues: valueResult.issues.map((iss) => finalizeIssue(iss, ctx, config()))
+		});
+	}
 	final.value.set(keyResult.value, valueResult.value);
 }
 var $ZodSet = /*@__PURE__*/ $constructor("$ZodSet", (inst, def) => {
@@ -15287,8 +15304,10 @@ function finalize(ctx, schema) {
 		const seen = entry[1];
 		if (seen.def && seen.defId) defs[seen.defId] = seen.def;
 	}
-	if (ctx.external) {} else if (Object.keys(defs).length > 0) if (ctx.target === "draft-2020-12") result.$defs = defs;
-	else result.definitions = defs;
+	if (ctx.external) {} else if (Object.keys(defs).length > 0) {
+		if (ctx.target === "draft-2020-12") result.$defs = defs;
+		else result.definitions = defs;
+	}
 	try {
 		const finalized = JSON.parse(JSON.stringify(result));
 		Object.defineProperty(finalized, "~standard", {
@@ -15392,23 +15411,31 @@ var numberProcessor = (schema, ctx, _json, _params) => {
 	const { minimum, maximum, format, multipleOf, exclusiveMaximum, exclusiveMinimum } = schema._zod.bag;
 	if (typeof format === "string" && format.includes("int")) json.type = "integer";
 	else json.type = "number";
-	if (typeof exclusiveMinimum === "number") if (ctx.target === "draft-04" || ctx.target === "openapi-3.0") {
-		json.minimum = exclusiveMinimum;
-		json.exclusiveMinimum = true;
-	} else json.exclusiveMinimum = exclusiveMinimum;
+	if (typeof exclusiveMinimum === "number") {
+		if (ctx.target === "draft-04" || ctx.target === "openapi-3.0") {
+			json.minimum = exclusiveMinimum;
+			json.exclusiveMinimum = true;
+		} else json.exclusiveMinimum = exclusiveMinimum;
+	}
 	if (typeof minimum === "number") {
 		json.minimum = minimum;
-		if (typeof exclusiveMinimum === "number" && ctx.target !== "draft-04") if (exclusiveMinimum >= minimum) delete json.minimum;
-		else delete json.exclusiveMinimum;
+		if (typeof exclusiveMinimum === "number" && ctx.target !== "draft-04") {
+			if (exclusiveMinimum >= minimum) delete json.minimum;
+			else delete json.exclusiveMinimum;
+		}
 	}
-	if (typeof exclusiveMaximum === "number") if (ctx.target === "draft-04" || ctx.target === "openapi-3.0") {
-		json.maximum = exclusiveMaximum;
-		json.exclusiveMaximum = true;
-	} else json.exclusiveMaximum = exclusiveMaximum;
+	if (typeof exclusiveMaximum === "number") {
+		if (ctx.target === "draft-04" || ctx.target === "openapi-3.0") {
+			json.maximum = exclusiveMaximum;
+			json.exclusiveMaximum = true;
+		} else json.exclusiveMaximum = exclusiveMaximum;
+	}
 	if (typeof maximum === "number") {
 		json.maximum = maximum;
-		if (typeof exclusiveMaximum === "number" && ctx.target !== "draft-04") if (exclusiveMaximum <= maximum) delete json.maximum;
-		else delete json.exclusiveMaximum;
+		if (typeof exclusiveMaximum === "number" && ctx.target !== "draft-04") {
+			if (exclusiveMaximum <= maximum) delete json.maximum;
+			else delete json.exclusiveMaximum;
+		}
 	}
 	if (typeof multipleOf === "number") json.multipleOf = multipleOf;
 };
@@ -15454,9 +15481,10 @@ var literalProcessor = (schema, ctx, json, _params) => {
 	const vals = [];
 	for (const val of def.values) if (val === void 0) {
 		if (ctx.unrepresentable === "throw") throw new Error("Literal `undefined` cannot be represented in JSON Schema");
-	} else if (typeof val === "bigint") if (ctx.unrepresentable === "throw") throw new Error("BigInt literals cannot be represented in JSON Schema");
-	else vals.push(Number(val));
-	else vals.push(val);
+	} else if (typeof val === "bigint") {
+		if (ctx.unrepresentable === "throw") throw new Error("BigInt literals cannot be represented in JSON Schema");
+		else vals.push(Number(val));
+	} else vals.push(val);
 	if (vals.length === 0) {} else if (vals.length === 1) {
 		const val = vals[0];
 		json.type = val === null ? "null" : typeof val;
@@ -15490,14 +15518,15 @@ var fileProcessor = (schema, _ctx, json, _params) => {
 	const { minimum, maximum, mime } = schema._zod.bag;
 	if (minimum !== void 0) file.minLength = minimum;
 	if (maximum !== void 0) file.maxLength = maximum;
-	if (mime) if (mime.length === 1) {
-		file.contentMediaType = mime[0];
-		Object.assign(_json, file);
-	} else {
-		Object.assign(_json, file);
-		_json.anyOf = mime.map((m) => ({ contentMediaType: m }));
-	}
-	else Object.assign(_json, file);
+	if (mime) {
+		if (mime.length === 1) {
+			file.contentMediaType = mime[0];
+			Object.assign(_json, file);
+		} else {
+			Object.assign(_json, file);
+			_json.anyOf = mime.map((m) => ({ contentMediaType: m }));
+		}
+	} else Object.assign(_json, file);
 };
 var successProcessor = (_schema, _ctx, json, _params) => {
 	json.type = "boolean";
@@ -17809,12 +17838,14 @@ function convertSchema(schema, ctx) {
 		const oneOfUnion = z.xor(options);
 		baseSchema = hasExplicitType ? z.intersection(baseSchema, oneOfUnion) : oneOfUnion;
 	}
-	if (schema.allOf && Array.isArray(schema.allOf)) if (schema.allOf.length === 0) baseSchema = hasExplicitType ? baseSchema : z.any();
-	else {
-		let result = hasExplicitType ? baseSchema : convertSchema(schema.allOf[0], ctx);
-		const startIdx = hasExplicitType ? 0 : 1;
-		for (let i = startIdx; i < schema.allOf.length; i++) result = z.intersection(result, convertSchema(schema.allOf[i], ctx));
-		baseSchema = result;
+	if (schema.allOf && Array.isArray(schema.allOf)) {
+		if (schema.allOf.length === 0) baseSchema = hasExplicitType ? baseSchema : z.any();
+		else {
+			let result = hasExplicitType ? baseSchema : convertSchema(schema.allOf[0], ctx);
+			const startIdx = hasExplicitType ? 0 : 1;
+			for (let i = startIdx; i < schema.allOf.length; i++) result = z.intersection(result, convertSchema(schema.allOf[i], ctx));
+			baseSchema = result;
+		}
 	}
 	if (schema.nullable === true && ctx.version === "openapi-3.0") baseSchema = z.nullable(baseSchema);
 	if (schema.readOnly === true) baseSchema = z.readonly(baseSchema);
@@ -18121,7 +18152,7 @@ config(en_default());
 var zod_default = external_exports;
 
 //#endregion
-//#region node_modules/.pnpm/@neondatabase+auth@0.4.2-beta_@better-auth+core@1.4.18_@better-auth+utils@0.3.0_@better_b9c8f8e2a8d472d6cb08eed6f5493d50/node_modules/@neondatabase/auth/dist/adapter-core-D4V1J06B.mjs
+//#region node_modules/.pnpm/@neondatabase+auth@0.4.2-beta_@better-auth+core@1.4.18_@better-auth+utils@0.3.0_@better_a84a7422724a5ebc4d62a8f0cde384a1/node_modules/@neondatabase/auth/dist/adapter-core-D4V1J06B.mjs
 var InFlightRequestManager = class {
 	inFlightRequests = /* @__PURE__ */ new Map();
 	async deduplicate(key, fn) {
@@ -18689,7 +18720,7 @@ var NeonAuthAdapterCore = class {
 };
 
 //#endregion
-//#region node_modules/.pnpm/@neondatabase+auth@0.4.2-beta_@better-auth+core@1.4.18_@better-auth+utils@0.3.0_@better_b9c8f8e2a8d472d6cb08eed6f5493d50/node_modules/@neondatabase/auth/dist/supabase-adapter-BbSvEBy0.mjs
+//#region node_modules/.pnpm/@neondatabase+auth@0.4.2-beta_@better-auth+core@1.4.18_@better-auth+utils@0.3.0_@better_a84a7422724a5ebc4d62a8f0cde384a1/node_modules/@neondatabase/auth/dist/supabase-adapter-BbSvEBy0.mjs
 var BetterAuthVanillaAdapterImpl = class extends NeonAuthAdapterCore {
 	_betterAuth;
 	constructor(betterAuthClientOptions) {
@@ -18715,7 +18746,7 @@ function BetterAuthVanillaAdapter(options) {
 }
 
 //#endregion
-//#region node_modules/.pnpm/@neondatabase+auth@0.4.2-beta_@better-auth+core@1.4.18_@better-auth+utils@0.3.0_@better_b9c8f8e2a8d472d6cb08eed6f5493d50/node_modules/@neondatabase/auth/dist/neon-auth-BEYvHA5c.mjs
+//#region node_modules/.pnpm/@neondatabase+auth@0.4.2-beta_@better-auth+core@1.4.18_@better-auth+utils@0.3.0_@better_a84a7422724a5ebc4d62a8f0cde384a1/node_modules/@neondatabase/auth/dist/neon-auth-BEYvHA5c.mjs
 function createInternalNeonAuth(url, config) {
 	const adapterBuilder = config?.adapter ?? BetterAuthVanillaAdapter();
 	const { fetchOptions } = config ?? {};

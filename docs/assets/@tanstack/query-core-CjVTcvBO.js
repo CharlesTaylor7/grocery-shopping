@@ -1,80 +1,4 @@
-//#region node_modules/.pnpm/@tanstack+query-core@5.101.4/node_modules/@tanstack/query-core/build/modern/subscribable.js
-var Subscribable = class {
-	constructor() {
-		this.listeners = /* @__PURE__ */ new Set();
-		this.subscribe = this.subscribe.bind(this);
-	}
-	subscribe(listener) {
-		this.listeners.add(listener);
-		this.onSubscribe();
-		return () => {
-			this.listeners.delete(listener);
-			this.onUnsubscribe();
-		};
-	}
-	hasListeners() {
-		return this.listeners.size > 0;
-	}
-	onSubscribe() {}
-	onUnsubscribe() {}
-};
-
-//#endregion
-//#region node_modules/.pnpm/@tanstack+query-core@5.101.4/node_modules/@tanstack/query-core/build/modern/focusManager.js
-var FocusManager = class extends Subscribable {
-	#focused;
-	#cleanup;
-	#setup;
-	constructor() {
-		super();
-		this.#setup = (onFocus) => {
-			if (typeof window !== "undefined" && window.addEventListener) {
-				const listener = () => onFocus();
-				window.addEventListener("visibilitychange", listener, false);
-				return () => {
-					window.removeEventListener("visibilitychange", listener);
-				};
-			}
-		};
-	}
-	onSubscribe() {
-		if (!this.#cleanup) this.setEventListener(this.#setup);
-	}
-	onUnsubscribe() {
-		if (!this.hasListeners()) {
-			this.#cleanup?.();
-			this.#cleanup = void 0;
-		}
-	}
-	setEventListener(setup) {
-		this.#setup = setup;
-		this.#cleanup?.();
-		this.#cleanup = setup((focused) => {
-			if (typeof focused === "boolean") this.setFocused(focused);
-			else this.onFocus();
-		});
-	}
-	setFocused(focused) {
-		if (this.#focused !== focused) {
-			this.#focused = focused;
-			this.onFocus();
-		}
-	}
-	onFocus() {
-		const isFocused = this.isFocused();
-		this.listeners.forEach((listener) => {
-			listener(isFocused);
-		});
-	}
-	isFocused() {
-		if (typeof this.#focused === "boolean") return this.#focused;
-		return globalThis.document?.visibilityState !== "hidden";
-	}
-};
-var focusManager = new FocusManager();
-
-//#endregion
-//#region node_modules/.pnpm/@tanstack+query-core@5.101.4/node_modules/@tanstack/query-core/build/modern/timeoutManager.js
+//#region node_modules/.pnpm/@tanstack+query-core@5.102.6/node_modules/@tanstack/query-core/build/modern/timeoutManager.js
 var defaultTimeoutProvider = {
 	setTimeout: (callback, delay) => setTimeout(callback, delay),
 	clearTimeout: (timeoutId) => clearTimeout(timeoutId),
@@ -106,8 +30,8 @@ function systemSetTimeoutZero(callback) {
 }
 
 //#endregion
-//#region node_modules/.pnpm/@tanstack+query-core@5.101.4/node_modules/@tanstack/query-core/build/modern/utils.js
-var isServer = typeof window === "undefined" || "Deno" in globalThis;
+//#region node_modules/.pnpm/@tanstack+query-core@5.102.6/node_modules/@tanstack/query-core/build/modern/utils.js
+var isServer$1 = typeof window === "undefined" || "Deno" in globalThis;
 function noop() {}
 function functionalUpdate(updater, input) {
 	return typeof updater === "function" ? updater(input) : updater;
@@ -118,11 +42,8 @@ function isValidTimeout(value) {
 function timeUntilStale(updatedAt, staleTime) {
 	return Math.max(updatedAt + (staleTime || 0) - Date.now(), 0);
 }
-function resolveStaleTime(staleTime, query) {
-	return typeof staleTime === "function" ? staleTime(query) : staleTime;
-}
-function resolveQueryBoolean(option, query) {
-	return typeof option === "function" ? option(query) : option;
+function resolveQueryValue(value, query) {
+	return typeof value === "function" ? value(query) : value;
 }
 function matchQuery(filters, query) {
 	const { type = "all", exact, fetchStatus, predicate, queryKey, stale } = filters;
@@ -240,7 +161,7 @@ function addToStart(items, item, max = 0) {
 	const newItems = [item, ...items];
 	return max && newItems.length > max ? newItems.slice(0, -1) : newItems;
 }
-var skipToken = /* @__PURE__ */ Symbol();
+var skipToken = Symbol();
 function ensureQueryFn(options, fetchOptions) {
 	if (!options.queryFn && fetchOptions?.initialPromise) return () => fetchOptions.initialPromise;
 	if (!options.queryFn || options.queryFn === skipToken) return () => Promise.reject(/* @__PURE__ */ new Error(`Missing queryFn: '${options.queryHash}'`));
@@ -264,54 +185,88 @@ function addConsumeAwareSignal(object, getSignal, onCancelled) {
 }
 
 //#endregion
-//#region node_modules/.pnpm/@tanstack+query-core@5.101.4/node_modules/@tanstack/query-core/build/modern/environmentManager.js
-var environmentManager = /* @__PURE__ */ (() => {
-	let isServerFn = () => isServer;
-	return {
-		isServer() {
-			return isServerFn();
-		},
-		setIsServer(isServerValue) {
-			isServerFn = isServerValue;
-		}
-	};
-})();
+//#region node_modules/.pnpm/@tanstack+query-core@5.102.6/node_modules/@tanstack/query-core/build/modern/environmentManager.js
+var isServerFn = () => isServer$1;
+var isServer = () => isServerFn();
 
 //#endregion
-//#region node_modules/.pnpm/@tanstack+query-core@5.101.4/node_modules/@tanstack/query-core/build/modern/thenable.js
-function pendingThenable() {
-	let resolve;
-	let reject;
-	const thenable = new Promise((_resolve, _reject) => {
-		resolve = _resolve;
-		reject = _reject;
-	});
-	thenable.status = "pending";
-	thenable.catch(() => {});
-	function finalize(data) {
-		Object.assign(thenable, data);
-		delete thenable.resolve;
-		delete thenable.reject;
+//#region node_modules/.pnpm/@tanstack+query-core@5.102.6/node_modules/@tanstack/query-core/build/modern/subscribable.js
+var Subscribable = class {
+	constructor() {
+		this.listeners = /* @__PURE__ */ new Set();
+		this.subscribe = this.subscribe.bind(this);
 	}
-	thenable.resolve = (value) => {
-		finalize({
-			status: "fulfilled",
-			value
-		});
-		resolve(value);
-	};
-	thenable.reject = (reason) => {
-		finalize({
-			status: "rejected",
-			reason
-		});
-		reject(reason);
-	};
-	return thenable;
-}
+	subscribe(listener) {
+		this.listeners.add(listener);
+		this.onSubscribe();
+		return () => {
+			this.listeners.delete(listener);
+			this.onUnsubscribe();
+		};
+	}
+	hasListeners() {
+		return this.listeners.size > 0;
+	}
+	onSubscribe() {}
+	onUnsubscribe() {}
+};
 
 //#endregion
-//#region node_modules/.pnpm/@tanstack+query-core@5.101.4/node_modules/@tanstack/query-core/build/modern/notifyManager.js
+//#region node_modules/.pnpm/@tanstack+query-core@5.102.6/node_modules/@tanstack/query-core/build/modern/focusManager.js
+var FocusManager = class extends Subscribable {
+	#focused;
+	#cleanup;
+	#setup;
+	constructor() {
+		super();
+		this.#setup = (onFocus) => {
+			if (typeof window !== "undefined" && window.addEventListener) {
+				const listener = () => onFocus();
+				window.addEventListener("visibilitychange", listener, false);
+				return () => {
+					window.removeEventListener("visibilitychange", listener);
+				};
+			}
+		};
+	}
+	onSubscribe() {
+		if (!this.#cleanup) this.setEventListener(this.#setup);
+	}
+	onUnsubscribe() {
+		if (!this.hasListeners()) {
+			this.#cleanup?.();
+			this.#cleanup = void 0;
+		}
+	}
+	setEventListener(setup) {
+		this.#setup = setup;
+		this.#cleanup?.();
+		this.#cleanup = setup((focused) => {
+			if (typeof focused === "boolean") this.setFocused(focused);
+			else this.onFocus();
+		});
+	}
+	setFocused(focused) {
+		if (this.#focused !== focused) {
+			this.#focused = focused;
+			this.onFocus();
+		}
+	}
+	onFocus() {
+		const isFocused = this.isFocused();
+		this.listeners.forEach((listener) => {
+			listener(isFocused);
+		});
+	}
+	isFocused() {
+		if (typeof this.#focused === "boolean") return this.#focused;
+		return globalThis.document?.visibilityState !== "hidden";
+	}
+};
+var focusManager = new FocusManager();
+
+//#endregion
+//#region node_modules/.pnpm/@tanstack+query-core@5.102.6/node_modules/@tanstack/query-core/build/modern/notifyManager.js
 var defaultScheduler = systemSetTimeoutZero;
 function createNotifyManager() {
 	let queue = [];
@@ -374,7 +329,7 @@ function createNotifyManager() {
 var notifyManager = createNotifyManager();
 
 //#endregion
-//#region node_modules/.pnpm/@tanstack+query-core@5.101.4/node_modules/@tanstack/query-core/build/modern/onlineManager.js
+//#region node_modules/.pnpm/@tanstack+query-core@5.102.6/node_modules/@tanstack/query-core/build/modern/onlineManager.js
 var OnlineManager = class extends Subscribable {
 	#online = true;
 	#cleanup;
@@ -423,7 +378,7 @@ var OnlineManager = class extends Subscribable {
 var onlineManager = new OnlineManager();
 
 //#endregion
-//#region node_modules/.pnpm/@tanstack+query-core@5.101.4/node_modules/@tanstack/query-core/build/modern/retryer.js
+//#region node_modules/.pnpm/@tanstack+query-core@5.102.6/node_modules/@tanstack/query-core/build/modern/retryer.js
 function defaultRetryDelay(failureCount) {
 	return Math.min(1e3 * 2 ** failureCount, 3e4);
 }
@@ -441,8 +396,15 @@ function createRetryer(config) {
 	let isRetryCancelled = false;
 	let failureCount = 0;
 	let continueFn;
-	const thenable = pendingThenable();
-	const isResolved = () => thenable.status !== "pending";
+	let status = "pending";
+	let promiseResolve;
+	let promiseReject;
+	const promise = new Promise((resolve, reject) => {
+		promiseResolve = resolve;
+		promiseReject = reject;
+	});
+	promise.catch(noop);
+	const isResolved = () => status !== "pending";
 	const cancel = (cancelOptions) => {
 		if (!isResolved()) {
 			const error = new CancelledError(cancelOptions);
@@ -461,13 +423,15 @@ function createRetryer(config) {
 	const resolve = (value) => {
 		if (!isResolved()) {
 			continueFn?.();
-			thenable.resolve(value);
+			status = "resolved";
+			promiseResolve(value);
 		}
 	};
 	const reject = (value) => {
 		if (!isResolved()) {
 			continueFn?.();
-			thenable.reject(value);
+			status = "rejected";
+			promiseReject(value);
 		}
 	};
 	const pause = () => {
@@ -492,7 +456,7 @@ function createRetryer(config) {
 		}
 		Promise.resolve(promiseOrValue).then(resolve).catch((error) => {
 			if (isResolved()) return;
-			const retry = config.retry ?? (environmentManager.isServer() ? 0 : 3);
+			const retry = config.retry ?? (isServer() ? 0 : 3);
 			const retryDelay = config.retryDelay ?? defaultRetryDelay;
 			const delay = typeof retryDelay === "function" ? retryDelay(failureCount, error) : retryDelay;
 			const shouldRetry = retry === true || typeof retry === "number" && failureCount < retry || typeof retry === "function" && retry(failureCount, error);
@@ -511,12 +475,12 @@ function createRetryer(config) {
 		});
 	};
 	return {
-		promise: thenable,
-		status: () => thenable.status,
+		promise,
+		status: () => status,
 		cancel,
 		continue: () => {
 			continueFn?.();
-			return thenable;
+			return promise;
 		},
 		cancelRetry,
 		continueRetry,
@@ -524,13 +488,13 @@ function createRetryer(config) {
 		start: () => {
 			if (canStart()) run();
 			else pause().then(run);
-			return thenable;
+			return promise;
 		}
 	};
 }
 
 //#endregion
-//#region node_modules/.pnpm/@tanstack+query-core@5.101.4/node_modules/@tanstack/query-core/build/modern/removable.js
+//#region node_modules/.pnpm/@tanstack+query-core@5.102.6/node_modules/@tanstack/query-core/build/modern/removable.js
 var Removable = class {
 	#gcTimeout;
 	destroy() {
@@ -543,7 +507,7 @@ var Removable = class {
 		}, this.gcTime);
 	}
 	updateGcTime(newGcTime) {
-		this.gcTime = Math.max(this.gcTime || 0, newGcTime ?? (environmentManager.isServer() ? Infinity : 3e5));
+		this.gcTime = Math.max(this.gcTime || 0, newGcTime ?? (isServer() ? Infinity : 3e5));
 	}
 	clearGcTimeout() {
 		if (this.#gcTimeout !== void 0) {
@@ -554,7 +518,7 @@ var Removable = class {
 };
 
 //#endregion
-//#region node_modules/.pnpm/@tanstack+query-core@5.101.4/node_modules/@tanstack/query-core/build/modern/infiniteQueryBehavior.js
+//#region node_modules/.pnpm/@tanstack+query-core@5.102.6/node_modules/@tanstack/query-core/build/modern/infiniteQueryBehavior.js
 function infiniteQueryBehavior(pages) {
 	return { onFetch: (context, query) => {
 		const options = context.options;
@@ -576,15 +540,15 @@ function infiniteQueryBehavior(pages) {
 				if (cancelled) return Promise.reject(context.signal.reason);
 				if (param == null && data.pages.length) return Promise.resolve(data);
 				const createQueryFnContext = () => {
-					const queryFnContext2 = {
+					const queryFnContext = {
 						client: context.client,
 						queryKey: context.queryKey,
 						pageParam: param,
 						direction: previous ? "backward" : "forward",
 						meta: context.options.meta
 					};
-					addSignalProperty(queryFnContext2);
-					return queryFnContext2;
+					addSignalProperty(queryFnContext);
+					return queryFnContext;
 				};
 				const queryFnContext = createQueryFnContext();
 				const page = await queryFn(queryFnContext);
@@ -634,7 +598,7 @@ function getPreviousPageParam(options, { pages, pageParams }) {
 }
 
 //#endregion
-//#region node_modules/.pnpm/@tanstack+query-core@5.101.4/node_modules/@tanstack/query-core/build/modern/query.js
+//#region node_modules/.pnpm/@tanstack+query-core@5.102.6/node_modules/@tanstack/query-core/build/modern/query.js
 var Query = class extends Removable {
 	#queryType;
 	#initialState;
@@ -718,7 +682,7 @@ var Query = class extends Removable {
 		this.setState(this.resetState);
 	}
 	isActive() {
-		return this.observers.some((observer) => resolveQueryBoolean(observer.options.enabled, this) !== false);
+		return this.observers.some((observer) => resolveQueryValue(observer.options.enabled, this) !== false);
 	}
 	isDisabled() {
 		if (this.getObserversCount() > 0) return !this.isActive();
@@ -728,7 +692,7 @@ var Query = class extends Removable {
 		return this.state.dataUpdateCount + this.state.errorUpdateCount > 0;
 	}
 	isStatic() {
-		if (this.getObserversCount() > 0) return this.observers.some((observer) => resolveStaleTime(observer.options.staleTime, this) === "static");
+		if (this.getObserversCount() > 0) return this.observers.some((observer) => resolveQueryValue(observer.options.staleTime, this) === "static");
 		return false;
 	}
 	isStale() {
@@ -761,11 +725,14 @@ var Query = class extends Removable {
 		}
 	}
 	removeObserver(observer) {
-		if (this.observers.includes(observer)) {
-			this.observers = this.observers.filter((x) => x !== observer);
+		const index = this.observers.indexOf(observer);
+		if (index !== -1) {
+			this.observers.splice(index, 1);
 			if (!this.observers.length) {
-				if (this.#retryer) if (this.#abortSignalConsumed || this.#isInitialPausedFetch()) this.#retryer.cancel({ revert: true });
-				else this.#retryer.cancelRetry();
+				if (this.#retryer) {
+					if (this.#abortSignalConsumed || this.state.fetchStatus === "paused" && this.state.status === "pending") this.#retryer.cancel({ revert: true });
+					else this.#retryer.cancelRetry();
+				}
 				this.scheduleGc();
 			}
 			this.#cache.notify({
@@ -777,9 +744,6 @@ var Query = class extends Removable {
 	}
 	getObserversCount() {
 		return this.observers.length;
-	}
-	#isInitialPausedFetch() {
-		return this.state.fetchStatus === "paused" && this.state.status === "pending";
 	}
 	invalidate() {
 		if (!this.state.isInvalidated) this.#dispatch({ type: "invalidate" });
@@ -810,13 +774,13 @@ var Query = class extends Removable {
 		const fetchFn = () => {
 			const queryFn = ensureQueryFn(this.options, fetchOptions);
 			const createQueryFnContext = () => {
-				const queryFnContext2 = {
+				const queryFnContext = {
 					client: this.#client,
 					queryKey: this.queryKey,
 					meta: this.meta
 				};
-				addSignalProperty(queryFnContext2);
-				return queryFnContext2;
+				addSignalProperty(queryFnContext);
+				return queryFnContext;
 			};
 			const queryFnContext = createQueryFnContext();
 			this.#abortSignalConsumed = false;
@@ -824,7 +788,7 @@ var Query = class extends Removable {
 			return queryFn(queryFnContext);
 		};
 		const createFetchContext = () => {
-			const context2 = {
+			const context = {
 				fetchOptions,
 				options: this.options,
 				queryKey: this.queryKey,
@@ -832,8 +796,8 @@ var Query = class extends Removable {
 				state: this.state,
 				fetchFn
 			};
-			addSignalProperty(context2);
-			return context2;
+			addSignalProperty(context);
+			return context;
 		};
 		const context = createFetchContext();
 		(this.#queryType === "infinite" ? infiniteQueryBehavior(this.options.pages) : this.options.behavior)?.onFetch(context, this);
@@ -842,7 +806,7 @@ var Query = class extends Removable {
 			type: "fetch",
 			meta: context.fetchOptions?.meta
 		});
-		this.#retryer = createRetryer({
+		const retryer = this.#retryer = createRetryer({
 			initialPromise: fetchOptions?.initialPromise,
 			fn: context.fetchFn,
 			onCancel: (error) => {
@@ -871,7 +835,7 @@ var Query = class extends Removable {
 			canRun: () => true
 		});
 		try {
-			const data = await this.#retryer.start();
+			const data = await retryer.start();
 			if (data === void 0) throw new Error(`${this.queryHash} data is undefined`);
 			this.setData(data);
 			this.#cache.config.onSuccess?.(data, this);
@@ -893,6 +857,7 @@ var Query = class extends Removable {
 			this.#cache.config.onSettled?.(this.state.data, error, this);
 			throw error;
 		} finally {
+			if (this.#retryer === retryer) this.#retryer = void 0;
 			this.scheduleGc();
 		}
 	}
@@ -955,7 +920,7 @@ var Query = class extends Removable {
 		};
 		this.state = reducer(this.state);
 		notifyManager.batch(() => {
-			this.observers.forEach((observer) => {
+			this.observers.slice().forEach((observer) => {
 				observer.onQueryUpdate();
 			});
 			this.#cache.notify({
@@ -1007,7 +972,7 @@ function getDefaultState$1(options) {
 }
 
 //#endregion
-//#region node_modules/.pnpm/@tanstack+query-core@5.101.4/node_modules/@tanstack/query-core/build/modern/mutation.js
+//#region node_modules/.pnpm/@tanstack+query-core@5.102.6/node_modules/@tanstack/query-core/build/modern/mutation.js
 var Mutation = class extends Removable {
 	#client;
 	#observers;
@@ -1051,11 +1016,13 @@ var Mutation = class extends Removable {
 		});
 	}
 	optionalRemove() {
-		if (!this.#observers.length) if (this.state.status === "pending") this.scheduleGc();
-		else this.#mutationCache.remove(this);
+		if (!this.#observers.length) {
+			if (this.state.status === "pending") this.scheduleGc();
+			else this.#mutationCache.remove(this);
+		}
 	}
 	continue() {
-		return this.#retryer?.continue() ?? this.execute(this.state.variables);
+		return this.#retryer?.continue() ?? (this.state.status === "pending" ? this.execute(this.state.variables) : Promise.resolve());
 	}
 	async execute(variables) {
 		const onContinue = () => {
@@ -1066,7 +1033,7 @@ var Mutation = class extends Removable {
 			meta: this.options.meta,
 			mutationKey: this.options.mutationKey
 		};
-		this.#retryer = createRetryer({
+		const retryer = this.#retryer = createRetryer({
 			fn: () => {
 				if (!this.options.mutationFn) return Promise.reject(/* @__PURE__ */ new Error("No mutationFn found"));
 				return this.options.mutationFn(variables, mutationFnContext);
@@ -1088,7 +1055,7 @@ var Mutation = class extends Removable {
 			canRun: () => this.#mutationCache.canRun(this)
 		});
 		const restored = this.state.status === "pending";
-		const isPaused = !this.#retryer.canStart();
+		const isPaused = !retryer.canStart();
 		try {
 			if (restored) onContinue();
 			else {
@@ -1106,7 +1073,7 @@ var Mutation = class extends Removable {
 					isPaused
 				});
 			}
-			const data = await this.#retryer.start();
+			const data = await retryer.start();
 			await this.#mutationCache.config.onSuccess?.(data, variables, this.state.context, this, mutationFnContext);
 			await this.options.onSuccess?.(data, variables, this.state.context, mutationFnContext);
 			await this.#mutationCache.config.onSettled?.(data, null, this.state.variables, this.state.context, this, mutationFnContext);
@@ -1143,6 +1110,7 @@ var Mutation = class extends Removable {
 			});
 			throw error;
 		} finally {
+			if (this.#retryer === retryer) this.#retryer = void 0;
 			this.#mutationCache.runNext(this);
 		}
 	}
@@ -1222,8 +1190,11 @@ function getDefaultState() {
 }
 
 //#endregion
-//#region node_modules/.pnpm/@tanstack+query-core@5.101.4/node_modules/@tanstack/query-core/build/modern/mutationCache.js
+//#region node_modules/.pnpm/@tanstack+query-core@5.102.6/node_modules/@tanstack/query-core/build/modern/mutationCache.js
 var MutationCache = class extends Subscribable {
+	#mutations;
+	#scopes;
+	#mutationId;
 	constructor(config = {}) {
 		super();
 		this.config = config;
@@ -1231,9 +1202,6 @@ var MutationCache = class extends Subscribable {
 		this.#scopes = /* @__PURE__ */ new Map();
 		this.#mutationId = 0;
 	}
-	#mutations;
-	#scopes;
-	#mutationId;
 	build(client, options, state) {
 		const mutation = new Mutation({
 			client,
@@ -1330,14 +1298,14 @@ function scopeFor(mutation) {
 }
 
 //#endregion
-//#region node_modules/.pnpm/@tanstack+query-core@5.101.4/node_modules/@tanstack/query-core/build/modern/queryCache.js
+//#region node_modules/.pnpm/@tanstack+query-core@5.102.6/node_modules/@tanstack/query-core/build/modern/queryCache.js
 var QueryCache = class extends Subscribable {
+	#queries;
 	constructor(config = {}) {
 		super();
 		this.config = config;
 		this.#queries = /* @__PURE__ */ new Map();
 	}
-	#queries;
 	build(client, options, state) {
 		const queryKey = options.queryKey;
 		const queryHash = options.queryHash ?? hashQueryKeyByOptions(queryKey, options);
@@ -1423,7 +1391,7 @@ var QueryCache = class extends Subscribable {
 };
 
 //#endregion
-//#region node_modules/.pnpm/@tanstack+query-core@5.101.4/node_modules/@tanstack/query-core/build/modern/queryClient.js
+//#region node_modules/.pnpm/@tanstack+query-core@5.102.6/node_modules/@tanstack/query-core/build/modern/queryClient.js
 var QueryClient = class {
 	#queryCache;
 	#mutationCache;
@@ -1486,7 +1454,7 @@ var QueryClient = class {
 		const query = this.#queryCache.build(this, defaultedOptions);
 		const cachedData = query.state.data;
 		if (cachedData === void 0) return this.fetchQuery(options);
-		if (options.revalidateIfStale && query.isStaleByTime(resolveStaleTime(defaultedOptions.staleTime, query))) this.prefetchQuery(defaultedOptions);
+		if (options.revalidateIfStale && query.isStaleByTime(resolveQueryValue(defaultedOptions.staleTime, query))) this.prefetchQuery(defaultedOptions);
 		return Promise.resolve(cachedData);
 	}
 	getQueriesData(filters) {
@@ -1522,12 +1490,14 @@ var QueryClient = class {
 	resetQueries(filters, options) {
 		const queryCache = this.#queryCache;
 		return notifyManager.batch(() => {
-			queryCache.findAll(filters).forEach((query) => {
+			const matched = queryCache.findAll(filters);
+			const queriesToRefetch = new Set(matched);
+			matched.forEach((query) => {
 				query.reset();
 			});
 			return this.refetchQueries({
 				type: "active",
-				...filters
+				predicate: (query) => queriesToRefetch.has(query)
 			}, options);
 		});
 	}
@@ -1563,14 +1533,27 @@ var QueryClient = class {
 		}));
 		return Promise.all(promises).then(noop);
 	}
+	async query(options) {
+		const defaultedOptions = this.defaultQueryOptions(options);
+		if (defaultedOptions.retry === void 0) defaultedOptions.retry = false;
+		const query = this.#queryCache.build(this, defaultedOptions);
+		const queryData = query.isStaleByTime(resolveQueryValue(defaultedOptions.staleTime, query)) ? await query.fetch(defaultedOptions) : query.state.data;
+		const select = defaultedOptions.select;
+		if (select) return select(queryData);
+		return queryData;
+	}
 	fetchQuery(options) {
 		const defaultedOptions = this.defaultQueryOptions(options);
 		if (defaultedOptions.retry === void 0) defaultedOptions.retry = false;
 		const query = this.#queryCache.build(this, defaultedOptions);
-		return query.isStaleByTime(resolveStaleTime(defaultedOptions.staleTime, query)) ? query.fetch(defaultedOptions) : Promise.resolve(query.state.data);
+		return query.isStaleByTime(resolveQueryValue(defaultedOptions.staleTime, query)) ? query.fetch(defaultedOptions) : Promise.resolve(query.state.data);
 	}
 	prefetchQuery(options) {
 		return this.fetchQuery(options).then(noop).catch(noop);
+	}
+	infiniteQuery(options) {
+		options._type = "infinite";
+		return this.query(options);
 	}
 	fetchInfiniteQuery(options) {
 		options._type = "infinite";

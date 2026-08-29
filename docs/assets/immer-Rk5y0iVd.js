@@ -1,4 +1,4 @@
-//#region node_modules/.pnpm/immer@11.1.15/node_modules/immer/dist/immer.mjs
+//#region node_modules/.pnpm/immer@11.1.18/node_modules/immer/dist/immer.mjs
 var NOTHING = Symbol.for("immer-nothing");
 var DRAFTABLE = Symbol.for("immer-draftable");
 var DRAFT_STATE = Symbol.for("immer-state");
@@ -574,6 +574,8 @@ function currentImpl(value) {
 	if (state) state.finalized_ = false;
 	return copy;
 }
+var _globalIterator = globalThis.Iterator;
+var hasIteratorFrom = typeof _globalIterator?.from === "function";
 var immer = new Immer2();
 var produce = immer.produce;
 

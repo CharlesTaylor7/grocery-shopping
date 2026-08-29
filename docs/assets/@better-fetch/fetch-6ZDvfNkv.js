@@ -323,13 +323,15 @@ function getURL2(url, option) {
 		} else serializedValue = JSON.stringify(value);
 		queryParams.set(key, serializedValue);
 	}
-	if (params) if (Array.isArray(params)) {
-		const paramPaths = path.split("/").filter((p) => p.startsWith(":"));
-		for (const [index, key] of paramPaths.entries()) {
-			const value = params[index];
-			path = path.replace(key, value);
-		}
-	} else for (const [key, value] of Object.entries(params)) path = path.replace(`:${key}`, String(value));
+	if (params) {
+		if (Array.isArray(params)) {
+			const paramPaths = path.split("/").filter((p) => p.startsWith(":"));
+			for (const [index, key] of paramPaths.entries()) {
+				const value = params[index];
+				path = path.replace(key, value);
+			}
+		} else for (const [key, value] of Object.entries(params)) path = path.replace(`:${key}`, String(value));
+	}
 	path = path.split("/").map(encodeURIComponent).join("/");
 	if (path.startsWith("/")) path = path.slice(1);
 	let queryParamString = queryParams.toString();

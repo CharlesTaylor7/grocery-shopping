@@ -1,7 +1,7 @@
 import { r as __toESM } from "./rolldown-runtime-BBzN7mU7.js";
 import { i as require_react } from "./@dnd-kit/accessibility-Cp455YLW.js";
 
-//#region node_modules/.pnpm/jotai@2.20.2_@babel+core@7.29.7_@babel+template@7.29.7_@types+react@19.2.18_react@19.2.8/node_modules/jotai/esm/vanilla/internals.mjs
+//#region node_modules/.pnpm/jotai@2.20.3_@babel+core@7.29.7_@babel+template@7.29.7_@types+react@19.2.18_react@19.2.8/node_modules/jotai/esm/vanilla/internals.mjs
 var import_react = /* @__PURE__ */ __toESM(require_react(), 1);
 function hasInitialValue(atom) {
 	return "init" in atom;
@@ -218,8 +218,10 @@ var BUILDING_BLOCK_readAtomState = (buildingBlocks, store, atom) => {
 		var _a2;
 		if (a === atom) {
 			const aState2 = ensureAtomState(buildingBlocks, store, a);
-			if (!isAtomStateInitialized(aState2)) if (hasInitialValue(a)) setAtomStateValueOrPromise(buildingBlocks, store, a, a.init);
-			else throw new Error("no atom init");
+			if (!isAtomStateInitialized(aState2)) {
+				if (hasInitialValue(a)) setAtomStateValueOrPromise(buildingBlocks, store, a, a.init);
+				else throw new Error("no atom init");
+			}
 			return returnAtomValue(aState2);
 		}
 		const aState = readAtomState(buildingBlocks, store, a);
@@ -577,7 +579,7 @@ function buildStore(...partialBuildingBlocks) {
 }
 
 //#endregion
-//#region node_modules/.pnpm/jotai@2.20.2_@babel+core@7.29.7_@babel+template@7.29.7_@types+react@19.2.18_react@19.2.8/node_modules/jotai/esm/vanilla.mjs
+//#region node_modules/.pnpm/jotai@2.20.3_@babel+core@7.29.7_@babel+template@7.29.7_@types+react@19.2.18_react@19.2.8/node_modules/jotai/esm/vanilla.mjs
 var keyCount = 0;
 function atom(read, write) {
 	const key = `atom${++keyCount}`;
@@ -611,7 +613,7 @@ function getDefaultStore() {
 }
 
 //#endregion
-//#region node_modules/.pnpm/jotai@2.20.2_@babel+core@7.29.7_@babel+template@7.29.7_@types+react@19.2.18_react@19.2.8/node_modules/jotai/esm/react.mjs
+//#region node_modules/.pnpm/jotai@2.20.3_@babel+core@7.29.7_@babel+template@7.29.7_@types+react@19.2.18_react@19.2.8/node_modules/jotai/esm/react.mjs
 var StoreContext = (0, import_react.createContext)(void 0);
 function useStore(options) {
 	const store = (0, import_react.useContext)(StoreContext);

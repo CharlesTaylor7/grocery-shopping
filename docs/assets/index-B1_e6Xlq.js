@@ -1,21 +1,19 @@
 import { r as __toESM } from "./rolldown-runtime-BBzN7mU7.js";
 import { i as require_react } from "./@dnd-kit/accessibility-Cp455YLW.js";
-import { t as require_client } from "./react-dom-CTl4TmXd.js";
+import { t as require_client } from "./react-dom-htfI0BSw.js";
 import { d as CSS, g as require_react_dom, i as closestCenter, l as useSensor, r as PointerSensor, t as DndContext, u as useSensors } from "./@dnd-kit/core-CsMv1_OU.js";
-import { a as createFileRoute, c as useNavigate, i as Outlet, l as ErrorComponent, n as RouterProvider, o as createRootRoute, r as createRouter, s as Link, t as useLocation } from "./@tanstack/react-router-B9cjwm3j.js";
-import { n as createHashHistory } from "./@tanstack/history-uEhFT_8-.js";
-import { n as require_jsx_runtime, t as QueryClientProvider } from "./@tanstack/react-query-BY6ydLyl.js";
+import { a as createFileRoute, c as useNavigate, i as Outlet, l as ErrorComponent, n as RouterProvider, o as createRootRoute, r as createRouter, s as Link, t as useLocation } from "./@tanstack/react-router-BrBITs9x.js";
+import { n as createHashHistory } from "./@tanstack/history-Dlc5q7Fh.js";
+import { n as require_jsx_runtime, t as QueryClientProvider } from "./@tanstack/react-query-CAD3z_rF.js";
 import { t as require_compiler_runtime } from "./react-PEUjiTgh.js";
-import { a as atom, i as useSetAtom, n as useAtom, o as createStore, r as useAtomValue, t as Provider } from "./jotai-BBxBeiW-.js";
-import { n as toast$1, t as Toaster$1 } from "./sonner-CTp0qRmA.js";
-import { t as createAuthClient } from "./@neondatabase/auth-BT8gROfT.js";
-import { t as TanStackRouterDevtools } from "./@tanstack/react-router-devtools-BvTBnZI7.js";
-import { t as QueryClient } from "./@tanstack/query-core-Ckdck6tV.js";
-import { t as ReactQueryDevtools2 } from "./@tanstack/react-query-devtools-wFDCXlfO.js";
-import { t as v4 } from "./uuid-BtdgrrNB.js";
+import { a as atom, i as useSetAtom, n as useAtom, o as createStore, r as useAtomValue, t as Provider } from "./jotai-eXqhNh6v.js";
+import { n as toast$1, t as Toaster$1 } from "./sonner-BQ_dfKem.js";
+import { t as createAuthClient } from "./@neondatabase/auth-B7IMBkx0.js";
+import { t as QueryClient } from "./@tanstack/query-core-CjVTcvBO.js";
+import { t as v4 } from "./uuid-Cz3NUaFG.js";
 import { n as useSortable, r as verticalListSortingStrategy, t as SortableContext } from "./@dnd-kit/sortable-CX16qnHs.js";
-import { t as atomWithImmer } from "./jotai-immer-heCAeLnc.js";
-import { t as Temporal } from "./temporal-polyfill-Dsm9fIVe.js";
+import { t as atomWithImmer } from "./jotai-immer-gZyMyABC.js";
+import { t as Temporal } from "./temporal-polyfill-BWhQZoCs.js";
 
 //#region \0vite/modulepreload-polyfill.js
 (function polyfill() {
@@ -270,7 +268,7 @@ function promisify(request) {
 //#endregion
 //#region src/sync-worker.ts?worker
 function WorkerWrapper(options) {
-	return new Worker("/grocery-shopping/assets/sync-worker-B2ef81oP.js", {
+	return new Worker("/grocery-shopping/assets/sync-worker-BG0DiQ8Z.js", {
 		type: "module",
 		name: options?.name
 	});
@@ -389,13 +387,14 @@ var syncAtom = atom(new SyncModel());
 //#region src/routes/__root.tsx
 var Route$8 = createRootRoute({
 	component: RootComponent,
+	errorComponent: ErrorComponent,
 	loader: async () => {
 		JotaiStore.set(syncAtom, await SyncModel.new(SYNC_MODE));
 		return await authClient.getSession();
 	}
 });
 function RootComponent() {
-	const $ = (0, import_compiler_runtime.c)(21);
+	const $ = (0, import_compiler_runtime.c)(18);
 	const { data } = Route$8.useLoaderData();
 	const t0 = data?.user?.name ?? "Guest";
 	let t1;
@@ -406,7 +405,6 @@ function RootComponent() {
 	} else t1 = $[1];
 	let t2;
 	let t3;
-	let t4;
 	if ($[2] === Symbol.for("react.memo_cache_sentinel")) {
 		t2 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
 			to: "/",
@@ -418,74 +416,64 @@ function RootComponent() {
 			className: "tab",
 			children: "Stores"
 		});
-		t4 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
-			to: "/trips",
-			className: "tab",
-			children: "Trips"
-		});
 		$[2] = t2;
 		$[3] = t3;
-		$[4] = t4;
 	} else {
 		t2 = $[2];
 		t3 = $[3];
-		t4 = $[4];
 	}
-	let t5;
-	if ($[5] !== data?.user) {
-		t5 = data?.user != null ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+	let t4;
+	if ($[4] !== data?.user) {
+		t4 = data?.user != null ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
 			to: "/auth/login",
 			className: "tab",
 			children: "Login"
 		});
-		$[5] = data?.user;
-		$[6] = t5;
-	} else t5 = $[6];
-	let t6;
-	if ($[7] !== data?.user) {
-		t6 = data?.user == null ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+		$[4] = data?.user;
+		$[5] = t4;
+	} else t4 = $[5];
+	let t5;
+	if ($[6] !== data?.user) {
+		t5 = data?.user == null ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 			className: "btn btn-error btn-xs mr-3",
 			onClick: _temp$3,
 			children: "Log out"
 		});
-		$[7] = data?.user;
-		$[8] = t6;
-	} else t6 = $[8];
-	let t7;
-	if ($[9] !== t5 || $[10] !== t6) {
-		t7 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("nav", {
+		$[6] = data?.user;
+		$[7] = t5;
+	} else t5 = $[7];
+	let t6;
+	if ($[8] !== t4 || $[9] !== t5) {
+		t6 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("nav", {
 			className: "tabs items-center",
 			children: [
 				t2,
 				t3,
 				t4,
-				t5,
-				t6
+				t5
 			]
 		});
+		$[8] = t4;
 		$[9] = t5;
 		$[10] = t6;
-		$[11] = t7;
-	} else t7 = $[11];
-	let t8;
-	if ($[12] !== t1 || $[13] !== t7) {
-		t8 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("header", {
-			className: "bg-base-300 p-3 text-sm flex flex-row justify-between w-full",
+	} else t6 = $[10];
+	let t7;
+	if ($[11] !== t1 || $[12] !== t6) {
+		t7 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)("header", {
+			className: "bg-base-200 p-3 text-sm flex flex-row justify-between w-full",
 			children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 				className: "flex items-center justify-between w-full",
-				children: [t1, t7]
+				children: [t1, t6]
 			})
 		});
-		$[12] = t1;
+		$[11] = t1;
+		$[12] = t6;
 		$[13] = t7;
-		$[14] = t8;
-	} else t8 = $[14];
-	let t10;
-	let t11;
-	let t12;
+	} else t7 = $[13];
+	let t8;
 	let t9;
-	if ($[15] === Symbol.for("react.memo_cache_sentinel")) {
-		t9 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", {
+	if ($[14] === Symbol.for("react.memo_cache_sentinel")) {
+		t8 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", {
 			className: "p-3 overflow-y-scroll overflow-x-hidden",
 			children: [
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Outlet, {}),
@@ -493,35 +481,27 @@ function RootComponent() {
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Toaster, {})
 			]
 		});
-		t10 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(TanStackRouterDevtools, {});
-		t11 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ReactQueryDevtools2, {});
-		t12 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SyncActionRunner, { mode: SYNC_MODE });
-		$[15] = t10;
-		$[16] = t11;
-		$[17] = t12;
-		$[18] = t9;
+		t9 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SyncActionRunner, { mode: SYNC_MODE });
+		$[14] = t8;
+		$[15] = t9;
 	} else {
-		t10 = $[15];
-		t11 = $[16];
-		t12 = $[17];
-		t9 = $[18];
+		t8 = $[14];
+		t9 = $[15];
 	}
-	let t13;
-	if ($[19] !== t8) {
-		t13 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(QueryClientProvider, {
+	let t10;
+	if ($[16] !== t7) {
+		t10 = /* @__PURE__ */ (0, import_jsx_runtime.jsx)(QueryClientProvider, {
 			client: query_client_default,
 			children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(JotaiProvider, { children: [
+				t7,
 				t8,
-				t9,
-				t10,
-				t11,
-				t12
+				t9
 			] })
 		});
-		$[19] = t8;
-		$[20] = t13;
-	} else t13 = $[20];
-	return t13;
+		$[16] = t7;
+		$[17] = t10;
+	} else t10 = $[17];
+	return t10;
 }
 function _temp$3() {
 	return authClient.signOut;
@@ -578,7 +558,7 @@ function RouteComponent$7() {
 	} else t2 = $[2];
 	let t3;
 	if ($[3] === Symbol.for("react.memo_cache_sentinel")) {
-		t3 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["Last Released: ", "2026-08-08 at  5:08pm"] });
+		t3 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["Last Released: ", "2026-08-29 at  3:14pm"] });
 		$[3] = t3;
 	} else t3 = $[3];
 	let t4;
@@ -593,8 +573,8 @@ function RouteComponent$7() {
 					children: [t2, /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 						className: "italic",
 						children: [t3, /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
-							href: `https://github.com/charlestaylor7/grocery-shopping/commit/1103465}`,
-							children: ["Git Commit: ", "1103465"]
+							href: `https://github.com/charlestaylor7/grocery-shopping/commit/5c6cbe402}`,
+							children: ["Git Commit: ", "5c6cbe402"]
 						})]
 					})]
 				})
@@ -1060,7 +1040,7 @@ var needItemsAtom = atom((get) => {
 	return get(itemsInOrderAtom).filter((item) => !item.got);
 });
 var gotItemsAtom = atom((get) => {
-	return Object.values(get(storeItemsAtom)).filter((item) => item.got).sort((a, b) => b.last_got_at.valueOf() - a.last_got_at.valueOf());
+	return Object.values(get(storeItemsAtom)).filter((item) => item.got).sort((a, b) => a.description.toLowerCase().localeCompare(b.description.toLowerCase()));
 });
 var applyActionAtom = atom(null, (_get, set, action) => {
 	if (action.table !== "store_items") return;
@@ -1355,7 +1335,7 @@ function RouteComponent() {
 							table: "stores",
 							op: "delete",
 							entity: { id }
-						}).then(() => navigate({ to: "/store" }));
+						}).then(() => navigate({ to: "/stores" }));
 					},
 					children: "delete"
 				}) })

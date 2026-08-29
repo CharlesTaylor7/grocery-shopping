@@ -1,4 +1,4 @@
-//#region node_modules/.pnpm/@better-auth+core@1.4.18_@better-auth+utils@0.3.0_@better-fetch+fetch@1.1.21_better-cal_c6fe8474689db685c279d27434dc37cb/node_modules/@better-auth/core/dist/env/env-impl.mjs
+//#region node_modules/.pnpm/@better-auth+core@1.4.18_@better-auth+utils@0.3.0_@better-fetch+fetch@1.1.21_better-cal_87a9108f58afdac1d4d29db4c4d75729/node_modules/@better-auth/core/dist/env/env-impl.mjs
 var _envShim = Object.create(null);
 var _getEnv = (useShim) => ({});
 var env = new Proxy(_envShim, {
@@ -55,7 +55,7 @@ var ENV = Object.freeze({
 });
 
 //#endregion
-//#region node_modules/.pnpm/@better-auth+core@1.4.18_@better-auth+utils@0.3.0_@better-fetch+fetch@1.1.21_better-cal_c6fe8474689db685c279d27434dc37cb/node_modules/@better-auth/core/dist/env/color-depth.mjs
+//#region node_modules/.pnpm/@better-auth+core@1.4.18_@better-auth+utils@0.3.0_@better-fetch+fetch@1.1.21_better-cal_87a9108f58afdac1d4d29db4c4d75729/node_modules/@better-auth/core/dist/env/color-depth.mjs
 var COLORS_2 = 1;
 var COLORS_16 = 4;
 var COLORS_256 = 8;
@@ -140,7 +140,7 @@ function getColorDepth() {
 }
 
 //#endregion
-//#region node_modules/.pnpm/@better-auth+core@1.4.18_@better-auth+utils@0.3.0_@better-fetch+fetch@1.1.21_better-cal_c6fe8474689db685c279d27434dc37cb/node_modules/@better-auth/core/dist/env/logger.mjs
+//#region node_modules/.pnpm/@better-auth+core@1.4.18_@better-auth+utils@0.3.0_@better-fetch+fetch@1.1.21_better-cal_87a9108f58afdac1d4d29db4c4d75729/node_modules/@better-auth/core/dist/env/logger.mjs
 var TTY_COLORS = {
 	reset: "\x1B[0m",
 	bright: "\x1B[1m",
@@ -218,19 +218,19 @@ var createLogger = (options) => {
 var logger = createLogger();
 
 //#endregion
-//#region node_modules/.pnpm/@better-auth+core@1.4.18_@better-auth+utils@0.3.0_@better-fetch+fetch@1.1.21_better-cal_c6fe8474689db685c279d27434dc37cb/node_modules/@better-auth/core/dist/utils/error-codes.mjs
+//#region node_modules/.pnpm/@better-auth+core@1.4.18_@better-auth+utils@0.3.0_@better-fetch+fetch@1.1.21_better-cal_87a9108f58afdac1d4d29db4c4d75729/node_modules/@better-auth/core/dist/utils/error-codes.mjs
 function defineErrorCodes(codes) {
 	return codes;
 }
 
 //#endregion
-//#region node_modules/.pnpm/@better-auth+core@1.4.18_@better-auth+utils@0.3.0_@better-fetch+fetch@1.1.21_better-cal_c6fe8474689db685c279d27434dc37cb/node_modules/@better-auth/core/dist/utils/string.mjs
+//#region node_modules/.pnpm/@better-auth+core@1.4.18_@better-auth+utils@0.3.0_@better-fetch+fetch@1.1.21_better-cal_87a9108f58afdac1d4d29db4c4d75729/node_modules/@better-auth/core/dist/utils/string.mjs
 function capitalizeFirstLetter(str) {
 	return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 //#endregion
-//#region node_modules/.pnpm/@better-auth+core@1.4.18_@better-auth+utils@0.3.0_@better-fetch+fetch@1.1.21_better-cal_c6fe8474689db685c279d27434dc37cb/node_modules/@better-auth/core/dist/error/codes.mjs
+//#region node_modules/.pnpm/@better-auth+core@1.4.18_@better-auth+utils@0.3.0_@better-fetch+fetch@1.1.21_better-cal_87a9108f58afdac1d4d29db4c4d75729/node_modules/@better-auth/core/dist/error/codes.mjs
 var BASE_ERROR_CODES = defineErrorCodes({
 	USER_NOT_FOUND: "User not found",
 	FAILED_TO_CREATE_USER: "Failed to create user",
@@ -278,7 +278,7 @@ var BASE_ERROR_CODES = defineErrorCodes({
 });
 
 //#endregion
-//#region node_modules/.pnpm/@better-auth+core@1.4.18_@better-auth+utils@0.3.0_@better-fetch+fetch@1.1.21_better-cal_c6fe8474689db685c279d27434dc37cb/node_modules/@better-auth/core/dist/error/index.mjs
+//#region node_modules/.pnpm/@better-auth+core@1.4.18_@better-auth+utils@0.3.0_@better-fetch+fetch@1.1.21_better-cal_87a9108f58afdac1d4d29db4c4d75729/node_modules/@better-auth/core/dist/error/index.mjs
 var BetterAuthError = class extends Error {
 	constructor(message, options) {
 		super(message, options);

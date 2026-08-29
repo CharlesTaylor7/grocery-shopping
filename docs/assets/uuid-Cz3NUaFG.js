@@ -1,4 +1,4 @@
-//#region node_modules/.pnpm/uuid@14.0.1/node_modules/uuid/dist/stringify.js
+//#region node_modules/.pnpm/uuid@14.0.2/node_modules/uuid/dist/stringify.js
 var byteToHex = [];
 for (let i = 0; i < 256; ++i) byteToHex.push((i + 256).toString(16).slice(1));
 function unsafeStringify(arr, offset = 0) {
@@ -6,14 +6,14 @@ function unsafeStringify(arr, offset = 0) {
 }
 
 //#endregion
-//#region node_modules/.pnpm/uuid@14.0.1/node_modules/uuid/dist/rng.js
+//#region node_modules/.pnpm/uuid@14.0.2/node_modules/uuid/dist/rng.js
 var rnds8 = /* @__PURE__ */ new Uint8Array(16);
 function rng() {
 	return crypto.getRandomValues(rnds8);
 }
 
 //#endregion
-//#region node_modules/.pnpm/uuid@14.0.1/node_modules/uuid/dist/v4.js
+//#region node_modules/.pnpm/uuid@14.0.2/node_modules/uuid/dist/v4.js
 function v4(options, buf, offset) {
 	if (!buf && !options && crypto.randomUUID) return crypto.randomUUID();
 	return _v4(options, buf, offset);
