@@ -10,8 +10,7 @@ import { routeTree } from "@/routeTree.gen";
 const router = createRouter({
   routeTree,
   history: createHashHistory(),
-
-  scrollRestoration: false,
+  scrollRestoration: true,
   defaultViewTransition: true,
   defaultErrorComponent: ErrorComponent,
   defaultPendingComponent: () => "the suspense is killing me...",

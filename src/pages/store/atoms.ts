@@ -234,34 +234,4 @@
 //   }
 // });
 //
-// type ChangeEvent = React.ChangeEvent<HTMLInputElement>;
-// export const handleCheckboxAtom = atom(
-//   null,
-//   (_get, set, event: ChangeEvent) => {
-//     const action: Action<"store_items", "edit"> = {
-//       op: "edit",
-//       table: "store_items",
-//       entity: {
-//         id: event.currentTarget.dataset.id!,
-//         got: event.currentTarget.checked,
-//         last_got_at: new Date(),
-//       },
-//     };
-//     document.startViewTransition(() => {
-//       flushSync(() => {
-//         set(applyAndSyncAtom, action);
-//       });
-//     });
-//   },
-// );
-//
-// export const handleTextboxAtom = atom(null, (_get, set, event: ChangeEvent) => {
-//   set(applyAndSyncAtom, {
-//     op: "edit",
-//     table: "store_items",
-//     entity: {
-//       id: event.currentTarget.dataset.id!,
-//       description: event.currentTarget.value,
-//     },
-//   });
-// });
+

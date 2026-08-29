@@ -1,12 +1,12 @@
 import { promisify, readTransaction, writeTransaction } from '@/indexed-db';
 import { Store, StoreItem } from '@/migrate';
-import { createFileRoute, Link, useRouter } from '@tanstack/solid-router'
-import { For, createMemo, createSignal } from 'solid-js';
+import { createFileRoute, useNavigate, useRouter } from '@tanstack/solid-router'
+import { For, onSettled, createEffect, createMemo, createSignal, untrack } from 'solid-js';
 import { Temporal } from "temporal-polyfill";
-
 
 export const Route = createFileRoute("/store/$storeId")({
   component: RouteComponent,
+  remountDeps: ({ params }) => params.storeId,
   async loader({ params, context }) {
     const storeId = Number(params.storeId);
     const store = await promisify<Store>(
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/store/$storeId")({
   }
 });
 
-function Grip(props) {
+function Grip() {
   let isDragging = false; // fixme
   return (
     <div
@@ -42,11 +42,38 @@ function Grip(props) {
 
 
 function RouteComponent() {
-  const params = Route.useParams();
-  const context = Route.useRouteContext();
+  const context = Route.useRouteContext()
   const loader = Route.useLoaderData();
+  const db = untrack(context).db;
+  const navigate = useNavigate();
   const router = useRouter();
+  const [getFocus, setFocus] = createSignal(-1);
 
+  createEffect(
+    getFocus,
+    (focus) => {
+      const el = document.querySelector(`[data-index="${focus}"][type="text"`) as HTMLElement;
+
+      if (el) {
+        el.focus();
+      }
+    }
+  );
+
+  // we need the ref callback for newly created items
+  // we need the effect for focusing existing items
+  function textInputRef(el: HTMLInputElement) {
+    const focus = untrack(getFocus);
+    onSettled(() => {
+      if (focus.toString() === el.dataset.index) {
+        el.focus()
+      }
+    });
+  }
+
+  const items = createMemo(() =>
+    Object.fromEntries(loader().items.map(item => [item.id, item]))
+  );
   const needs = createMemo(() =>
     loader().items.filter(item => !item.got)
   );
@@ -58,11 +85,88 @@ function RouteComponent() {
 
   async function onDelete() {
     const storeId = loader().store.id;
-    await promisify(writeTransaction(context().db, "stores").delete(storeId));
+    await promisify(writeTransaction(db, "stores").delete(storeId));
+
+    navigate({ to: "/stores" });
   }
 
-  async function handleCheckbox() {
+  async function handleFocus(e: Event) {
+    const el = e.currentTarget as HTMLInputElement
+    const index = Number(el.dataset.index);
+    setFocus(index);
   }
+
+  async function handleCheckbox(e: Event) {
+    const el = e.currentTarget as HTMLInputElement
+    const id = Number(el.dataset.id);
+    const item = untrack(items)[id];
+    item.got = el.checked;
+    item.last_got_at = new Date();
+    await promisify(writeTransaction(db, "store_items").put(item));
+    router.invalidate();
+  }
+
+  async function handleTextbox(e: Event) {
+    const el = e.currentTarget as HTMLInputElement
+    const id = Number(el.dataset.id);
+    const item = untrack(items)[id];
+    item.description = el.value;
+    await promisify(writeTransaction(db, "store_items").put(item));
+    router.invalidate();
+  }
+
+  async function handleKeydown(e: KeyboardEvent) {
+    const el = e.currentTarget as HTMLInputElement
+    const id = Number(el.dataset.id);
+    const item = untrack(items)[id];
+    item.got = el.checked;
+
+    if (e.code === 'Enter') {
+      //
+      let isLast = false;
+      let nextItemIsNotEmpty = false;
+      if (isLast) {
+        addNewItem();
+      }
+      else if (nextItemIsNotEmpty) {
+        // insert new between
+      } else {
+        // move focus down
+      }
+    }
+    else if (e.code === 'Backspace') {
+      // if val is empty, delete the item
+      if (!el.value) {
+        const id = Number(el.dataset.id)
+        await promisify(writeTransaction(db, "store_items").delete(id));
+        setFocus(f => f - 1);
+      }
+    }
+    else if (e.code === 'ArrowUp') {
+      // move focus up
+    }
+
+    else if (e.code === 'ArrowDown') {
+      // move focus down
+    }
+
+    router.invalidate();
+  }
+
+  async function addNewItem() {
+    const item = {
+      store_id: loader().store.id,
+      order: loader().items.length * 1000,
+      description: '',
+      got: false
+    } as StoreItem;
+
+    setFocus(untrack(needs).length);
+
+    await promisify(writeTransaction(db, "store_items").add(item));
+    router.invalidate()
+  }
+
   return (
     <div>
       <header class="relative flex items-center justify-center w-full">
@@ -86,11 +190,10 @@ function RouteComponent() {
           </ul>
         </details>
       </header>
-
       <h3 class="my-3 text-xl">Need</h3>
       <For each={needs()}>
-        {(item) =>
-          <div id={item.id} class="flex flex-row m-2">
+        {(item, getIndex) =>
+          <div class="flex flex-row m-2">
             <input
               data-id={item.id}
               tabindex={-1}
@@ -101,33 +204,33 @@ function RouteComponent() {
             />
             <input
               data-id={item.id}
-              //        focus={index === focusIndex}
+              data-index={getIndex()}
+              ref={textInputRef}
               type="text"
               class="w-80 mx-2 outline-hidden"
               value={item.description}
+              onFocus={handleFocus}
+              onKeyDown={handleKeydown}
+              onChange={handleTextbox}
             />
 
-            {/* onFocus={() => setFocusIndex(index)} */}
-            {/* onKeyDown={handleKeydown} */}
-            {/* onChange={handleTextbox} */}
             {/* grip bars */}
-            <Grip id={item.id} />
+            <Grip />
           </div>
         }
       </For>
       <button
         type="button"
         class="btn btn-ghost w-100"
-      // onClick={addNewItem}
+        onClick={addNewItem}
       >
         +
       </button>
       {got().length ? <h3 class="my-3 text-xl">Got</h3> : null}
       <div>
         <For each={got()}>
-
           {(item) =>
-            <div id={item.id} class="flex flex-row m-2">
+            <div class="flex flex-row m-2">
               <input
                 data-id={item.id}
                 tabindex={-1}
@@ -170,47 +273,4 @@ function ago(item: StoreItem, now: Temporal.PlainDate): string {
   if (duration.days === 0) return "today";
   return `${duration.days}d ago`;
 }
-
-// function RouteComponent() {
-//   const { name } = Route.useLoaderData();
-//   const id = useAtomValue(storeIdAtom);
-//   const sensors = useSensors(
-//     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-//   );
-//   const now = useAtomValue(nowAtom);
-//   const handleDragStart = useSetAtom(handleDragStartAtom);
-//   const handleDragEnd = useSetAtom(handleDragEndAtom);
-//   const need = useAtomValue(needItemsAtom);
-//   const gots = useAtomValue(gotItemsAtom);
-//   const [focusIndex, setFocusIndex] = useAtom(focusIndexAtom);
-//   const handleKeydown = useSetAtom(handleKeydownAtom);
-//   const handleTextbox = useSetAtom(handleTextboxAtom);
-//   const handleCheckbox = useSetAtom(handleCheckboxAtom);
-//   const addNewItem = useSetAtom(appendNewItemAtom);
-//   const navigate = useNavigate();
-//   const sync = useAtomValue(syncAtom);
-//
-//   // render
-// interface GripProps {
-//   id: string;
-// }
-// interface SortableProps {
-//   id: string;
-//   children: ReactNode;
-// }
-// function Sortable(props: SortableProps) {
-//   const { setNodeRef, transform, transition } = useSortable({ id: props.id });
-//
-//   return (
-//     <div
-//       ref={setNodeRef}
-//       style={{
-//         transform: CSS.Transform.toString(transform),
-//         transition,
-//       }}
-//     >
-//       {props.children}
-//     </div>
-//   );
-// }
 

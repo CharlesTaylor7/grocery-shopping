@@ -7,12 +7,12 @@ export interface Store {
 }
 
 export interface StoreItem {
-  id: string;
+  id: number;
   description: string;
   got: boolean;
   order: number;
   last_got_at?: Date;
-  store_id: string;
+  store_id: number;
 }
 
 export type TableName = "stores" | "trips" | "trip_items" | "store_items";
