@@ -46,7 +46,7 @@ import { JotaiStore } from "@/components/JotaiProvider";
 const nowAtom = atom<Temporal.PlainDate>(toPlainDate(new Date()));
 export const Route = createFileRoute("/store/$storeId")({
   component: RouteComponent,
-
+  remountDeps: ({ params: storeId }) => storeId,
   loader: async ({ params: { storeId }, abortController }) => {
     const dataClient = await DataClient.new();
     const stores = await dataClient
