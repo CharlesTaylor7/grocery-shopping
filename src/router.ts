@@ -4,12 +4,13 @@ import {
   DefaultGlobalNotFound,
   ErrorComponent,
   NotFoundRoute,
-} from "@tanstack/react-router";
+} from "@tanstack/solid-router";
 import { routeTree } from "@/routeTree.gen";
 
 const router = createRouter({
   routeTree,
   history: createHashHistory(),
+
   scrollRestoration: false,
   defaultViewTransition: true,
   defaultErrorComponent: ErrorComponent,
@@ -20,7 +21,7 @@ const router = createRouter({
   defaultPendingMinMs: 400,
 });
 
-declare module "@tanstack/react-router" {
+declare module "@tanstack/solid-router" {
   interface Register {
     router: typeof router;
   }

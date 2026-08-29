@@ -1,4 +1,4 @@
-import { ErrorComponentProps } from "@tanstack/react-router";
+import { ErrorComponentProps } from "@tanstack/solid-router";
 
 export default function ErrorComponent(props: ErrorComponentProps) {
   console.error(props.error.cause);

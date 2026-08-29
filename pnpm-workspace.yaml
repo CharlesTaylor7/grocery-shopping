@@ -1,2 +1,6 @@
 allowBuilds:
   core-js: true
+minimumReleaseAgeExclude:
+  - '@solidjs/signals@2.0.0-rc.4'
+  - solid-js@2.0.0-rc.4
+  - '@tanstack/solid-router@2.0.0-rc.4'

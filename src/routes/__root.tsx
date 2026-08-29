@@ -1,63 +1,65 @@
-import { createRootRoute, ErrorComponent, Link, Outlet } from "@tanstack/react-router";
-import JotaiProvider, { JotaiStore } from '@/components/JotaiProvider';
-import Toaster from "@/components/Toaster";
-import SyncActionRunner from "@/components/SyncActionRunner";
-import { SYNC_MODE } from "@/config";
-import LastVisitSave from "@/components/LastVisitSave";
-import { QueryClientProvider } from "@tanstack/react-query";
-import queryClient from "@/query-client";
-import { authClient } from "@/auth";
-import { syncAtom, SyncModel } from '@/model';
+import { openIndexedDb } from "@/indexed-db";
+import { createRootRoute, ErrorComponent, Link, Outlet } from "@tanstack/solid-router";
+import { Notyf } from "notyf";
 
 export const Route = createRootRoute({
   component: RootComponent,
   errorComponent: ErrorComponent,
-  loader: async () => {
-    JotaiStore.set(syncAtom, await SyncModel.new(SYNC_MODE));
-    return await authClient.getSession();
+  async beforeLoad() {
+    const db = await openIndexedDb();
+    return ({ db });
   },
+  context() {
+    return ({
+      notyf: new Notyf({
+        duration: 3000,
+        position: {
+          x: 'right',
+          y: 'bottom',
+        },
+        types: [
+          {
+            type: 'warning',
+            background: 'orange',
+            icon: {
+              className: 'material-icons',
+              tagName: 'i',
+              text: 'warning'
+            }
+          },
+          {
+            type: 'error',
+            background: 'indianred',
+            duration: 2000,
+            dismissible: true
+          }
+        ]
+      })
+    });
+  }
 });
 
 function RootComponent() {
-  const { data } = Route.useLoaderData();
   return (
-    <QueryClientProvider client={queryClient}>
-      <JotaiProvider>
-        <header className="bg-base-200 p-3 text-sm flex flex-row justify-between w-full">
-          <div className="flex items-center justify-between w-full">
-            <span>
-              Hello, {data?.user?.name ?? "Guest"}
-            </span>
-            <nav className="tabs items-center">
-              <Link to="/" className="tab">
-                Home
-              </Link>
-              <Link to="/stores" className="tab">
-                Stores
-              </Link>
-              {data?.user != null ? null : (
-                <Link to="/auth/login" className="tab">
-                  Login
-                </Link>
-              )}
-              {data?.user == null ? null : (
-                <button
-                  className="btn btn-error btn-xs mr-3"
-                  onClick={() => authClient.signOut}
-                >
-                  Log out
-                </button>
-              )}
-            </nav>
-          </div>
-        </header>
-        <main className="p-3 overflow-y-scroll overflow-x-hidden">
-          <Outlet />
-          <LastVisitSave />
-          <Toaster />
-        </main>
-        <SyncActionRunner mode={SYNC_MODE} />
-      </JotaiProvider>
-    </QueryClientProvider>
+    <div>
+      <header class="bg-base-200 p-3 text-sm flex flex-row justify-between w-full">
+        <div class="flex items-center justify-between w-full">
+          <span>
+            Greetings Traveler
+          </span>
+          <nav class="tabs items-center">
+            <Link to="/" class="tab">
+              Home
+            </Link>
+            <Link to="/stores" class="tab">
+              Stores
+            </Link>
+          </nav>
+        </div>
+      </header>
+      <main class="p-3 overflow-y-scroll overflow-x-hidden">
+        <Outlet />
+      </main>
+    </div>
   );
 }

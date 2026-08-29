@@ -1,6 +1,5 @@
-import { DB_NAME, migrate, VERSION } from "@/migrate.ts";
+import { SCHEMA, migrate, VERSION, TableName } from "@/migrate.ts";
 
-export type StoreName = "actions";
 
 type ReadonlyObjectStore = Omit<
   IDBObjectStore,
@@ -9,29 +8,33 @@ type ReadonlyObjectStore = Omit<
 
 export function readTransaction(
   db: IDBDatabase,
-  store: StoreName,
+  store: TableName,
 ): ReadonlyObjectStore {
   return db.transaction(store, "readonly").objectStore(store);
 }
 
 export function writeTransaction(
   db: IDBDatabase,
-  store: StoreName,
+  store: TableName,
 ): IDBObjectStore {
   return db.transaction(store, "readwrite").objectStore(store);
 }
 
 export function openIndexedDb(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, VERSION);
-    request.onerror = (event) => {
-      reject(event);
+    const request = indexedDB.open(SCHEMA, VERSION);
+    request.onerror = () => {
+      reject(request.error);
     };
     request.onsuccess = () => {
-      resolve(request.result);
+      const db = request.result;
+      db.onversionchange = () => {
+        db.close();
+      };
+      resolve(db);
     };
     request.onupgradeneeded = (event) => {
-      migrate(event);
+      migrate(event, request.result, request.transaction!);
     };
   });
 }
@@ -39,6 +42,6 @@ export function openIndexedDb(): Promise<IDBDatabase> {
 export function promisify<T = unknown>(request: IDBRequest<T>): Promise<T> {
   return new Promise((resolve, reject) => {
     request.onsuccess = () => resolve(request.result);
-    request.onerror = reject;
+    request.onerror = () => reject(request.error);
   });
 }

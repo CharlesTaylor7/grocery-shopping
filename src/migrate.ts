@@ -1,75 +1,53 @@
-export const VERSION = 7;
-export const DB_NAME = "groceries";
+export const VERSION = 1;
+export const SCHEMA = "grocery-v2";
 
-export function migrate(event: IDBVersionChangeEvent): IDBDatabase {
-  const db: IDBDatabase = (event.target as any).result;
+export interface Store {
+  id: number;
+  name: string;
+}
+
+export interface StoreItem {
+  id: string;
+  description: string;
+  got: boolean;
+  order: number;
+  last_got_at?: Date;
+  store_id: string;
+}
+
+export type TableName = "stores" | "trips" | "trip_items" | "store_items";
+
+export function migrate(
+  event: IDBVersionChangeEvent,
+  db: IDBDatabase,
+  _tx: IDBTransaction,
+): void {
   if (event.oldVersion < 1) {
-    db.createObjectStore("actions", {
-      keyPath: "uuid",
-    });
-  }
+    // Store
+    const stores = db.createObjectStore("stores" satisfies TableName,
+      { keyPath: 'id', autoIncrement: true })
 
-  if (event.oldVersion < 2) {
-    db.createObjectStore("stores", { keyPath: "id" });
-  }
+    stores.createIndex("name", "name")
 
-  if (event.oldVersion < 3) {
-    db.deleteObjectStore("actions");
-    db.createObjectStore("actions", {
-      keyPath: "idb_key",
-      autoIncrement: true,
-    });
-  }
+    // StoreItem
+    const store_items = db.createObjectStore("store_items" satisfies TableName,
+      { keyPath: 'id', autoIncrement: true })
 
-  if (event.oldVersion < 4) {
-    db.deleteObjectStore("actions");
-    db.createObjectStore("actions", { keyPath: "idb_key", autoIncrement: true })
-      .createIndex(
-        "actions_entity_id",
-        ["entity", "id"],
-      );
+    store_items.createIndex("store_id", "store_id")
   }
+}
 
-  if (event.oldVersion < 5) {
-    db.deleteObjectStore("actions");
-    db.createObjectStore("actions", { keyPath: "idb_key", autoIncrement: true })
-      .createIndex(
-        "actions_entity_id",
-        ["entity.id"],
-      );
-  }
-
-  if (event.oldVersion < 6) {
-    db.deleteObjectStore("actions");
-    db.createObjectStore("actions", { keyPath: "idb_key", autoIncrement: true })
-      .createIndex(
-        "actions_entity_id",
-        "entity.id",
-      );
-  }
-
-  if (event.oldVersion < 7) {
-    db.deleteObjectStore("actions");
-    const actions = db.createObjectStore("actions", {
-      keyPath: "idb_key",
-      autoIncrement: true,
-    });
-    actions
-      .createIndex(
-        "actions_entity_id",
-        "entity.id",
-      );
-    actions
-      .createIndex(
-        "actions_entity_store_id",
-        "entity.store_id",
-      );
-  }
-  // unreleased
-  if (event.oldVersion < 8) {
-    // not used
-    db.deleteObjectStore("stores");
-  }
-
-  return db;
+// future
+interface Trip {
+  id: string;
+  shopping_date: Date;
+  description: string;
+}
+interface TripItem {
+  id: string;
+  description: string;
+  got: boolean;
+  order: number;
+  trip_id: string;
+  store_id: string;
 }

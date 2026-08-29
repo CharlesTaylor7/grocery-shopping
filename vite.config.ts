@@ -1,27 +1,20 @@
-import { execSync } from "node:child_process";
-import { readFileSync } from "node:fs";
 import { defineConfig } from "vite";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
-import react, { reactCompilerPreset } from "@vitejs/plugin-react";
-import babel from "@rolldown/plugin-babel";
+import solid from '@solidjs/vite-plugin'
 
-export default defineConfig(({ command }) => ({
+export default defineConfig({
   plugins: [
     tanstackRouter({
-      target: "react",
+      target: "solid",
       autoCodeSpliting: true,
     }),
-    react(),
-    babel({ presets: [reactCompilerPreset()] }),
+    solid(),
     tailwindcss(),
   ],
-  base: "/grocery-shopping/",
+  base: "/grocery-v2/",
   resolve: {
     tsconfigPaths: true,
-  },
-  worker: {
-    format: "es",
   },
   server: {
     port: 3000,
@@ -64,4 +57,4 @@ export default defineConfig(({ command }) => ({
       },
     },
   },
-}));
+});

@@ -9,7 +9,7 @@
 // import TripList from "@/pages/trip/[id].tsx";
 // import Nav from "@/pages/nav.tsx";
 // import AuthGuard from "@/components/AuthGuard";
-// import { Redirect, Route, Switch } from "@tanstack/react-router";
+// import { Redirect, Route, Switch } from "@tanstack/solid-router";
 //
 // export default function RouteTree() {
 //   return (

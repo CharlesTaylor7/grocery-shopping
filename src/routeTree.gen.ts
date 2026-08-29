@@ -10,12 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthRouteImport } from './routes/auth'
 import { Route as StoresRouteImport } from './routes/stores'
-import { Route as AuthForgorRouteImport } from './routes/auth/forgor'
-import { Route as AuthLoginRouteImport } from './routes/auth/login'
-import { Route as AuthPasswordResetRouteImport } from './routes/auth/password-reset'
-import { Route as AuthSignupRouteImport } from './routes/auth/signup'
 import { Route as StoreStoreIdRouteImport } from './routes/store/$storeId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -23,35 +18,10 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const StoresRoute = StoresRouteImport.update({
   id: '/stores',
   path: '/stores',
   getParentRoute: () => rootRouteImport,
-} as any)
-const AuthForgorRoute = AuthForgorRouteImport.update({
-  id: '/forgor',
-  path: '/forgor',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthLoginRoute = AuthLoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthPasswordResetRoute = AuthPasswordResetRouteImport.update({
-  id: '/password-reset',
-  path: '/password-reset',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthSignupRoute = AuthSignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => AuthRoute,
 } as any)
 const StoreStoreIdRoute = StoreStoreIdRouteImport.update({
   id: '/store/$storeId',
@@ -61,76 +31,35 @@ const StoreStoreIdRoute = StoreStoreIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRouteWithChildren
   '/stores': typeof StoresRoute
-  '/auth/forgor': typeof AuthForgorRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/password-reset': typeof AuthPasswordResetRoute
-  '/auth/signup': typeof AuthSignupRoute
   '/store/$storeId': typeof StoreStoreIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRouteWithChildren
   '/stores': typeof StoresRoute
-  '/auth/forgor': typeof AuthForgorRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/password-reset': typeof AuthPasswordResetRoute
-  '/auth/signup': typeof AuthSignupRoute
   '/store/$storeId': typeof StoreStoreIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/auth': typeof AuthRouteWithChildren
   '/stores': typeof StoresRoute
-  '/auth/forgor': typeof AuthForgorRoute
-  '/auth/login': typeof AuthLoginRoute
-  '/auth/password-reset': typeof AuthPasswordResetRoute
-  '/auth/signup': typeof AuthSignupRoute
   '/store/$storeId': typeof StoreStoreIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/auth'
-    | '/stores'
-    | '/auth/forgor'
-    | '/auth/login'
-    | '/auth/password-reset'
-    | '/auth/signup'
-    | '/store/$storeId'
+  fullPaths: '/' | '/stores' | '/store/$storeId'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/auth'
-    | '/stores'
-    | '/auth/forgor'
-    | '/auth/login'
-    | '/auth/password-reset'
-    | '/auth/signup'
-    | '/store/$storeId'
-  id:
-    | '__root__'
-    | '/'
-    | '/auth'
-    | '/stores'
-    | '/auth/forgor'
-    | '/auth/login'
-    | '/auth/password-reset'
-    | '/auth/signup'
-    | '/store/$storeId'
+  to: '/' | '/stores' | '/store/$storeId'
+  id: '__root__' | '/' | '/stores' | '/store/$storeId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AuthRoute: typeof AuthRouteWithChildren
   StoresRoute: typeof StoresRoute
   StoreStoreIdRoute: typeof StoreStoreIdRoute
 }
 
-declare module '@tanstack/react-router' {
+declare module '@tanstack/solid-router' {
   interface FileRoutesByPath {
     '/': {
       id: '/'
@@ -139,47 +68,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/stores': {
       id: '/stores'
       path: '/stores'
       fullPath: '/stores'
       preLoaderRoute: typeof StoresRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/auth/forgor': {
-      id: '/auth/forgor'
-      path: '/forgor'
-      fullPath: '/auth/forgor'
-      preLoaderRoute: typeof AuthForgorRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/auth/login': {
-      id: '/auth/login'
-      path: '/login'
-      fullPath: '/auth/login'
-      preLoaderRoute: typeof AuthLoginRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/auth/password-reset': {
-      id: '/auth/password-reset'
-      path: '/password-reset'
-      fullPath: '/auth/password-reset'
-      preLoaderRoute: typeof AuthPasswordResetRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/auth/signup': {
-      id: '/auth/signup'
-      path: '/signup'
-      fullPath: '/auth/signup'
-      preLoaderRoute: typeof AuthSignupRouteImport
-      parentRoute: typeof AuthRoute
     }
     '/store/$storeId': {
       id: '/store/$storeId'
@@ -191,25 +85,8 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface AuthRouteChildren {
-  AuthForgorRoute: typeof AuthForgorRoute
-  AuthLoginRoute: typeof AuthLoginRoute
-  AuthPasswordResetRoute: typeof AuthPasswordResetRoute
-  AuthSignupRoute: typeof AuthSignupRoute
-}
-
-const AuthRouteChildren: AuthRouteChildren = {
-  AuthForgorRoute: AuthForgorRoute,
-  AuthLoginRoute: AuthLoginRoute,
-  AuthPasswordResetRoute: AuthPasswordResetRoute,
-  AuthSignupRoute: AuthSignupRoute,
-}
-
-const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AuthRoute: AuthRouteWithChildren,
   StoresRoute: StoresRoute,
   StoreStoreIdRoute: StoreStoreIdRoute,
 }
