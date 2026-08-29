@@ -558,7 +558,7 @@ function RouteComponent$7() {
 	} else t2 = $[2];
 	let t3;
 	if ($[3] === Symbol.for("react.memo_cache_sentinel")) {
-		t3 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["Last Released: ", "2026-08-29 at  3:14pm"] });
+		t3 = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: ["Last Released: ", "2026-08-29 at  3:24pm"] });
 		$[3] = t3;
 	} else t3 = $[3];
 	let t4;
@@ -573,8 +573,8 @@ function RouteComponent$7() {
 					children: [t2, /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 						className: "italic",
 						children: [t3, /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
-							href: `https://github.com/charlestaylor7/grocery-shopping/commit/5c6cbe402}`,
-							children: ["Git Commit: ", "5c6cbe402"]
+							href: `https://github.com/charlestaylor7/grocery-shopping/commit/4860522b1}`,
+							children: ["Git Commit: ", "4860522b1"]
 						})]
 					})]
 				})
@@ -1237,6 +1237,7 @@ var handleTextboxAtom = atom(null, (_get, set, event) => {
 var nowAtom = atom(toPlainDate(/* @__PURE__ */ new Date()));
 var Route = createFileRoute("/store/$storeId")({
 	component: RouteComponent,
+	remountDeps: ({ params: storeId }) => storeId,
 	loader: async ({ params: { storeId }, abortController }) => {
 		const stores = await (await DataClient.new()).get("stores", {
 			"select": "name,items:store_items(id, description, got, order, last_got_at)",
