@@ -1,4 +1,3 @@
-
 import { DragDropManager } from '@dnd-kit/dom';
 import { isSortable, Sortable } from '@dnd-kit/dom/sortable';
 import { promisify, readTransaction, writeTransaction } from '@/indexed-db';
@@ -49,6 +48,8 @@ function RouteComponent() {
 
   const getGot = createMemo(() =>
     loader().items.filter(item => item.got)
+      .toSorted((a, b) => a.description.toLowerCase().localeCompare(b.description.toLowerCase()))
+
   );
   const now = () => loader().now;
   async function onDelete() {
@@ -144,9 +145,59 @@ function RouteComponent() {
 
   const manager = new DragDropManager();
   manager.monitor.addEventListener('dragend', event => {
-    if (isSortable(event.operation.source)) {
-      const { initialIndex, index } = event.operation.source;
+    if (!isSortable(event.operation.source)) return
+
+    const { initialIndex: oldIndex, index: newIndex } = event.operation.source;
+
+    const edits: DndEdit[] = [];
+    const needed = untrack(getNeeded);
+    const activeItem = needed[oldIndex];
+    if (newIndex === 0) {
+      const order = needed[0].order - 1000;
+      edits.push({ item: activeItem, order });
+    } else if (newIndex === needed.length - 1) {
+      const order = needed.at(-1)!.order + 1000;
+      edits.push({ item: activeItem, order });
     }
+    else if (newIndex > oldIndex) {
+      const adjacentIndex = newIndex + 1;
+      const targetOrder = needed[newIndex].order;
+      const adjacentOrder = needed[adjacentIndex].order;
+      let order = Math.ceil((targetOrder + adjacentOrder) / 2);
+      edits.push({ item: activeItem, order });
+
+      if (order === adjacentOrder) {
+        for (let i = adjacentIndex; i < needed.length; i++) {
+          if (needed[i].order - order < 1000) {
+            order += 1000;
+            edits.push({ item: needed[i], order });
+          } else break;
+        }
+      }
+    }
+    else if (newIndex < oldIndex) {
+      const adjacentIndex = newIndex - 1;
+      const targetOrder = needed[newIndex].order;
+      const adjacentOrder = needed[adjacentIndex].order;
+      let order = Math.floor((targetOrder + adjacentOrder) / 2);
+      edits.push({ item: activeItem, order });
+
+      if (order === adjacentOrder) {
+        for (let i = adjacentIndex; i >= 0; i--) {
+          if (order - needed[i].order < 1000) {
+            order -= 1000;
+            edits.push({ item: needed[i], order });
+          } else break;
+        }
+      }
+    }
+
+    batchDndEdit(db, edits)
+      .catch(e => {
+        console.error(e);
+        // reset if failure
+        router.invalidate();
+      })
   })
   onCleanup(() => manager.destroy());
 
@@ -234,32 +285,30 @@ function RouteComponent() {
         +
       </button>
       {getGot().length ? <h3 class="my-3 text-xl">Got</h3> : null}
-      <div>
-        <For each={getGot()}>
-          {(item) =>
-            <div class="flex flex-row m-2">
-              <input
-                data-id={item.id}
-                tabindex={-1}
-                type="checkbox"
-                class="checkbox p-2 "
-                checked={item.got}
-                onChange={handleCheckbox}
-              />
-              <input
-                data-id={item.id}
-                type="text"
-                class="mx-2 flex-1 outline-hidden overflow-x-hidden"
-                value={item.description}
-                readonly
-              />
-              <div class="italic text-nowrap">
-                {ago(item, now())}
-              </div>
+      <For each={getGot()}>
+        {(item) =>
+          <div class="flex flex-row m-2">
+            <input
+              data-id={item.id}
+              tabindex={-1}
+              type="checkbox"
+              class="checkbox p-2 "
+              checked={item.got}
+              onChange={handleCheckbox}
+            />
+            <input
+              data-id={item.id}
+              type="text"
+              class="mx-2 flex-1 outline-hidden overflow-x-hidden"
+              value={item.description}
+              readonly
+            />
+            <div class="italic text-nowrap">
+              {ago(item, now())}
             </div>
-          }
-        </For>
-      </div>
+          </div>
+        }
+      </For>
     </div>
   );
 }
@@ -311,10 +360,34 @@ function useFocus() {
     setFocus(index);
   }
 
-
   return {
     callbackRef,
     eventHandler,
     set: setFocus,
   } as const
+}
+
+interface DndEdit {
+  item: StoreItem,
+  order: number
+}
+
+function batchDndEdit(db: IDBDatabase, edits: DndEdit[]): Promise<void> {
+  // batch edits
+  const tx = db.transaction("store_items", "readwrite");
+  const table = tx.objectStore("store_items");
+  for (const edit of edits) {
+    table.put({
+      ...edit.item,
+      order: edit.order
+    });
+  }
+  return new Promise((resolve, reject) => {
+    tx.onerror = () => {
+      reject(tx.error);
+    }
+    tx.oncomplete = () => {
+      resolve();
+    }
+  });
 }
