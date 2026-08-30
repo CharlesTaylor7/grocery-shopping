@@ -187,11 +187,13 @@ function RootComponent() {
 	var _el$6 = _el$5.nextSibling;
 	var _el$7 = _el$2.nextSibling;
 	insert(_el$4, createComponent(Link, {
+		viewTransition: true,
 		to: "/stores",
 		class: "tab",
 		children: "Stores"
 	}), _el$5);
 	insert(_el$4, createComponent(Link, {
+		viewTransition: true,
 		to: "/",
 		class: "tab",
 		children: "Home"
@@ -227,13 +229,13 @@ function RouteComponent$2() {
 	_el$8.firstChild;
 	insert(_el$, createComponent(NyanCatButton, {}), _el$2.nextSibling);
 	insert(_el$6, () => {
-		return "2026-08-30 at  2:08pm";
+		return "2026-08-30 at  2:11pm";
 	}, null);
 	claimElement(_el$8);
 	insert(_el$8, () => {
-		return "\x1B[38;5;4mb9a75f334217\x1B[39m";
+		return "\x1B[38;5;4m4ac089e5edf7\x1B[39m";
 	}, null);
-	effect(() => `https://github.com/charlestaylor7/grocery-shopping/commit/[38;5;4mb9a75f334217[39m}`, (_v$) => {
+	effect(() => `https://github.com/charlestaylor7/grocery-shopping/commit/[38;5;4m4ac089e5edf7[39m}`, (_v$) => {
 		setAttribute(_el$8, "href", _v$);
 	});
 	return _el$;
@@ -273,6 +275,7 @@ function RouteComponent$1() {
 		},
 		children: (s) => createComponent(Link, {
 			class: "btn btn-ghost",
+			viewTransition: true,
 			to: "/store/$storeId",
 			get params() {
 				return { storeId: s.id.toString() };
@@ -680,7 +683,6 @@ var router = createRouter({
 	routeTree,
 	history: createHashHistory(),
 	scrollRestoration: true,
-	defaultViewTransition: true,
 	defaultErrorComponent: ErrorComponent,
 	defaultPendingComponent: () => "the suspense is killing me...",
 	defaultPendingMs: 200,
