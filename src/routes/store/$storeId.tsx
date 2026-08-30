@@ -107,6 +107,7 @@ function RouteComponent() {
     else if (e.code === 'Backspace') {
       // if val is empty, delete the item
       if (!el.value) {
+        e.preventDefault();
         const id = Number(el.dataset.id)
         focus.set(f => f - 1);
         await promisify(writeTransaction(db, "store_items").delete(id));
@@ -136,7 +137,9 @@ function RouteComponent() {
     focus.set(untrack(getNeeded).length);
 
     await promisify(writeTransaction(db, "store_items").add(item));
-    router.invalidate()
+    document.startViewTransition(() => {
+      router.invalidate()
+    });
   }
 
   const manager = new DragDropManager();
