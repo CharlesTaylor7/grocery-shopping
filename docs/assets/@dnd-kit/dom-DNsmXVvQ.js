@@ -3950,4 +3950,4 @@ var SortableDroppable = class extends Droppable {
 };
 
 //#endregion
-export { isSortable as n, DragDropManager as r, Sortable2 as t };
+export { DragDropManager as i, Sortable2 as n, isSortable as r, OptimisticSortingPlugin as t };

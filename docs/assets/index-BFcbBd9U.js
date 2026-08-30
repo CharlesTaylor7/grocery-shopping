@@ -1,9 +1,10 @@
+import { t as createAuthClient } from "./@neondatabase/auth-1P38V69J.js";
 import { d as onCleanup, f as onSettled, g as untrack } from "./@solidjs/signals-Ckwt8Og4.js";
 import { C as createMemo, S as createEffect, a as effect, b as createComponent, c as ref, f as template, i as delegateEvents, l as render, m as For, n as addEvent, o as insert, r as claimElement, s as memo, u as setAttribute, w as createSignal } from "./@solidjs/web-tMMZ5uIY.js";
 import { n as createHashHistory } from "./@tanstack/history-Dlc5q7Fh.js";
 import { a as createRootRoute, c as Link, i as createFileRoute, l as useRouter, n as createRouter, o as useRouteContext, r as Outlet, s as useNavigate, t as RouterProvider } from "./@tanstack/solid-router-pdioD-jW.js";
 import { t as Notyf } from "./notyf-nqSa4uZf.js";
-import { n as isSortable, r as DragDropManager, t as Sortable2 } from "./@dnd-kit/dom-CJRwXF72.js";
+import { i as DragDropManager, n as Sortable2, r as isSortable, t as OptimisticSortingPlugin } from "./@dnd-kit/dom-DNsmXVvQ.js";
 
 //#region \0vite/modulepreload-polyfill.js
 (function polyfill() {
@@ -39,18 +40,78 @@ import { n as isSortable, r as DragDropManager, t as Sortable2 } from "./@dnd-ki
 //#endregion
 //#region src/migrate.ts
 var SCHEMA = "grocery-v2";
-function migrate(event, db, _tx) {
+function migrate(event, db, tx, neon) {
 	if (event.oldVersion < 1) {
-		db.createObjectStore("stores", {
+		const stores = db.createObjectStore("stores", {
 			keyPath: "id",
 			autoIncrement: true
-		}).createIndex("name", "name");
-		db.createObjectStore("store_items", {
+		});
+		stores.createIndex("name", "name");
+		const store_items = db.createObjectStore("store_items", {
 			keyPath: "id",
 			autoIncrement: true
-		}).createIndex("store_id", "store_id");
+		});
+		store_items.createIndex("store_id", "store_id");
+		for (const store of neon.stores) stores.add(store);
+		for (const item of neon.items) store_items.add(item);
 	}
 }
+async function exportNeonData() {
+	const token = await createAuthClient(NEON_AUTH_URL, { allowAnonymous: true }).getAnonymousToken();
+	const queryResult = await new DataClient(token.data.token).get("stores", { "select": "name,items:store_items(description, got, order, last_got_at)" });
+	let store_id = 1;
+	let item_id = 1;
+	const stores = [];
+	const items = [];
+	for (const store of queryResult) {
+		if (!store.name) continue;
+		for (const item of store.items) {
+			if (!item.description) continue;
+			items.push({
+				id: item_id++,
+				store_id,
+				description: item.description,
+				order: item.order,
+				last_got_at: importDate(item.last_got_at)
+			});
+		}
+		stores.push({
+			id: store_id++,
+			name: store.name
+		});
+	}
+	return {
+		stores,
+		items
+	};
+}
+function importDate(str) {
+	if (!str) return null;
+	return new Date(str);
+}
+var NEON_AUTH_URL = "https://ep-red-morning-awzkc1lp.neonauth.c-12.us-east-1.aws.neon.tech/neondb/auth";
+var NEON_DATA_URL = "https://ep-red-morning-awzkc1lp.apirest.c-12.us-east-1.aws.neon.tech/neondb/rest/v1";
+var DataClient = class {
+	token;
+	constructor(token) {
+		this.token = token;
+	}
+	headers() {
+		return {
+			"Content-Type": "application/json",
+			"Authorization": `Bearer ${this.token}`
+		};
+	}
+	async get(table, query, signal) {
+		const queryString = new URLSearchParams(query);
+		const url = `${NEON_DATA_URL}/${table}?${queryString}`;
+		return await (await fetch(url, {
+			method: "GET",
+			headers: this.headers(),
+			signal
+		})).json();
+	}
+};
 
 //#endregion
 //#region src/indexed-db.ts
@@ -60,7 +121,7 @@ function readTransaction(db, store) {
 function writeTransaction(db, store) {
 	return db.transaction(store, "readwrite").objectStore(store);
 }
-function openIndexedDb() {
+function openIndexedDb(neon) {
 	return new Promise((resolve, reject) => {
 		const request = indexedDB.open(SCHEMA, 1);
 		request.onerror = () => {
@@ -74,7 +135,7 @@ function openIndexedDb() {
 			resolve(db);
 		};
 		request.onupgradeneeded = (event) => {
-			migrate(event, request.result, request.transaction);
+			migrate(event, request.result, request.transaction, neon);
 		};
 	});
 }
@@ -91,7 +152,8 @@ var _tmpl$$5 = /* @__PURE__ */ template(`<div><header class="bg-base-200 p-3 tex
 var Route$3 = createRootRoute({
 	component: RootComponent,
 	async beforeLoad() {
-		return { db: await openIndexedDb() };
+		const neon = await exportNeonData();
+		return { db: await openIndexedDb(neon) };
 	},
 	context() {
 		return { notyf: new Notyf({
@@ -164,10 +226,14 @@ function RouteComponent$2() {
 	var _el$8 = _el$6.nextSibling;
 	_el$8.firstChild;
 	insert(_el$, createComponent(NyanCatButton, {}), _el$2.nextSibling);
-	insert(_el$6, () => {}, null);
+	insert(_el$6, () => {
+		return "2026-08-30 at  2:01pm";
+	}, null);
 	claimElement(_el$8);
-	insert(_el$8, () => {}, null);
-	effect(() => `https://github.com/charlestaylor7/grocery-shopping/commit/undefined}`, (_v$) => {
+	insert(_el$8, () => {
+		return "\x1B[38;5;4mcdff859e9dc1\x1B[39m";
+	}, null);
+	effect(() => `https://github.com/charlestaylor7/grocery-shopping/commit/[38;5;4mcdff859e9dc1[39m}`, (_v$) => {
 		setAttribute(_el$8, "href", _v$);
 	});
 	return _el$;
@@ -246,7 +312,7 @@ var MS_PER_DAY = 864e5;
 function ago(time) {
 	if (!(time instanceof Date)) return "?";
 	const startOfItemDate = toStartOfDay(time);
-	const startOfNow = toStartOfDay(time);
+	const startOfNow = toStartOfDay(/* @__PURE__ */ new Date());
 	const diffInDays = Math.round((startOfNow.getTime() - startOfItemDate.getTime()) / MS_PER_DAY);
 	if (diffInDays <= 0) return "today";
 	return `${diffInDays}d ago`;
@@ -277,8 +343,8 @@ function RouteComponent() {
 	const router = useRouter();
 	const focus = useFocus();
 	const getItemMap = createMemo(() => Object.fromEntries(loader().items.map((item) => [item.id, item])));
-	const getNeeded = createMemo(() => loader().items.filter((item) => !item.got).toSorted((a, b) => a.order - b.order));
-	const getGot = createMemo(() => loader().items.filter((item) => item.got).toSorted((a, b) => a.description.toLowerCase().localeCompare(b.description.toLowerCase())));
+	const getNeeded = createMemo(() => loader().items.filter((item) => !item.last_got_at).toSorted((a, b) => a.order - b.order));
+	const getGot = createMemo(() => loader().items.filter((item) => item.last_got_at).toSorted((a, b) => a.description.toLowerCase().localeCompare(b.description.toLowerCase())));
 	async function onDelete() {
 		const storeId = loader().store.id;
 		await promisify(writeTransaction(db, "stores").delete(storeId));
@@ -288,8 +354,7 @@ function RouteComponent() {
 		const el = e.currentTarget;
 		const id = Number(el.dataset.id);
 		const item = untrack(getItemMap)[id];
-		item.got = el.checked;
-		item.last_got_at = /* @__PURE__ */ new Date();
+		item.last_got_at = item.last_got_at ? null : /* @__PURE__ */ new Date();
 		await promisify(writeTransaction(db, "store_items").put(item));
 		document.startViewTransition(() => {
 			router.invalidate();
@@ -317,7 +382,6 @@ function RouteComponent() {
 				const newItem = {
 					description: "",
 					order: Math.floor((current.order + next.order) / 2),
-					got: false,
 					store_id: loader().store.id
 				};
 				await promisify(writeTransaction(db, "store_items").add(newItem));
@@ -339,8 +403,7 @@ function RouteComponent() {
 		const item = {
 			store_id: loader().store.id,
 			order: lastOrder + 1e3,
-			description: "",
-			got: false
+			description: ""
 		};
 		focus.set(untrack(getNeeded).length);
 		await promisify(writeTransaction(db, "store_items").add(item));
@@ -355,6 +418,7 @@ function RouteComponent() {
 		const edits = [];
 		const needed = untrack(getNeeded);
 		const activeItem = needed[oldIndex];
+		const targetItem = needed.at(newIndex);
 		if (newIndex === 0) {
 			const order = needed[0].order - 1e3;
 			edits.push({
@@ -368,8 +432,15 @@ function RouteComponent() {
 				order
 			});
 		} else if (newIndex > oldIndex) {
+			if (!targetItem) {
+				console.warn("newIndex doesn't exist", {
+					oldIndex,
+					newIndex
+				});
+				return;
+			}
 			const adjacentIndex = newIndex + 1;
-			const targetOrder = needed[newIndex].order;
+			const targetOrder = targetItem.order;
 			const adjacentOrder = needed[adjacentIndex].order;
 			let order = Math.ceil((targetOrder + adjacentOrder) / 2);
 			edits.push({
@@ -384,8 +455,15 @@ function RouteComponent() {
 				});
 			} else break;
 		} else if (newIndex < oldIndex) {
+			if (!targetItem) {
+				console.warn("newIndex doesn't exist", {
+					oldIndex,
+					newIndex
+				});
+				return;
+			}
 			const adjacentIndex = newIndex - 1;
-			const targetOrder = needed[newIndex].order;
+			const targetOrder = targetItem.order;
 			const adjacentOrder = needed[adjacentIndex].order;
 			let order = Math.floor((targetOrder + adjacentOrder) / 2);
 			edits.push({
@@ -402,7 +480,8 @@ function RouteComponent() {
 		}
 		batchDndEdit(db, edits).catch((e) => {
 			console.error(e);
-			router.invalidate();
+		}).finally(() => {
+			setTimeout(() => router.invalidate(), 500);
 		});
 	});
 	onCleanup(() => manager.destroy());
@@ -414,6 +493,7 @@ function RouteComponent() {
 				id: item.id,
 				index,
 				element,
+				plugins: [OptimisticSortingPlugin],
 				handle: element.querySelector("[data-role=\"grip\"]")
 			}, manager);
 		});
@@ -456,23 +536,21 @@ function RouteComponent() {
 			effect(() => {
 				return {
 					e: getIndex(),
-					t: item.order,
-					a: item.id,
-					o: item.got,
-					i: item.id,
-					n: getIndex(),
-					s: item.description,
-					h: `/grocery-v2/grip-bars.svg`
+					t: item.id,
+					a: !!item.last_got_at,
+					o: item.id,
+					i: getIndex(),
+					n: item.description,
+					s: `/grocery-v2/grip-bars.svg`
 				};
-			}, ({ e, t, a, o, i, n, s, h }, _p$) => {
+			}, ({ e, t, a, o, i, n, s }, _p$) => {
 				e !== _p$?.e && setAttribute(_el$14, "data-index", e);
-				t !== _p$?.t && setAttribute(_el$14, "data-order", t);
-				a !== _p$?.a && setAttribute(_el$15, "data-id", a);
-				_el$15.checked = o;
-				i !== _p$?.i && setAttribute(_el$16, "data-id", i);
-				n !== _p$?.n && setAttribute(_el$16, "data-index", n);
-				_el$16.value = s ?? "";
-				h !== _p$?.h && setAttribute(_el$18, "src", h);
+				t !== _p$?.t && setAttribute(_el$15, "data-id", t);
+				_el$15.checked = a;
+				o !== _p$?.o && setAttribute(_el$16, "data-id", o);
+				i !== _p$?.i && setAttribute(_el$16, "data-index", i);
+				_el$16.value = n ?? "";
+				s !== _p$?.s && setAttribute(_el$18, "src", s);
 			});
 			return _el$14;
 		})()
@@ -502,7 +580,7 @@ function RouteComponent() {
 			effect(() => {
 				return {
 					e: item.id,
-					t: item.got,
+					t: !!item.last_got_at,
 					a: item.id,
 					o: item.description
 				};
@@ -588,6 +666,7 @@ var _tmpl$ = /* @__PURE__ */ template(`<code>`);
 function ErrorComponent(props) {
 	console.error(props.error.cause);
 	console.error(props.error.stack);
+	props.reset();
 	var _el$ = _tmpl$();
 	insert(_el$, () => {
 		return props.error.message;
