@@ -103,7 +103,9 @@ function RouteComponent() {
     item.got = el.checked;
     item.last_got_at = new Date();
     await promisify(writeTransaction(db, "store_items").put(item));
-    router.invalidate();
+    document.startViewTransition(() => {
+      router.invalidate();
+    });
   }
 
   async function handleTextbox(e: Event) {
@@ -144,10 +146,12 @@ function RouteComponent() {
     }
     else if (e.code === 'ArrowUp') {
       // move focus up
+      setFocus(f => f - 1);
     }
 
     else if (e.code === 'ArrowDown') {
       // move focus down
+      setFocus(f => f + 1);
     }
 
     router.invalidate();
