@@ -71,14 +71,16 @@ function RouteComponent() {
     });
   }
 
-  const items = createMemo(() =>
+  const getItemMap = createMemo(() =>
     Object.fromEntries(loader().items.map(item => [item.id, item]))
   );
-  const needs = createMemo(() =>
+
+  const getNeeded = createMemo(() =>
     loader().items.filter(item => !item.got)
+      .toSorted((a, b) => a.order - b.order)
   );
 
-  const got = createMemo(() =>
+  const getGot = createMemo(() =>
     loader().items.filter(item => item.got)
   );
   const now = () => loader().now;
@@ -99,7 +101,7 @@ function RouteComponent() {
   async function handleCheckbox(e: Event) {
     const el = e.currentTarget as HTMLInputElement
     const id = Number(el.dataset.id);
-    const item = untrack(items)[id];
+    const item = untrack(getItemMap)[id];
     item.got = el.checked;
     item.last_got_at = new Date();
     await promisify(writeTransaction(db, "store_items").put(item));
@@ -111,7 +113,7 @@ function RouteComponent() {
   async function handleTextbox(e: Event) {
     const el = e.currentTarget as HTMLInputElement
     const id = Number(el.dataset.id);
-    const item = untrack(items)[id];
+    const item = untrack(getItemMap)[id];
     item.description = el.value;
     await promisify(writeTransaction(db, "store_items").put(item));
     router.invalidate();
@@ -119,29 +121,36 @@ function RouteComponent() {
 
   async function handleKeydown(e: KeyboardEvent) {
     const el = e.currentTarget as HTMLInputElement
-    const id = Number(el.dataset.id);
-    const item = untrack(items)[id];
-    item.got = el.checked;
+    const index = Number(el.dataset.index);
+    const needed = untrack(getNeeded);
 
     if (e.code === 'Enter') {
-      //
-      let isLast = false;
-      let nextItemIsNotEmpty = false;
-      if (isLast) {
+      if (index === needed.length - 1) {
         addNewItem();
       }
-      else if (nextItemIsNotEmpty) {
-        // insert new between
-      } else {
+      // next is empty
+      else if (!needed[index + 1].description) {
         // move focus down
+        setFocus(f => f + 1);
+      } else {
+        // insert new between
+        setFocus(index + 1);
+        const current = needed[index];
+        const next = needed[index + 1];
+        const order = Math.floor((current.order + next.order) / 2);
+        const newItem = { description: '', order, got: false, store_id: loader().store.id }
+
+        await promisify(writeTransaction(db, "store_items").add(newItem));
+        router.invalidate();
       }
     }
     else if (e.code === 'Backspace') {
       // if val is empty, delete the item
       if (!el.value) {
         const id = Number(el.dataset.id)
-        await promisify(writeTransaction(db, "store_items").delete(id));
         setFocus(f => f - 1);
+        await promisify(writeTransaction(db, "store_items").delete(id));
+        router.invalidate();
       }
     }
     else if (e.code === 'ArrowUp') {
@@ -153,19 +162,18 @@ function RouteComponent() {
       // move focus down
       setFocus(f => f + 1);
     }
-
-    router.invalidate();
   }
 
   async function addNewItem() {
+    const lastOrder = getNeeded().at(-1)?.order ?? 0
     const item = {
       store_id: loader().store.id,
-      order: loader().items.length * 1000,
+      order: lastOrder + 1000,
       description: '',
       got: false
     } as StoreItem;
 
-    setFocus(untrack(needs).length);
+    setFocus(untrack(getNeeded).length);
 
     await promisify(writeTransaction(db, "store_items").add(item));
     router.invalidate()
@@ -195,7 +203,7 @@ function RouteComponent() {
         </details>
       </header>
       <h3 class="my-3 text-xl">Need</h3>
-      <For each={needs()}>
+      <For each={getNeeded()}>
         {(item, getIndex) =>
           <div class="flex flex-row m-2">
             <input
@@ -230,9 +238,9 @@ function RouteComponent() {
       >
         +
       </button>
-      {got().length ? <h3 class="my-3 text-xl">Got</h3> : null}
+      {getGot().length ? <h3 class="my-3 text-xl">Got</h3> : null}
       <div>
-        <For each={got()}>
+        <For each={getGot()}>
           {(item) =>
             <div class="flex flex-row m-2">
               <input
