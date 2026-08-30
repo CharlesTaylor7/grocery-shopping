@@ -45,17 +45,18 @@ function RootComponent() {
     <div>
       <header class="bg-base-200 p-3 text-sm flex flex-row justify-between w-full">
         <div class="flex items-center justify-between w-full">
-          <span>
-            Greetings Traveler
-          </span>
           <nav class="tabs items-center">
-            <Link to="/" class="tab">
-              Home
-            </Link>
             <Link to="/stores" class="tab">
               Stores
             </Link>
+            <Link to="/" class="tab">
+              Home
+            </Link>
           </nav>
+
+          <span>
+            Greetings Traveler
+          </span>
         </div>
       </header>
       <main class="p-3 overflow-y-scroll overflow-x-hidden">
