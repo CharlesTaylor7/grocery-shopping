@@ -6,7 +6,6 @@ const router = createRouter({
   routeTree,
   history: createHashHistory(),
   scrollRestoration: true,
-  defaultViewTransition: true,
   defaultErrorComponent: ErrorComponent,
   defaultPendingComponent: () => "the suspense is killing me...",
   // Show spinner if it takes more than 200ms

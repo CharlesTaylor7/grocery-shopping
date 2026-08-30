@@ -54,6 +54,7 @@ function RouteComponent() {
           {(s) =>
             <Link
               class="btn btn-ghost"
+              viewTransition
               to="/store/$storeId"
               params={{ storeId: s.id.toString() }}
             >

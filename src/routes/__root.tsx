@@ -46,10 +46,10 @@ function RootComponent() {
       <header class="bg-base-200 p-3 text-sm flex flex-row justify-between w-full">
         <div class="flex items-center justify-between w-full">
           <nav class="tabs items-center">
-            <Link to="/stores" class="tab">
+            <Link viewTransition to="/stores" class="tab">
               Stores
             </Link>
-            <Link to="/" class="tab">
+            <Link viewTransition to="/" class="tab">
               Home
             </Link>
           </nav>
