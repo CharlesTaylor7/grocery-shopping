@@ -1,10 +1,9 @@
 import { openIndexedDb } from "@/indexed-db";
-import { createRootRoute, ErrorComponent, Link, Outlet } from "@tanstack/solid-router";
+import { createRootRoute, Link, Outlet } from "@tanstack/solid-router";
 import { Notyf } from "notyf";
 
 export const Route = createRootRoute({
   component: RootComponent,
-  errorComponent: ErrorComponent,
   async beforeLoad() {
     const db = await openIndexedDb();
     return ({ db });

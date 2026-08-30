@@ -1,7 +1,10 @@
+
+import { DragDropManager } from '@dnd-kit/dom';
+import { Sortable } from '@dnd-kit/dom/sortable';
 import { promisify, readTransaction, writeTransaction } from '@/indexed-db';
 import { Store, StoreItem } from '@/migrate';
 import { createFileRoute, useNavigate, useRouter } from '@tanstack/solid-router'
-import { For, onSettled, createEffect, createMemo, createSignal, untrack } from 'solid-js';
+import { For, onSettled, createEffect, createMemo, createSignal, untrack, onCleanup } from 'solid-js';
 import { Temporal } from "temporal-polyfill";
 
 export const Route = createFileRoute("/store/$storeId")({
@@ -25,20 +28,6 @@ export const Route = createFileRoute("/store/$storeId")({
     })
   }
 });
-
-function Grip() {
-  let isDragging = false; // fixme
-  return (
-    <div
-      class={`px-4 ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
-      style={{
-        "touch-action": "none",
-      }}
-    >
-      <img src={`${import.meta.env.BASE_URL}grip-bars.svg`} />
-    </div>
-  );
-}
 
 
 function RouteComponent() {
@@ -179,6 +168,22 @@ function RouteComponent() {
     router.invalidate()
   }
 
+  const manager = new DragDropManager();
+  onCleanup(() => manager.destroy());
+
+  function registerDndRef(element: HTMLElement) {
+    onSettled(() => {
+      const index = Number(element.dataset.index);
+      const item = untrack(getNeeded)[index]
+      const sortable = new Sortable({
+        id: item.id,
+        index,
+        element,
+        handle: element.querySelector('[data-role="grip"]')!,
+      }, manager);
+    });
+  }
+
   return (
     <div>
       <header class="relative flex items-center justify-center w-full">
@@ -205,7 +210,11 @@ function RouteComponent() {
       <h3 class="my-3 text-xl">Need</h3>
       <For each={getNeeded()}>
         {(item, getIndex) =>
-          <div class="flex flex-row m-2">
+          <div
+            ref={registerDndRef}
+            data-index={getIndex()}
+            data-order={item.order}
+            class="flex flex-row m-2">
             <input
               data-id={item.id}
               tabindex={-1}
@@ -225,9 +234,15 @@ function RouteComponent() {
               onKeyDown={handleKeydown}
               onChange={handleTextbox}
             />
-
-            {/* grip bars */}
-            <Grip />
+            <div
+              data-role="grip"
+              class="px-4 cursor-grab"
+              style={{
+                "touch-action": "none",
+              }}
+            >
+              <img src={`${import.meta.env.BASE_URL}grip-bars.svg`} />
+            </div>
           </div>
         }
       </For>
