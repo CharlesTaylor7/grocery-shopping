@@ -2,13 +2,82 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Groceries</title>
     <link rel="manifest" href="/manifest.json" />
+    <link rel="stylesheet" href="/src/styles.css" />
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-    </html>
+    <div>
+      <header class="bg-base-200 p-3 text-sm flex flex-row justify-between w-full">
+        <div class="flex items-center justify-between w-full">
+          <nav class="tabs items-center">
+            <a href="/#/stores" class="tab">
+              Stores
+            </a>
+            <a href="/#/" class="tab">
+              Home
+            </a>
+          </nav>
+          <span>
+            Greetings Traveler
+          </span>
+        </div>
+      </header>
+      <main class="p-3 overflow-y-scroll overflow-x-hidden">
+        <div id="root" />
+      </main>
+    </div>
+    <script type="module">
+      window.addEventListener('click', event => {
+
+        if (event.target.href) {
+          event.preventDefault();
+          const target = event.target.getAttribute('href');
+history.pushState(null, '', `${import.meta.env.BASE_URL}${target}`); 
+        }
+      });
+      window.addEventListener('hashchange', event => {
+event.preventDefault();
+          console.log(event);
+      });
+    </script>
+  </body>
+  <template id="template-store-items">
+  </template>
+  <template id="template-stores">
+    <div>
+      <input
+        type="text"
+        name="name"
+        id="name"
+        placeholder="Store Name"
+              />
+      <button
+        disabled
+        type="button"
+        class="btn btn-primary"
+      >
+        + New Store
+      </button>
+      <div class="flex flex-col items-start">
+        <slot each={loader().stores}>
+          {(s) =>
+            <a
+              class="btn btn-ghost"
+              viewTransition
+              to="/store/$storeId"
+              params={{ storeId: s.id.toString() }}
+            >
+              <h2>
+                {s.name}
+              </h2>
+            </a>
+          }
+        </slot>
+      </div>
+    </div>
+  </template>
+</html>

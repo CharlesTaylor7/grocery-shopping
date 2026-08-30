@@ -2,27 +2,69 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/grocery-vanilla/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Groceries</title>
-    <link rel="manifest" href="/grocery-v2/manifest.json" />
-    <script type="module" crossorigin src="/grocery-v2/assets/index-BWEsO8Uj.js"></script>
-    <link rel="modulepreload" crossorigin href="/grocery-v2/assets/@better-auth/core-DtoPsd78.js">
-    <link rel="modulepreload" crossorigin href="/grocery-v2/assets/@better-fetch/fetch-B4NYSDnl.js">
-    <link rel="modulepreload" crossorigin href="/grocery-v2/assets/@neondatabase/auth-1P38V69J.js">
-    <link rel="modulepreload" crossorigin href="/grocery-v2/assets/@solidjs/signals-Ckwt8Og4.js">
-    <link rel="modulepreload" crossorigin href="/grocery-v2/assets/@solidjs/web-tMMZ5uIY.js">
-    <link rel="modulepreload" crossorigin href="/grocery-v2/assets/@tanstack/history-Dlc5q7Fh.js">
-    <link rel="modulepreload" crossorigin href="/grocery-v2/assets/@tanstack/router-core-XO3LGjqP.js">
-    <link rel="modulepreload" crossorigin href="/grocery-v2/assets/@tanstack/solid-router-pdioD-jW.js">
-    <link rel="modulepreload" crossorigin href="/grocery-v2/assets/notyf-nqSa4uZf.js">
-    <link rel="modulepreload" crossorigin href="/grocery-v2/assets/@dnd-kit/abstract-E7sdhiyw.js">
-    <link rel="modulepreload" crossorigin href="/grocery-v2/assets/@dnd-kit/collision-DnpnoUrC.js">
-    <link rel="modulepreload" crossorigin href="/grocery-v2/assets/@dnd-kit/dom-DNsmXVvQ.js">
-    <link rel="stylesheet" crossorigin href="/grocery-v2/assets/notyf-Do1evuyz.css">
-    <link rel="stylesheet" crossorigin href="/grocery-v2/assets/index-CVnDo_Hz.css">
+    <link rel="manifest" href="/grocery-vanilla/manifest.json" />
+    <script type="module" crossorigin src="/grocery-vanilla/assets/index-B1Ewt692.js"></script>
+    <link rel="stylesheet" crossorigin href="/grocery-vanilla/assets/index-CVnDo_Hz.css">
   </head>
   <body>
-    <div id="root"></div>
-    </html>
+    <div>
+      <header class="bg-base-200 p-3 text-sm flex flex-row justify-between w-full">
+        <div class="flex items-center justify-between w-full">
+          <nav class="tabs items-center">
+            <a href="%VITE_BASE_URL%#/stores" class="tab">
+              Stores
+            </a>
+            <a href="%VITE_BASE_URL%#/" class="tab">
+              Home
+            </a>
+          </nav>
+          <span>
+            Greetings Traveler
+          </span>
+        </div>
+      </header>
+      <main class="p-3 overflow-y-scroll overflow-x-hidden">
+        <div id="root" />
+      </main>
+    </div>
+  </body>
+  <template id="template-store-items">
+  </template>
+  <template id="template-stores">
+    <div>
+      <input
+        type="text"
+        name="name"
+        id="name"
+        placeholder="Store Name"
+              />
+      <button
+        disabled
+        type="button"
+        class="btn btn-primary"
+      >
+        + New Store
+      </button>
+      <div class="flex flex-col items-start">
+        <slot each={loader().stores}>
+          {(s) =>
+            <a
+              class="btn btn-ghost"
+              viewTransition
+              to="/store/$storeId"
+              params={{ storeId: s.id.toString() }}
+            >
+              <h2>
+                {s.name}
+              </h2>
+            </a>
+          }
+        </slot>
+      </div>
+    </div>
+  </template>
+</html>

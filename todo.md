@@ -1,7 +1,7 @@
 # Todo
-- [x] stores page
-- [x] store items page
-- [ ] Import previous stores and items
+- [x] setup shop
+- [x] Import previous stores and items
+- [ ] SPA like hash Navigation
 
 # bits
 - [ ] bouncing dvd logo
