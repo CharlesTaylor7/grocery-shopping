@@ -1,10 +1,11 @@
 import { DragDropManager } from '@dnd-kit/dom';
-import { isSortable, Sortable } from '@dnd-kit/dom/sortable';
+import { isSortable, Sortable, OptimisticSortingPlugin } from '@dnd-kit/dom/sortable';
 import { promisify, readTransaction, writeTransaction } from '@/indexed-db';
 import { Store, StoreItem } from '@/migrate';
 import { createFileRoute, useNavigate, useRouter } from '@tanstack/solid-router'
 import { For, onSettled, createEffect, createMemo, createSignal, untrack, onCleanup } from 'solid-js';
 import { ago } from '@/lib/dates';
+
 
 export const Route = createFileRoute("/store/$storeId")({
   component: RouteComponent,
@@ -142,6 +143,9 @@ function RouteComponent() {
   }
 
   const manager = new DragDropManager();
+
+
+
   manager.monitor.addEventListener('dragend', event => {
     if (!isSortable(event.operation.source)) return
 
@@ -150,6 +154,7 @@ function RouteComponent() {
     const edits: DndEdit[] = [];
     const needed = untrack(getNeeded);
     const activeItem = needed[oldIndex];
+    const targetItem = needed.at(newIndex);
     if (newIndex === 0) {
       const order = needed[0].order - 1000;
       edits.push({ item: activeItem, order });
@@ -158,8 +163,12 @@ function RouteComponent() {
       edits.push({ item: activeItem, order });
     }
     else if (newIndex > oldIndex) {
+      if (!targetItem) {
+        console.warn("newIndex doesn't exist", { oldIndex, newIndex });
+        return;
+      }
       const adjacentIndex = newIndex + 1;
-      const targetOrder = needed[newIndex].order;
+      const targetOrder = targetItem.order;
       const adjacentOrder = needed[adjacentIndex].order;
       let order = Math.ceil((targetOrder + adjacentOrder) / 2);
       edits.push({ item: activeItem, order });
@@ -174,8 +183,12 @@ function RouteComponent() {
       }
     }
     else if (newIndex < oldIndex) {
+      if (!targetItem) {
+        console.warn("newIndex doesn't exist", { oldIndex, newIndex });
+        return;
+      }
       const adjacentIndex = newIndex - 1;
-      const targetOrder = needed[newIndex].order;
+      const targetOrder = targetItem.order;
       const adjacentOrder = needed[adjacentIndex].order;
       let order = Math.floor((targetOrder + adjacentOrder) / 2);
       edits.push({ item: activeItem, order });
@@ -194,8 +207,10 @@ function RouteComponent() {
       .catch(e => {
         console.error(e);
         // reset if failure
-        router.invalidate();
-      })
+      }).finally(() => {
+        // i hate to do this, but I gotta to make the optimistic thing actually work
+        setTimeout(() => router.invalidate(), 500);
+      });
   })
   onCleanup(() => manager.destroy());
 
@@ -207,6 +222,7 @@ function RouteComponent() {
         id: item.id,
         index,
         element,
+        plugins: [OptimisticSortingPlugin],
         handle: element.querySelector('[data-role="grip"]')!,
       }, manager);
     });
@@ -242,7 +258,6 @@ function RouteComponent() {
           <div
             ref={registerDndRef}
             data-index={getIndex()}
-            data-order={item.order}
             class="flex flex-row m-2">
             <input
               data-id={item.id}

@@ -164,14 +164,10 @@ function RouteComponent$2() {
 	var _el$8 = _el$6.nextSibling;
 	_el$8.firstChild;
 	insert(_el$, createComponent(NyanCatButton, {}), _el$2.nextSibling);
-	insert(_el$6, () => {
-		return "2026-08-30 at 11:53am";
-	}, null);
+	insert(_el$6, () => {}, null);
 	claimElement(_el$8);
-	insert(_el$8, () => {
-		return "\x1B[38;5;4m00b5d8cae749\x1B[39m";
-	}, null);
-	effect(() => `https://github.com/charlestaylor7/grocery-shopping/commit/[38;5;4m00b5d8cae749[39m}`, (_v$) => {
+	insert(_el$8, () => {}, null);
+	effect(() => `https://github.com/charlestaylor7/grocery-shopping/commit/undefined}`, (_v$) => {
 		setAttribute(_el$8, "href", _v$);
 	});
 	return _el$;
