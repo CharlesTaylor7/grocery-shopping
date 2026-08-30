@@ -1,10 +1,10 @@
-let status = git status --porcelain
-if ($status | is-not-empty) {
-    print $status
-    exit
+let status = jj log -r '@' -T 'empty' --no-graph
+if ($status | str contains 'false') {
+  jj status
+  exit
 }
 let build_time = date now | format date "%Y-%m-%d at %l:%M%P"
-let commit = git rev-parse --short HEAD
+let commit = jj log -r @- -T 'commit_id.short()' --no-graph 
 
 with-env { 
   VITE_BUILD_TIME: $build_time
@@ -14,14 +14,14 @@ with-env {
 }
 
 jj ci -m $"Build: ($build_time)"
-jj bookmark set -r @- main
+jj bookmark move --allow-backwards -t @- v2 
 
 ## builds with deployment of docs folder
-jj git push
+jj git push --remote v2 --bookmark v2
 
 sleep 1sec
 
 ## watch it
 gh run watch
 
-print "Live at https://charlestaylor7.github.io/grocery-shopping"
+print "Live at https://charlestaylor7.github.io/grocery-v2"
