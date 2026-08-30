@@ -1,18 +1,19 @@
 import { defineConfig } from "vite";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
-import solid from '@solidjs/vite-plugin'
+import micro from "./micro/vite-plugin";
 
 export default defineConfig({
   plugins: [
+    // fixme: need a new tanstack adapter to use my own framework
     tanstackRouter({
-      target: "solid",
+      target: "micro",
       autoCodeSpliting: true,
     }),
-    solid(),
+    micro(),
     tailwindcss(),
   ],
-  base: "/grocery-v2/",
+  base: "/grocery-v3/",
   resolve: {
     tsconfigPaths: true,
   },
