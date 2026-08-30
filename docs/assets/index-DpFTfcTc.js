@@ -4,7 +4,6 @@ import { n as createHashHistory } from "./@tanstack/history-Dlc5q7Fh.js";
 import { a as createRootRoute, c as Link, i as createFileRoute, l as useRouter, n as createRouter, o as useRouteContext, r as Outlet, s as useNavigate, t as RouterProvider } from "./@tanstack/solid-router-pdioD-jW.js";
 import { t as Notyf } from "./notyf-nqSa4uZf.js";
 import { n as isSortable, r as DragDropManager, t as Sortable2 } from "./@dnd-kit/dom-CJRwXF72.js";
-import { t as Temporal } from "./temporal-polyfill-BWhQZoCs.js";
 
 //#region \0vite/modulepreload-polyfill.js
 (function polyfill() {
@@ -165,10 +164,14 @@ function RouteComponent$2() {
 	var _el$8 = _el$6.nextSibling;
 	_el$8.firstChild;
 	insert(_el$, createComponent(NyanCatButton, {}), _el$2.nextSibling);
-	insert(_el$6, () => {}, null);
+	insert(_el$6, () => {
+		return "2026-08-30 at 11:53am";
+	}, null);
 	claimElement(_el$8);
-	insert(_el$8, () => {}, null);
-	effect(() => `https://github.com/charlestaylor7/grocery-shopping/commit/undefined}`, (_v$) => {
+	insert(_el$8, () => {
+		return "\x1B[38;5;4m00b5d8cae749\x1B[39m";
+	}, null);
+	effect(() => `https://github.com/charlestaylor7/grocery-shopping/commit/[38;5;4m00b5d8cae749[39m}`, (_v$) => {
 		setAttribute(_el$8, "href", _v$);
 	});
 	return _el$;
@@ -239,6 +242,21 @@ delegateEvents([
 ]);
 
 //#endregion
+//#region src/lib/dates.ts
+function toStartOfDay(date) {
+	return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+var MS_PER_DAY = 864e5;
+function ago(time) {
+	if (!(time instanceof Date)) return "?";
+	const startOfItemDate = toStartOfDay(time);
+	const startOfNow = toStartOfDay(time);
+	const diffInDays = Math.round((startOfNow.getTime() - startOfItemDate.getTime()) / MS_PER_DAY);
+	if (diffInDays <= 0) return "today";
+	return `${diffInDays}d ago`;
+}
+
+//#endregion
 //#region src/routes/store/$storeId.tsx
 var _tmpl$$1 = /* @__PURE__ */ template(`<div><header class="relative flex items-center justify-center w-full"><h2 class="text-center underline"></h2><details class="dropdown dropdown-end absolute right-0"><summary class="btn m-1"><img alt=settings></summary><ul class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"><li><button class="btn btn-error">Delete</button></li></ul></details></header><h3 class="my-3 text-xl">Need</h3><button type=button class="btn btn-ghost w-100">+</button><!><!>`);
 var _tmpl$2 = /* @__PURE__ */ template(`<div class="flex flex-row m-2"><input tabindex=-1 type=checkbox class="checkbox p-2"><input type=text class="w-80 mx-2 outline-hidden"><div data-role=grip class="px-4 cursor-grab"style=touch-action:none><img>`);
@@ -249,12 +267,9 @@ var Route = createFileRoute("/store/$storeId")({
 	remountDeps: ({ params }) => params.storeId,
 	async loader({ params, context }) {
 		const storeId = Number(params.storeId);
-		const store = await promisify(readTransaction(context.db, "stores").get(storeId));
-		const items = await promisify(readTransaction(context.db, "store_items").index("store_id").getAll(Number(params.storeId)));
 		return {
-			now: toPlainDate(/* @__PURE__ */ new Date()),
-			store,
-			items
+			store: await promisify(readTransaction(context.db, "stores").get(storeId)),
+			items: await promisify(readTransaction(context.db, "store_items").index("store_id").getAll(Number(params.storeId)))
 		};
 	}
 });
@@ -268,7 +283,6 @@ function RouteComponent() {
 	const getItemMap = createMemo(() => Object.fromEntries(loader().items.map((item) => [item.id, item])));
 	const getNeeded = createMemo(() => loader().items.filter((item) => !item.got).toSorted((a, b) => a.order - b.order));
 	const getGot = createMemo(() => loader().items.filter((item) => item.got).toSorted((a, b) => a.description.toLowerCase().localeCompare(b.description.toLowerCase())));
-	const now = () => loader().now;
 	async function onDelete() {
 		const storeId = loader().store.id;
 		await promisify(writeTransaction(db, "stores").delete(storeId));
@@ -487,7 +501,7 @@ function RouteComponent() {
 			var _el$23 = _el$22.nextSibling;
 			_el$21.addEventListener("change", handleCheckbox);
 			insert(_el$23, () => {
-				return ago(item, now());
+				return ago(item.last_got_at);
 			});
 			effect(() => {
 				return {
@@ -509,15 +523,6 @@ function RouteComponent() {
 		setAttribute(_el$6, "src", _v$);
 	});
 	return _el$;
-}
-function toPlainDate(date) {
-	return new Temporal.PlainDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
-}
-function ago(item, now) {
-	if (typeof item.last_got_at !== "object") return "?";
-	const duration = now.since(toPlainDate(item.last_got_at));
-	if (duration.days === 0) return "today";
-	return `${duration.days}d ago`;
 }
 function useFocus() {
 	const [getFocus, setFocus] = createSignal(-1);
