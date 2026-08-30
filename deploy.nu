@@ -20,8 +20,3 @@ jj bookmark move --allow-backwards -t @- v2
 jj git push --remote v2 --bookmark v2
 
 sleep 1sec
-
-## watch it
-gh run watch
-
-print "Live at https://charlestaylor7.github.io/grocery-v2"
