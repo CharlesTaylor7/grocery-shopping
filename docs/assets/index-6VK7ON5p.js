@@ -148,7 +148,7 @@ function promisify(request) {
 
 //#endregion
 //#region src/routes/__root.tsx
-var _tmpl$$5 = /* @__PURE__ */ template(`<div><header class="bg-base-200 p-3 text-sm flex flex-row justify-between w-full"><div class="flex items-center justify-between w-full"><span>Greetings Traveler</span><nav class="tabs items-center"><!><!></nav></div></header><main class="p-3 overflow-y-scroll overflow-x-hidden">`);
+var _tmpl$$5 = /* @__PURE__ */ template(`<div><header class="bg-base-200 p-3 text-sm flex flex-row justify-between w-full"><div class="flex items-center justify-between w-full"><nav class="tabs items-center"><!><!></nav><span>Greetings Traveler</span></div></header><main class="p-3 overflow-y-scroll overflow-x-hidden">`);
 var Route$3 = createRootRoute({
 	component: RootComponent,
 	async beforeLoad() {
@@ -182,21 +182,21 @@ var Route$3 = createRootRoute({
 function RootComponent() {
 	var _el$ = _tmpl$$5();
 	var _el$2 = _el$.firstChild;
-	var _el$5 = _el$2.firstChild.firstChild.nextSibling;
-	var _el$6 = _el$5.firstChild;
-	var _el$7 = _el$6.nextSibling;
-	var _el$8 = _el$2.nextSibling;
-	insert(_el$5, createComponent(Link, {
+	var _el$4 = _el$2.firstChild.firstChild;
+	var _el$5 = _el$4.firstChild;
+	var _el$6 = _el$5.nextSibling;
+	var _el$7 = _el$2.nextSibling;
+	insert(_el$4, createComponent(Link, {
+		to: "/stores",
+		class: "tab",
+		children: "Stores"
+	}), _el$5);
+	insert(_el$4, createComponent(Link, {
 		to: "/",
 		class: "tab",
 		children: "Home"
 	}), _el$6);
-	insert(_el$5, createComponent(Link, {
-		to: "/stores",
-		class: "tab",
-		children: "Stores"
-	}), _el$7);
-	insert(_el$8, createComponent(Outlet, {}));
+	insert(_el$7, createComponent(Outlet, {}));
 	return _el$;
 }
 
@@ -227,13 +227,13 @@ function RouteComponent$2() {
 	_el$8.firstChild;
 	insert(_el$, createComponent(NyanCatButton, {}), _el$2.nextSibling);
 	insert(_el$6, () => {
-		return "2026-08-30 at  2:01pm";
+		return "2026-08-30 at  2:08pm";
 	}, null);
 	claimElement(_el$8);
 	insert(_el$8, () => {
-		return "\x1B[38;5;4mcdff859e9dc1\x1B[39m";
+		return "\x1B[38;5;4mb9a75f334217\x1B[39m";
 	}, null);
-	effect(() => `https://github.com/charlestaylor7/grocery-shopping/commit/[38;5;4mcdff859e9dc1[39m}`, (_v$) => {
+	effect(() => `https://github.com/charlestaylor7/grocery-shopping/commit/[38;5;4mb9a75f334217[39m}`, (_v$) => {
 		setAttribute(_el$8, "href", _v$);
 	});
 	return _el$;
