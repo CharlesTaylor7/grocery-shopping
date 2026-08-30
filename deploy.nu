@@ -18,5 +18,3 @@ jj bookmark move --allow-backwards -t @- v2
 
 ## builds with deployment of docs folder
 jj git push --remote v2 --bookmark v2
-
-sleep 1sec
