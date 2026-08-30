@@ -32,15 +32,15 @@
     </div>
     <script type="module">
       window.addEventListener('click', event => {
-
+        console.log(location.hash);
         if (event.target.href) {
           event.preventDefault();
           const target = event.target.getAttribute('href');
-history.pushState(null, '', `${import.meta.env.BASE_URL}${target}`); 
+          history.pushState(null, '', `${import.meta.env.BASE_URL}${target}`); 
         }
       });
       window.addEventListener('hashchange', event => {
-event.preventDefault();
+          event.preventDefault();
           console.log(event);
       });
     </script>
