@@ -42,12 +42,12 @@ function RouteComponent() {
   );
 
   const getNeeded = createMemo(() =>
-    loader().items.filter(item => !item.got)
+    loader().items.filter(item => !item.last_got_at)
       .toSorted((a, b) => a.order - b.order)
   );
 
   const getGot = createMemo(() =>
-    loader().items.filter(item => item.got)
+    loader().items.filter(item => item.last_got_at)
       .toSorted((a, b) => a.description.toLowerCase().localeCompare(b.description.toLowerCase()))
 
   );
@@ -62,8 +62,7 @@ function RouteComponent() {
     const el = e.currentTarget as HTMLInputElement
     const id = Number(el.dataset.id);
     const item = untrack(getItemMap)[id];
-    item.got = el.checked;
-    item.last_got_at = new Date();
+    item.last_got_at = item.last_got_at ? null : new Date();
     await promisify(writeTransaction(db, "store_items").put(item));
     document.startViewTransition(() => {
       router.invalidate();
@@ -98,7 +97,7 @@ function RouteComponent() {
         const current = needed[index];
         const next = needed[index + 1];
         const order = Math.floor((current.order + next.order) / 2);
-        const newItem = { description: '', order, got: false, store_id: loader().store.id }
+        const newItem = { description: '', order, store_id: loader().store.id }
 
         await promisify(writeTransaction(db, "store_items").add(newItem));
         router.invalidate();
@@ -131,7 +130,6 @@ function RouteComponent() {
       store_id: loader().store.id,
       order: lastOrder + 1000,
       description: '',
-      got: false
     } as StoreItem;
 
     focus.set(untrack(getNeeded).length);
@@ -264,7 +262,7 @@ function RouteComponent() {
               tabindex={-1}
               type="checkbox"
               class="checkbox p-2"
-              checked={item.got}
+              checked={!!item.last_got_at}
               onChange={handleCheckbox}
             />
             <input
@@ -306,7 +304,7 @@ function RouteComponent() {
               tabindex={-1}
               type="checkbox"
               class="checkbox p-2 "
-              checked={item.got}
+              checked={!!item.last_got_at}
               onChange={handleCheckbox}
             />
             <input

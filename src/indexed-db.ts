@@ -1,4 +1,4 @@
-import { SCHEMA, migrate, VERSION, TableName } from "@/migrate.ts";
+import { SCHEMA, migrate, VERSION, TableName, NeonDataExport } from "@/migrate.ts";
 
 
 type ReadonlyObjectStore = Omit<
@@ -20,7 +20,7 @@ export function writeTransaction(
   return db.transaction(store, "readwrite").objectStore(store);
 }
 
-export function openIndexedDb(): Promise<IDBDatabase> {
+export function openIndexedDb(neon: NeonDataExport): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(SCHEMA, VERSION);
     request.onerror = () => {
@@ -34,7 +34,7 @@ export function openIndexedDb(): Promise<IDBDatabase> {
       resolve(db);
     };
     request.onupgradeneeded = (event) => {
-      migrate(event, request.result, request.transaction!);
+      migrate(event, request.result, request.transaction!, neon!);
     };
   });
 }

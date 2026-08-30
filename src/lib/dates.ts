@@ -11,10 +11,11 @@ export function ago(time: Date | undefined | null): string {
 
 
   const startOfItemDate = toStartOfDay(time);
-  const startOfNow = toStartOfDay(time);
+  const startOfNow = toStartOfDay(new Date());
 
   // round for DST
   const diffInDays = Math.round((startOfNow.getTime() - startOfItemDate.getTime()) / MS_PER_DAY);
+
   if (diffInDays <= 0) return "today";
   return `${diffInDays}d ago`;
 }

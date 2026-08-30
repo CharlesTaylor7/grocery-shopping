@@ -1,11 +1,13 @@
 import { openIndexedDb } from "@/indexed-db";
+import { exportNeonData } from "@/migrate";
 import { createRootRoute, Link, Outlet } from "@tanstack/solid-router";
 import { Notyf } from "notyf";
 
 export const Route = createRootRoute({
   component: RootComponent,
   async beforeLoad() {
-    const db = await openIndexedDb();
+    const neon = await exportNeonData();
+    const db = await openIndexedDb(neon);
     return ({ db });
   },
   context() {

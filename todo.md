@@ -1,6 +1,7 @@
 # Todo
-- [] stores page
-- [] store items page
+- [x] stores page
+- [x] store items page
+- [ ] Import previous stores and items
 
 # bits
 - [ ] bouncing dvd logo
