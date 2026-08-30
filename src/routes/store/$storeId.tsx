@@ -1,6 +1,6 @@
 
 import { DragDropManager } from '@dnd-kit/dom';
-import { Sortable } from '@dnd-kit/dom/sortable';
+import { isSortable, Sortable } from '@dnd-kit/dom/sortable';
 import { promisify, readTransaction, writeTransaction } from '@/indexed-db';
 import { Store, StoreItem } from '@/migrate';
 import { createFileRoute, useNavigate, useRouter } from '@tanstack/solid-router'
@@ -36,29 +36,7 @@ function RouteComponent() {
   const db = untrack(context).db;
   const navigate = useNavigate();
   const router = useRouter();
-  const [getFocus, setFocus] = createSignal(-1);
-
-  createEffect(
-    getFocus,
-    (focus) => {
-      const el = document.querySelector(`[data-index="${focus}"][type="text"`) as HTMLElement;
-
-      if (el) {
-        el.focus();
-      }
-    }
-  );
-
-  // we need the ref callback for newly created items
-  // we need the effect for focusing existing items
-  function textInputRef(el: HTMLInputElement) {
-    const focus = untrack(getFocus);
-    onSettled(() => {
-      if (focus.toString() === el.dataset.index) {
-        el.focus()
-      }
-    });
-  }
+  const focus = useFocus();
 
   const getItemMap = createMemo(() =>
     Object.fromEntries(loader().items.map(item => [item.id, item]))
@@ -73,18 +51,11 @@ function RouteComponent() {
     loader().items.filter(item => item.got)
   );
   const now = () => loader().now;
-
   async function onDelete() {
     const storeId = loader().store.id;
     await promisify(writeTransaction(db, "stores").delete(storeId));
 
     navigate({ to: "/stores" });
-  }
-
-  async function handleFocus(e: Event) {
-    const el = e.currentTarget as HTMLInputElement
-    const index = Number(el.dataset.index);
-    setFocus(index);
   }
 
   async function handleCheckbox(e: Event) {
@@ -120,10 +91,10 @@ function RouteComponent() {
       // next is empty
       else if (!needed[index + 1].description) {
         // move focus down
-        setFocus(f => f + 1);
+        focus.set(f => f + 1);
       } else {
         // insert new between
-        setFocus(index + 1);
+        focus.set(index + 1);
         const current = needed[index];
         const next = needed[index + 1];
         const order = Math.floor((current.order + next.order) / 2);
@@ -137,19 +108,19 @@ function RouteComponent() {
       // if val is empty, delete the item
       if (!el.value) {
         const id = Number(el.dataset.id)
-        setFocus(f => f - 1);
+        focus.set(f => f - 1);
         await promisify(writeTransaction(db, "store_items").delete(id));
         router.invalidate();
       }
     }
     else if (e.code === 'ArrowUp') {
       // move focus up
-      setFocus(f => f - 1);
+      focus.set(f => f - 1);
     }
 
     else if (e.code === 'ArrowDown') {
       // move focus down
-      setFocus(f => f + 1);
+      focus.set(f => f + 1);
     }
   }
 
@@ -162,13 +133,18 @@ function RouteComponent() {
       got: false
     } as StoreItem;
 
-    setFocus(untrack(getNeeded).length);
+    focus.set(untrack(getNeeded).length);
 
     await promisify(writeTransaction(db, "store_items").add(item));
     router.invalidate()
   }
 
   const manager = new DragDropManager();
+  manager.monitor.addEventListener('dragend', event => {
+    if (isSortable(event.operation.source)) {
+      const { initialIndex, index } = event.operation.source;
+    }
+  })
   onCleanup(() => manager.destroy());
 
   function registerDndRef(element: HTMLElement) {
@@ -183,6 +159,7 @@ function RouteComponent() {
       }, manager);
     });
   }
+
 
   return (
     <div>
@@ -226,11 +203,11 @@ function RouteComponent() {
             <input
               data-id={item.id}
               data-index={getIndex()}
-              ref={textInputRef}
+              ref={focus.callbackRef}
               type="text"
               class="w-80 mx-2 outline-hidden"
               value={item.description}
-              onFocus={handleFocus}
+              onFocus={focus.eventHandler}
               onKeyDown={handleKeydown}
               onChange={handleTextbox}
             />
@@ -301,3 +278,40 @@ function ago(item: StoreItem, now: Temporal.PlainDate): string {
   return `${duration.days}d ago`;
 }
 
+function useFocus() {
+  const [getFocus, setFocus] = createSignal(-1);
+
+  // we need the ref callback for newly created items
+  // we need the effect for focusing existing items
+  function callbackRef(el: HTMLInputElement) {
+    const focus = untrack(getFocus);
+    onSettled(() => {
+      if (focus.toString() === el.dataset.index) {
+        el.focus()
+      }
+    });
+  }
+  createEffect(
+    getFocus,
+    (focus) => {
+      const el = document.querySelector(`[data-index="${focus}"][type="text"`) as HTMLElement;
+
+      if (el) {
+        el.focus();
+      }
+    }
+  );
+
+  function eventHandler(e: Event) {
+    const el = e.currentTarget as HTMLInputElement
+    const index = Number(el.dataset.index);
+    setFocus(index);
+  }
+
+
+  return {
+    callbackRef,
+    eventHandler,
+    set: setFocus,
+  } as const
+}
