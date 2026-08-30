@@ -1029,4 +1029,4 @@ function createElement(tagName, is = void 0) {
 }
 
 //#endregion
-export { createSignal as C, createMemo as S, useContext as T, Switch as _, insert as a, createContext as b, render as c, template as d, Errored as f, Show as g, Match as h, effect as i, setAttribute as l, Loading as m, claimElement as n, memo as o, For as p, delegateEvents as r, ref as s, Dynamic as t, spread as u, children as v, sharedConfig as w, createEffect as x, createComponent as y };
+export { createMemo as C, useContext as E, createEffect as S, sharedConfig as T, Show as _, effect as a, createComponent as b, ref as c, spread as d, template as f, Match as g, Loading as h, delegateEvents as i, render as l, For as m, addEvent as n, insert as o, Errored as p, claimElement as r, memo as s, Dynamic as t, setAttribute as u, Switch as v, createSignal as w, createContext as x, children as y };

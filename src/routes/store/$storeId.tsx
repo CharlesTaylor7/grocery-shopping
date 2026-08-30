@@ -4,7 +4,7 @@ import { promisify, readTransaction, writeTransaction } from '@/indexed-db';
 import { Store, StoreItem } from '@/migrate';
 import { createFileRoute, useNavigate, useRouter } from '@tanstack/solid-router'
 import { For, onSettled, createEffect, createMemo, createSignal, untrack, onCleanup } from 'solid-js';
-import { Temporal } from "temporal-polyfill";
+import { ago } from '@/lib/dates';
 
 export const Route = createFileRoute("/store/$storeId")({
   component: RouteComponent,
@@ -21,7 +21,6 @@ export const Route = createFileRoute("/store/$storeId")({
     );
 
     return ({
-      now: toPlainDate(new Date()),
       store,
       items
     })
@@ -51,7 +50,6 @@ function RouteComponent() {
       .toSorted((a, b) => a.description.toLowerCase().localeCompare(b.description.toLowerCase()))
 
   );
-  const now = () => loader().now;
   async function onDelete() {
     const storeId = loader().store.id;
     await promisify(writeTransaction(db, "stores").delete(storeId));
@@ -304,7 +302,7 @@ function RouteComponent() {
               readonly
             />
             <div class="italic text-nowrap">
-              {ago(item, now())}
+              {ago(item.last_got_at)}
             </div>
           </div>
         }
@@ -313,22 +311,6 @@ function RouteComponent() {
   );
 }
 
-
-function toPlainDate(date: Date): Temporal.PlainDate {
-  return new Temporal.PlainDate(
-    date.getFullYear(),
-    date.getMonth() + 1,
-    date.getDate(),
-  );
-}
-
-function ago(item: StoreItem, now: Temporal.PlainDate): string {
-  if (typeof item.last_got_at !== "object") return "?";
-  const duration = now.since(toPlainDate(item.last_got_at));
-
-  if (duration.days === 0) return "today";
-  return `${duration.days}d ago`;
-}
 
 function useFocus() {
   const [getFocus, setFocus] = createSignal(-1);

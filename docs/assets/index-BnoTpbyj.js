@@ -1,9 +1,9 @@
 import { d as onCleanup, f as onSettled, g as untrack } from "./@solidjs/signals-Ckwt8Og4.js";
-import { C as createSignal, S as createMemo, a as insert, c as render, d as template, i as effect, l as setAttribute, n as claimElement, o as memo, p as For, r as delegateEvents, s as ref, x as createEffect, y as createComponent } from "./@solidjs/web-uq8NbHI_.js";
+import { C as createMemo, S as createEffect, a as effect, b as createComponent, c as ref, f as template, i as delegateEvents, l as render, m as For, n as addEvent, o as insert, r as claimElement, s as memo, u as setAttribute, w as createSignal } from "./@solidjs/web-tMMZ5uIY.js";
 import { n as createHashHistory } from "./@tanstack/history-Dlc5q7Fh.js";
-import { a as createRootRoute, c as Link, i as createFileRoute, l as useRouter, n as createRouter, o as useRouteContext, r as Outlet, s as useNavigate, t as RouterProvider } from "./@tanstack/solid-router-CtuAE5F3.js";
+import { a as createRootRoute, c as Link, i as createFileRoute, l as useRouter, n as createRouter, o as useRouteContext, r as Outlet, s as useNavigate, t as RouterProvider } from "./@tanstack/solid-router-pdioD-jW.js";
 import { t as Notyf } from "./notyf-nqSa4uZf.js";
-import { n as DragDropManager, t as Sortable2 } from "./@dnd-kit/dom-BSBkHQ-y.js";
+import { n as isSortable, r as DragDropManager, t as Sortable2 } from "./@dnd-kit/dom-CJRwXF72.js";
 import { t as Temporal } from "./temporal-polyfill-BWhQZoCs.js";
 
 //#region \0vite/modulepreload-polyfill.js
@@ -165,14 +165,10 @@ function RouteComponent$2() {
 	var _el$8 = _el$6.nextSibling;
 	_el$8.firstChild;
 	insert(_el$, createComponent(NyanCatButton, {}), _el$2.nextSibling);
-	insert(_el$6, () => {
-		return "2026-08-29 at 11:18pm";
-	}, null);
+	insert(_el$6, () => {}, null);
 	claimElement(_el$8);
-	insert(_el$8, () => {
-		return "\x1B[38;5;4m73cb3c7fec30\x1B[39m";
-	}, null);
-	effect(() => `https://github.com/charlestaylor7/grocery-shopping/commit/[38;5;4m73cb3c7fec30[39m}`, (_v$) => {
+	insert(_el$8, () => {}, null);
+	effect(() => `https://github.com/charlestaylor7/grocery-shopping/commit/undefined}`, (_v$) => {
 		setAttribute(_el$8, "href", _v$);
 	});
 	return _el$;
@@ -244,7 +240,7 @@ delegateEvents([
 
 //#endregion
 //#region src/routes/store/$storeId.tsx
-var _tmpl$$1 = /* @__PURE__ */ template(`<div><header class="relative flex items-center justify-center w-full"><h2 class="text-center underline"></h2><details class="dropdown dropdown-end absolute right-0"><summary class="btn m-1"><img alt=settings></summary><ul class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"><li><button class="btn btn-error">Delete</button></li></ul></details></header><h3 class="my-3 text-xl">Need</h3><button type=button class="btn btn-ghost w-100">+</button><div>`);
+var _tmpl$$1 = /* @__PURE__ */ template(`<div><header class="relative flex items-center justify-center w-full"><h2 class="text-center underline"></h2><details class="dropdown dropdown-end absolute right-0"><summary class="btn m-1"><img alt=settings></summary><ul class="menu dropdown-content bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"><li><button class="btn btn-error">Delete</button></li></ul></details></header><h3 class="my-3 text-xl">Need</h3><button type=button class="btn btn-ghost w-100">+</button><!><!>`);
 var _tmpl$2 = /* @__PURE__ */ template(`<div class="flex flex-row m-2"><input tabindex=-1 type=checkbox class="checkbox p-2"><input type=text class="w-80 mx-2 outline-hidden"><div data-role=grip class="px-4 cursor-grab"style=touch-action:none><img>`);
 var _tmpl$3 = /* @__PURE__ */ template(`<h3 class="my-3 text-xl">Got`);
 var _tmpl$4 = /* @__PURE__ */ template(`<div class="flex flex-row m-2"><input tabindex=-1 type=checkbox class="checkbox p-2 "><input type=text class="mx-2 flex-1 outline-hidden overflow-x-hidden"readonly><div class="italic text-nowrap">`);
@@ -268,30 +264,15 @@ function RouteComponent() {
 	const db = untrack(context).db;
 	const navigate = useNavigate();
 	const router = useRouter();
-	const [getFocus, setFocus] = createSignal(-1);
-	createEffect(getFocus, (focus) => {
-		const el = document.querySelector(`[data-index="${focus}"][type="text"`);
-		if (el) el.focus();
-	});
-	function textInputRef(el) {
-		const focus = untrack(getFocus);
-		onSettled(() => {
-			if (focus.toString() === el.dataset.index) el.focus();
-		});
-	}
+	const focus = useFocus();
 	const getItemMap = createMemo(() => Object.fromEntries(loader().items.map((item) => [item.id, item])));
 	const getNeeded = createMemo(() => loader().items.filter((item) => !item.got).toSorted((a, b) => a.order - b.order));
-	const getGot = createMemo(() => loader().items.filter((item) => item.got));
+	const getGot = createMemo(() => loader().items.filter((item) => item.got).toSorted((a, b) => a.description.toLowerCase().localeCompare(b.description.toLowerCase())));
 	const now = () => loader().now;
 	async function onDelete() {
 		const storeId = loader().store.id;
 		await promisify(writeTransaction(db, "stores").delete(storeId));
 		navigate({ to: "/stores" });
-	}
-	async function handleFocus(e) {
-		const el = e.currentTarget;
-		const index = Number(el.dataset.index);
-		setFocus(index);
 	}
 	async function handleCheckbox(e) {
 		const el = e.currentTarget;
@@ -318,9 +299,9 @@ function RouteComponent() {
 		const needed = untrack(getNeeded);
 		if (e.code === "Enter") {
 			if (index === needed.length - 1) addNewItem();
-			else if (!needed[index + 1].description) setFocus((f) => f + 1);
+			else if (!needed[index + 1].description) focus.set((f) => f + 1);
 			else {
-				setFocus(index + 1);
+				focus.set(index + 1);
 				const current = needed[index];
 				const next = needed[index + 1];
 				const newItem = {
@@ -334,13 +315,14 @@ function RouteComponent() {
 			}
 		} else if (e.code === "Backspace") {
 			if (!el.value) {
+				e.preventDefault();
 				const id = Number(el.dataset.id);
-				setFocus((f) => f - 1);
+				focus.set((f) => f - 1);
 				await promisify(writeTransaction(db, "store_items").delete(id));
 				router.invalidate();
 			}
-		} else if (e.code === "ArrowUp") setFocus((f) => f - 1);
-		else if (e.code === "ArrowDown") setFocus((f) => f + 1);
+		} else if (e.code === "ArrowUp") focus.set((f) => f - 1);
+		else if (e.code === "ArrowDown") focus.set((f) => f + 1);
 	}
 	async function addNewItem() {
 		const lastOrder = getNeeded().at(-1)?.order ?? 0;
@@ -350,11 +332,69 @@ function RouteComponent() {
 			description: "",
 			got: false
 		};
-		setFocus(untrack(getNeeded).length);
+		focus.set(untrack(getNeeded).length);
 		await promisify(writeTransaction(db, "store_items").add(item));
-		router.invalidate();
+		document.startViewTransition(() => {
+			router.invalidate();
+		});
 	}
 	const manager = new DragDropManager();
+	manager.monitor.addEventListener("dragend", (event) => {
+		if (!isSortable(event.operation.source)) return;
+		const { initialIndex: oldIndex, index: newIndex } = event.operation.source;
+		const edits = [];
+		const needed = untrack(getNeeded);
+		const activeItem = needed[oldIndex];
+		if (newIndex === 0) {
+			const order = needed[0].order - 1e3;
+			edits.push({
+				item: activeItem,
+				order
+			});
+		} else if (newIndex === needed.length - 1) {
+			const order = needed.at(-1).order + 1e3;
+			edits.push({
+				item: activeItem,
+				order
+			});
+		} else if (newIndex > oldIndex) {
+			const adjacentIndex = newIndex + 1;
+			const targetOrder = needed[newIndex].order;
+			const adjacentOrder = needed[adjacentIndex].order;
+			let order = Math.ceil((targetOrder + adjacentOrder) / 2);
+			edits.push({
+				item: activeItem,
+				order
+			});
+			if (order === adjacentOrder) for (let i = adjacentIndex; i < needed.length; i++) if (needed[i].order - order < 1e3) {
+				order += 1e3;
+				edits.push({
+					item: needed[i],
+					order
+				});
+			} else break;
+		} else if (newIndex < oldIndex) {
+			const adjacentIndex = newIndex - 1;
+			const targetOrder = needed[newIndex].order;
+			const adjacentOrder = needed[adjacentIndex].order;
+			let order = Math.floor((targetOrder + adjacentOrder) / 2);
+			edits.push({
+				item: activeItem,
+				order
+			});
+			if (order === adjacentOrder) for (let i = adjacentIndex; i >= 0; i--) if (order - needed[i].order < 1e3) {
+				order -= 1e3;
+				edits.push({
+					item: needed[i],
+					order
+				});
+			} else break;
+		}
+		batchDndEdit(db, edits).catch((e) => {
+			console.error(e);
+			router.invalidate();
+		});
+	});
 	onCleanup(() => manager.destroy());
 	function registerDndRef(element) {
 		onSettled(() => {
@@ -377,6 +417,7 @@ function RouteComponent() {
 	var _el$10 = _el$2.nextSibling;
 	var _el$11 = _el$10.nextSibling;
 	var _el$12 = _el$11.nextSibling;
+	var _el$13 = _el$12.nextSibling;
 	insert(_el$3, () => {
 		return loader().store.name;
 	});
@@ -386,22 +427,22 @@ function RouteComponent() {
 			return getNeeded();
 		},
 		children: (item, getIndex) => (() => {
-			var _el$13 = _tmpl$2();
-			var _el$14 = _el$13.firstChild;
-			var _el$15 = _el$14.nextSibling;
-			var _el$17 = _el$15.nextSibling.firstChild;
+			var _el$14 = _tmpl$2();
+			var _el$15 = _el$14.firstChild;
+			var _el$16 = _el$15.nextSibling;
+			var _el$18 = _el$16.nextSibling.firstChild;
 			var _ref$ = registerDndRef;
 			typeof _ref$ === "function" || Array.isArray(_ref$) ? ref(() => {
 				return _ref$;
-			}, _el$13) : registerDndRef = _el$13;
-			_el$14.addEventListener("change", handleCheckbox);
-			_el$15.addEventListener("change", handleTextbox);
-			_el$15.$$keydown = handleKeydown;
-			_el$15.addEventListener("focus", handleFocus);
-			var _ref$2 = textInputRef;
+			}, _el$14) : registerDndRef = _el$14;
+			_el$15.addEventListener("change", handleCheckbox);
+			_el$16.addEventListener("change", handleTextbox);
+			_el$16.$$keydown = handleKeydown;
+			addEvent(_el$16, "focus", focus.eventHandler);
+			var _ref$2 = focus.callbackRef;
 			typeof _ref$2 === "function" || Array.isArray(_ref$2) ? ref(() => {
 				return _ref$2;
-			}, _el$15) : textInputRef = _el$15;
+			}, _el$16) : focus.callbackRef = _el$16;
 			effect(() => {
 				return {
 					e: getIndex(),
@@ -414,16 +455,16 @@ function RouteComponent() {
 					h: `/grocery-v2/grip-bars.svg`
 				};
 			}, ({ e, t, a, o, i, n, s, h }, _p$) => {
-				e !== _p$?.e && setAttribute(_el$13, "data-index", e);
-				t !== _p$?.t && setAttribute(_el$13, "data-order", t);
-				a !== _p$?.a && setAttribute(_el$14, "data-id", a);
-				_el$14.checked = o;
-				i !== _p$?.i && setAttribute(_el$15, "data-id", i);
-				n !== _p$?.n && setAttribute(_el$15, "data-index", n);
-				_el$15.value = s ?? "";
-				h !== _p$?.h && setAttribute(_el$17, "src", h);
+				e !== _p$?.e && setAttribute(_el$14, "data-index", e);
+				t !== _p$?.t && setAttribute(_el$14, "data-order", t);
+				a !== _p$?.a && setAttribute(_el$15, "data-id", a);
+				_el$15.checked = o;
+				i !== _p$?.i && setAttribute(_el$16, "data-id", i);
+				n !== _p$?.n && setAttribute(_el$16, "data-index", n);
+				_el$16.value = s ?? "";
+				h !== _p$?.h && setAttribute(_el$18, "src", h);
 			});
-			return _el$13;
+			return _el$14;
 		})()
 	}), _el$10.nextSibling);
 	_el$11.$$click = addNewItem;
@@ -434,18 +475,18 @@ function RouteComponent() {
 		return () => {
 			return _c$() ? _tmpl$3() : null;
 		};
-	})(), _el$11.nextSibling);
-	insert(_el$12, createComponent(For, {
+	})(), _el$12);
+	insert(_el$, createComponent(For, {
 		get each() {
 			return getGot();
 		},
 		children: (item) => (() => {
-			var _el$19 = _tmpl$4();
-			var _el$20 = _el$19.firstChild;
-			var _el$21 = _el$20.nextSibling;
+			var _el$20 = _tmpl$4();
+			var _el$21 = _el$20.firstChild;
 			var _el$22 = _el$21.nextSibling;
-			_el$20.addEventListener("change", handleCheckbox);
-			insert(_el$22, () => {
+			var _el$23 = _el$22.nextSibling;
+			_el$21.addEventListener("change", handleCheckbox);
+			insert(_el$23, () => {
 				return ago(item, now());
 			});
 			effect(() => {
@@ -456,14 +497,14 @@ function RouteComponent() {
 					o: item.description
 				};
 			}, ({ e, t, a, o }, _p$) => {
-				e !== _p$?.e && setAttribute(_el$20, "data-id", e);
-				_el$20.checked = t;
-				a !== _p$?.a && setAttribute(_el$21, "data-id", a);
-				_el$21.value = o ?? "";
+				e !== _p$?.e && setAttribute(_el$21, "data-id", e);
+				_el$21.checked = t;
+				a !== _p$?.a && setAttribute(_el$22, "data-id", a);
+				_el$22.value = o ?? "";
 			});
-			return _el$19;
+			return _el$20;
 		})()
-	}));
+	}), _el$13);
 	effect(() => `/grocery-v2/wrench.svg`, (_v$) => {
 		setAttribute(_el$6, "src", _v$);
 	});
@@ -477,6 +518,45 @@ function ago(item, now) {
 	const duration = now.since(toPlainDate(item.last_got_at));
 	if (duration.days === 0) return "today";
 	return `${duration.days}d ago`;
+}
+function useFocus() {
+	const [getFocus, setFocus] = createSignal(-1);
+	function callbackRef(el) {
+		const focus = untrack(getFocus);
+		onSettled(() => {
+			if (focus.toString() === el.dataset.index) el.focus();
+		});
+	}
+	createEffect(getFocus, (focus) => {
+		const el = document.querySelector(`[data-index="${focus}"][type="text"`);
+		if (el) el.focus();
+	});
+	function eventHandler(e) {
+		const el = e.currentTarget;
+		const index = Number(el.dataset.index);
+		setFocus(index);
+	}
+	return {
+		callbackRef,
+		eventHandler,
+		set: setFocus
+	};
+}
+function batchDndEdit(db, edits) {
+	const tx = db.transaction("store_items", "readwrite");
+	const table = tx.objectStore("store_items");
+	for (const edit of edits) table.put({
+		...edit.item,
+		order: edit.order
+	});
+	return new Promise((resolve, reject) => {
+		tx.onerror = () => {
+			reject(tx.error);
+		};
+		tx.oncomplete = () => {
+			resolve();
+		};
+	});
 }
 delegateEvents(["click", "keydown"]);
 
