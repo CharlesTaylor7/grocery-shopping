@@ -5,6 +5,7 @@ import { Store, StoreItem } from '@/migrate';
 import { createFileRoute, useNavigate, useRouter } from '@tanstack/solid-router'
 import { For, onSettled, createEffect, createMemo, createSignal, untrack, onCleanup } from 'solid-js';
 import { ago } from '@/lib/dates';
+import { debounce } from '@tanstack/pacer';
 
 
 export const Route = createFileRoute("/store/$storeId")({
@@ -37,6 +38,8 @@ function RouteComponent() {
   const router = useRouter();
   const focus = useFocus();
 
+  const reload = debounce(() => document.startViewTransition(() => router.invalidate()), { wait: 1000 });
+
   const getItemMap = createMemo(() =>
     Object.fromEntries(loader().items.map(item => [item.id, item]))
   );
@@ -64,10 +67,9 @@ function RouteComponent() {
     const item = untrack(getItemMap)[id];
     item.last_got_at = item.last_got_at ? null : new Date();
     await promisify(writeTransaction(db, "store_items").put(item));
-    document.startViewTransition(() => {
-      router.invalidate();
-    });
+    reload();
   }
+
 
   async function handleTextbox(e: Event) {
     const el = e.currentTarget as HTMLInputElement
@@ -75,7 +77,7 @@ function RouteComponent() {
     const item = untrack(getItemMap)[id];
     item.description = el.value;
     await promisify(writeTransaction(db, "store_items").put(item));
-    router.invalidate();
+    reload();
   }
 
   async function handleKeydown(e: KeyboardEvent) {
@@ -100,7 +102,7 @@ function RouteComponent() {
         const newItem = { description: '', order, store_id: loader().store.id }
 
         await promisify(writeTransaction(db, "store_items").add(newItem));
-        router.invalidate();
+        reload();
       }
     }
     else if (e.code === 'Backspace') {
@@ -110,7 +112,7 @@ function RouteComponent() {
         const id = Number(el.dataset.id)
         focus.set(f => f - 1);
         await promisify(writeTransaction(db, "store_items").delete(id));
-        router.invalidate();
+        reload();
       }
     }
     else if (e.code === 'ArrowUp') {
@@ -135,14 +137,10 @@ function RouteComponent() {
     focus.set(untrack(getNeeded).length);
 
     await promisify(writeTransaction(db, "store_items").add(item));
-    document.startViewTransition(() => {
-      router.invalidate()
-    });
+    reload();
   }
 
   const manager = new DragDropManager();
-
-
 
   manager.monitor.addEventListener('dragend', event => {
     if (!isSortable(event.operation.source)) return
@@ -204,10 +202,8 @@ function RouteComponent() {
     batchDndEdit(db, edits)
       .catch(e => {
         console.error(e);
-        // reset if failure
       }).finally(() => {
-        // i hate to do this, but I gotta to make the optimistic thing actually work
-        setTimeout(() => router.invalidate(), 500);
+        reload();
       });
   })
   onCleanup(() => manager.destroy());

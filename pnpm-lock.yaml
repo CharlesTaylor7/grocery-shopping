@@ -17,6 +17,9 @@ importers:
       '@solidjs/web':
         specifier: 2.0.0-rc.4
         version: 2.0.0-rc.4(solid-js@2.0.0-rc.4)
+      '@tanstack/pacer':
+        specifier: ^0.22.0
+        version: 0.22.0
       '@tanstack/solid-router':
         specifier: 2.0.0-rc.4
         version: 2.0.0-rc.4(@solidjs/web@2.0.0-rc.4(solid-js@2.0.0-rc.4))(solid-js@2.0.0-rc.4)
@@ -1515,9 +1518,18 @@ packages:
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7 || ^8
 
+  '@tanstack/devtools-event-client@0.5.0':
+    resolution: {integrity: sha512-H+OH3zC6Vhu/K0NaVfQKknEKawc/+2PT+D3SB3Ox0V8SiMlTo0abbmH2rH0721R2aNYbjdMXA1oENOd8E2UVoA==}
+    engines: {node: '>=18'}
+    hasBin: true
+
   '@tanstack/history@1.162.1':
     resolution: {integrity: sha512-DR9t6lfLVdrjgCwpglrR9DR7Ok8/HlXjcOE+goWXF3zyuLUO/ug7vMbSFxTqrQTtbRghJfyhmIZ0S6LhPIy44w==}
     engines: {node: '>=20.19'}
+
+  '@tanstack/pacer@0.22.0':
+    resolution: {integrity: sha512-Zq23KOn30tFiA6ZYWihs5x++ttHkOIcnIIjRrJq05tGrYx9+iHsmVaj8jb7UJVemEI+JRWGzJ9C+50YV4nRz0w==}
+    engines: {node: '>=18'}
 
   '@tanstack/query-core@5.102.8':
     resolution: {integrity: sha512-ZNjkJ33CqvPNec/6lZBnHqLc3EVGPZ9ySLhYahU9TcuRFdmwXewuj0c4hwSWcGHqEUwcSrKeZ+oGcvPBqXcQcg==}
@@ -1570,6 +1582,9 @@ packages:
     peerDependencies:
       '@solidjs/web': '>=2.0.0-0 <3.0.0'
       solid-js: '>=2.0.0-0 <3.0.0'
+
+  '@tanstack/store@0.11.1':
+    resolution: {integrity: sha512-mzTOBhypOuDJAy/D8n2MfUZ1HFkXnmSETviRyhqEC8LUE7/IZQExOTxMANj3KjTofYTkFNpBY67qaVrT41YccA==}
 
   '@tanstack/virtual-file-routes@1.162.0':
     resolution: {integrity: sha512-uhOeFyxLcU41HzvrxsGpiWdcMbScY1EDgbZ5K7DVRMYInbLYWAC0EA/kx9wXAoSM8q82bUG2hRl8+EAjE6XAbA==}
@@ -3939,7 +3954,14 @@ snapshots:
       tailwindcss: 4.3.3
       vite: 8.2.2(@types/node@26.3.0)(jiti@2.7.0)
 
+  '@tanstack/devtools-event-client@0.5.0': {}
+
   '@tanstack/history@1.162.1': {}
+
+  '@tanstack/pacer@0.22.0':
+    dependencies:
+      '@tanstack/devtools-event-client': 0.5.0
+      '@tanstack/store': 0.11.1
 
   '@tanstack/query-core@5.102.8': {}
 
@@ -4021,6 +4043,8 @@ snapshots:
       '@tanstack/router-core': 1.171.22
       isbot: 5.2.1
       solid-js: 2.0.0-rc.4
+
+  '@tanstack/store@0.11.1': {}
 
   '@tanstack/virtual-file-routes@1.162.0': {}
 
