@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
+// @ts-ignore
 import solid from '@solidjs/vite-plugin'
 
 export default defineConfig({
@@ -12,7 +13,7 @@ export default defineConfig({
     solid(),
     tailwindcss(),
   ],
-  base: "/grocery-v2/",
+  base: "/grocery-shopping/",
   resolve: {
     tsconfigPaths: true,
   },

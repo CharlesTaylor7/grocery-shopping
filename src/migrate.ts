@@ -1,8 +1,7 @@
 import { createAuthClient } from "@neondatabase/auth";
 
-// TODO: delete old db schema at "groceries"
 export const VERSION = 1;
-export const SCHEMA = "grocery-v2";
+export const SCHEMA = "grocery-shopping";
 
 export interface Store {
   id: number;
@@ -26,6 +25,8 @@ export function migrate(
   neon: NeonDataExport
 ): void {
   if (event.oldVersion < 1) {
+    // delete old schema
+    indexedDB.deleteDatabase("groceries");
 
     // Store
     const stores = db.createObjectStore("stores" satisfies TableName,
