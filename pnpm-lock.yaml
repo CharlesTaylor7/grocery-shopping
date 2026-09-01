@@ -29,9 +29,6 @@ importers:
       solid-js:
         specifier: 2.0.0-rc.4
         version: 2.0.0-rc.4
-      uuid:
-        specifier: ^14.0.2
-        version: 14.0.2
     devDependencies:
       '@solidjs/vite-plugin':
         specifier: 3.0.0-next.34
@@ -2444,10 +2441,6 @@ packages:
     resolution: {integrity: sha512-vIYxrBCC/N/K+Js3qSN88go7kIfNPssr/hHCesKCQNAjmgvYS2oqr69kIufEG+O4+PfezOH4EbIeHCfFov8ZgQ==}
     hasBin: true
 
-  uuid@14.0.2:
-    resolution: {integrity: sha512-xZe/16rV4aa+HGSOCiY2YeLT1OybRLrrkL/Rqaq7p7GMVXjFh+6wN4oMYgjFmnSnhY8t6Xpdl2l9qmnHYuMHwQ==}
-    hasBin: true
-
   validate-html-nesting@1.2.4:
     resolution: {integrity: sha512-doQi7e8EJ2OWneSG1aZpJluS6A49aZM0+EICXWKm1i6WvqTLmq0tpUcImc4KTWG50mORO0C4YDBtOCSYvElftw==}
 
@@ -4708,8 +4701,6 @@ snapshots:
       tslib: 2.8.1
 
   uuid@11.1.1: {}
-
-  uuid@14.0.2: {}
 
   validate-html-nesting@1.2.4: {}
 

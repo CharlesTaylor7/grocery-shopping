@@ -5,6 +5,7 @@ import { n as createHashHistory } from "./@tanstack/history-Dlc5q7Fh.js";
 import { a as createRootRoute, c as Link, i as createFileRoute, l as useRouter, n as createRouter, o as useRouteContext, r as Outlet, s as useNavigate, t as RouterProvider } from "./@tanstack/solid-router-pdioD-jW.js";
 import { t as Notyf } from "./notyf-nqSa4uZf.js";
 import { i as DragDropManager, n as Sortable2, r as isSortable, t as OptimisticSortingPlugin } from "./@dnd-kit/dom-DNsmXVvQ.js";
+import { t as debounce } from "./@tanstack/pacer-Dg14kScN.js";
 
 //#region \0vite/modulepreload-polyfill.js
 (function polyfill() {
@@ -39,9 +40,10 @@ import { i as DragDropManager, n as Sortable2, r as isSortable, t as OptimisticS
 
 //#endregion
 //#region src/migrate.ts
-var SCHEMA = "grocery-v2";
+var SCHEMA = "grocery-shopping";
 function migrate(event, db, tx, neon) {
 	if (event.oldVersion < 1) {
+		indexedDB.deleteDatabase("groceries");
 		const stores = db.createObjectStore("stores", {
 			keyPath: "id",
 			autoIncrement: true
@@ -209,7 +211,7 @@ function NyanCatButton() {
 	const ctx = useRouteContext({ from: "__root__" });
 	var _el$ = _tmpl$$4();
 	_el$.$$click = () => ctx().notyf.open({
-		message: `<img src="/grocery-v2/nyan.gif" />`,
+		message: `<img src="/grocery-shopping/nyan.gif" />`,
 		duration: 2e3
 	});
 	return _el$;
@@ -229,13 +231,13 @@ function RouteComponent$2() {
 	_el$8.firstChild;
 	insert(_el$, createComponent(NyanCatButton, {}), _el$2.nextSibling);
 	insert(_el$6, () => {
-		return "2026-08-30 at  2:11pm";
+		return "2026-09-01 at  9:49am";
 	}, null);
 	claimElement(_el$8);
 	insert(_el$8, () => {
-		return "\x1B[38;5;4m4ac089e5edf7\x1B[39m";
+		return "\x1B[38;5;4m82b076436c6c\x1B[39m";
 	}, null);
-	effect(() => `https://github.com/charlestaylor7/grocery-shopping/commit/[38;5;4m4ac089e5edf7[39m}`, (_v$) => {
+	effect(() => `https://github.com/charlestaylor7/grocery-shopping/commit/[38;5;4m82b076436c6c[39m}`, (_v$) => {
 		setAttribute(_el$8, "href", _v$);
 	});
 	return _el$;
@@ -345,6 +347,7 @@ function RouteComponent() {
 	const navigate = useNavigate();
 	const router = useRouter();
 	const focus = useFocus();
+	const reload = debounce(() => document.startViewTransition(() => router.invalidate()), { wait: 1e3 });
 	const getItemMap = createMemo(() => Object.fromEntries(loader().items.map((item) => [item.id, item])));
 	const getNeeded = createMemo(() => loader().items.filter((item) => !item.last_got_at).toSorted((a, b) => a.order - b.order));
 	const getGot = createMemo(() => loader().items.filter((item) => item.last_got_at).toSorted((a, b) => a.description.toLowerCase().localeCompare(b.description.toLowerCase())));
@@ -359,9 +362,7 @@ function RouteComponent() {
 		const item = untrack(getItemMap)[id];
 		item.last_got_at = item.last_got_at ? null : /* @__PURE__ */ new Date();
 		await promisify(writeTransaction(db, "store_items").put(item));
-		document.startViewTransition(() => {
-			router.invalidate();
-		});
+		reload();
 	}
 	async function handleTextbox(e) {
 		const el = e.currentTarget;
@@ -369,7 +370,7 @@ function RouteComponent() {
 		const item = untrack(getItemMap)[id];
 		item.description = el.value;
 		await promisify(writeTransaction(db, "store_items").put(item));
-		router.invalidate();
+		reload();
 	}
 	async function handleKeydown(e) {
 		const el = e.currentTarget;
@@ -388,7 +389,7 @@ function RouteComponent() {
 					store_id: loader().store.id
 				};
 				await promisify(writeTransaction(db, "store_items").add(newItem));
-				router.invalidate();
+				reload();
 			}
 		} else if (e.code === "Backspace") {
 			if (!el.value) {
@@ -396,7 +397,7 @@ function RouteComponent() {
 				const id = Number(el.dataset.id);
 				focus.set((f) => f - 1);
 				await promisify(writeTransaction(db, "store_items").delete(id));
-				router.invalidate();
+				reload();
 			}
 		} else if (e.code === "ArrowUp") focus.set((f) => f - 1);
 		else if (e.code === "ArrowDown") focus.set((f) => f + 1);
@@ -410,9 +411,7 @@ function RouteComponent() {
 		};
 		focus.set(untrack(getNeeded).length);
 		await promisify(writeTransaction(db, "store_items").add(item));
-		document.startViewTransition(() => {
-			router.invalidate();
-		});
+		reload();
 	}
 	const manager = new DragDropManager();
 	manager.monitor.addEventListener("dragend", (event) => {
@@ -484,7 +483,7 @@ function RouteComponent() {
 		batchDndEdit(db, edits).catch((e) => {
 			console.error(e);
 		}).finally(() => {
-			setTimeout(() => router.invalidate(), 500);
+			reload();
 		});
 	});
 	onCleanup(() => manager.destroy());
@@ -544,7 +543,7 @@ function RouteComponent() {
 					o: item.id,
 					i: getIndex(),
 					n: item.description,
-					s: `/grocery-v2/grip-bars.svg`
+					s: `/grocery-shopping/grip-bars.svg`
 				};
 			}, ({ e, t, a, o, i, n, s }, _p$) => {
 				e !== _p$?.e && setAttribute(_el$14, "data-index", e);
@@ -596,7 +595,7 @@ function RouteComponent() {
 			return _el$20;
 		})()
 	}), _el$13);
-	effect(() => `/grocery-v2/wrench.svg`, (_v$) => {
+	effect(() => `/grocery-shopping/wrench.svg`, (_v$) => {
 		setAttribute(_el$6, "src", _v$);
 	});
 	return _el$;
