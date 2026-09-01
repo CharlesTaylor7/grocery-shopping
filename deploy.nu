@@ -14,7 +14,7 @@ with-env {
 }
 
 jj ci -m $"Build: ($build_time)"
-jj bookmark move --allow-backwards -t @- v2 
+jj bookmark move --allow-backwards -t @- main 
 
 ## builds with deployment of docs folder
-jj git push --remote v2 --bookmark v2
+jj git push --remote origin --bookmark main
